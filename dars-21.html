@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>21-dars: Sana-vaqt va muntazam ifodalar (regex) — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>21-dars</b><span>Sana-vaqt va muntazam ifodalar (regex)</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">21-DARS • Fayllar va ma&#x27;lumotlar</span><h1 class="title">Sana-vaqt va muntazam ifodalar (regex)</h1><p class="desc">Har kuni telefoningizga SMS keladi: <i>"HUMO *4417: Xarid 45 000 so'm. 05.10.2026"</i>. Bunday matndan summani, sanani va karta raqamini qanday ajratib olasiz? Bu darsda ikki kuchli vosita bilan tanishasiz: <b>datetime</b> (sana va vaqt bilan hisob-kitob) va <b>regex</b> (matndan shablon bo'yicha qidirish). Ular birga ishlaganda yosh, muddat, jadval va hisobotlarni bir necha qatorda hisoblaysiz.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 date, datetime, timedelta, strftime, strptime, re.findall, re.search, re.match, re.fullmatch, re.sub, guruhlar</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>Sana va vaqt obyektlari</b> — <code>date</code> va <code>datetime</code> yaratish, ularning qismlari (yil, oy, kun, soat) va hafta kuni.</div></div><div class="g"><span class="dot">2</span><div><b>Sanalar bilan hisob</b> — <code>timedelta</code> bilan kun qo'shish, ikki sana orasidagi farq, to'liq yosh va muddatgacha qolgan kunlar.</div></div><div class="g"><span class="dot">3</span><div><b>Format: strftime va strptime</b> — sanani <code>18.10.2026</code> kabi matnga aylantirish va aksincha, matndan sana o'qish.</div></div><div class="g"><span class="dot">4</span><div><b>Regex asoslari</b> — <code>\d</code>, <code>\w</code>, <code>.</code>, <code>+</code>, <code>{n}</code>, <code>[ ]</code> kabi belgilar bilan shablon yozish va <code>re.findall</code> bilan qidirish.</div></div><div class="g"><span class="dot">5</span><div><b>search, match, fullmatch, sub va guruhlar</b> — moslikni tekshirish, qavslar (guruhlar) bilan qism ajratish, matnni shablon bo'yicha almashtirish.</div></div><div class="g"><span class="dot">6</span><div><b>Amaliy shablonlar</b> — telefon raqami, email, sana, log qatori va bank SMS'larini tahlil qilish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>from datetime import date, datetime, timedelta</span><span class="nb"><span class="sw" style="background:var(--js)"></span>d = date(2026, 10, 18)
+d.year, d.month, d.day, d.weekday()</span><span class="nb"><span class="sw" style="background:var(--js)"></span>d + timedelta(days=45)
+(d2 - d1).days</span><span class="nb"><span class="sw" style="background:var(--js)"></span>d.strftime(&quot;%d.%m.%Y&quot;)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>datetime.strptime(&quot;18.10.2026&quot;, &quot;%d.%m.%Y&quot;)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>import re
+re.findall(r&quot;\d+&quot;, matn)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>m = re.search(r&quot;(\w+) (\d+)&quot;, matn)
+m.group(1), m.groups()</span><span class="nb"><span class="sw" style="background:var(--js)"></span>re.fullmatch(r&quot;\d{2}\.\d{2}\.\d{4}&quot;, s)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>re.sub(r&quot;\d{4} (\d{4})&quot;, r&quot;**** \1&quot;, matn)</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="n1" data-group="Nazariya" data-ico="📅" data-title="datetime moduli: date va datetime">
+<h2><span class="mark"></span>datetime moduli: date va datetime</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Sana — bu oddiy matn emas, balki <b>obyekt</b>. Python uni tushunadi: hafta kunini biladi, kun qo'sha oladi, ikki sanani solishtiradi.</div>
+<p>16-darsda <code>datetime</code> moduli bilan qisqacha tanishgansiz. Endi uni chuqurroq o'rganamiz. Moduldan uchta tur kerak bo'ladi:</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Tur</th><th>Nima saqlaydi</th><th>Misol</th></tr>
+<tr><td><code>date</code></td><td>faqat sana: yil, oy, kun</td><td><code>date(2026, 10, 18)</code></td></tr>
+<tr><td><code>datetime</code></td><td>sana va vaqt: soat, daqiqa, soniya</td><td><code>datetime(2026, 10, 18, 8, 30)</code></td></tr>
+<tr><td><code>timedelta</code></td><td>vaqt oralig'i (necha kun, necha soat)</td><td><code>timedelta(days=7)</code></td></tr></table></div>
+<h3>🔹 Sana yaratish va uning qismlari</h3>
+<p>Sana yaratganda tartib doim bir xil: <b>yil, oy, kun</b>. Keyin qismlarini nuqta orqali olasiz.</p>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+d = date(2026, 10, 18)
+print(d)              # 2026-10-18
+print(d.year)         # yil
+print(d.month)        # oy
+print(d.day)          # kun
+print(d.weekday())    # 0 = dushanba ... 6 = yakshanba
+print(d.isoweekday()) # 1 = dushanba ... 7 = yakshanba</textarea></div><div class="out" hidden></div></div>
+<div class="note">📌 <code>weekday()</code> haftani <b>0 dan</b> sanaydi (dushanba = 0). <code>isoweekday()</code> esa <b>1 dan</b> (dushanba = 1). O'zbekcha kun nomlari ro'yxatidan indeks olish uchun <code>weekday()</code> qulay.</div>
+<h3>🔹 Sana va vaqt birga: datetime</h3>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+dars = datetime(2026, 10, 19, 8, 30)
+print(dars)
+print(dars.hour, dars.minute)
+print(dars.date())   # faqat sana qismi</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Sanalarni solishtirish</h3>
+<p>Sanalar sonlar kabi <code>&lt;</code>, <code>&gt;</code>, <code>==</code> bilan solishtiriladi. Kichik sana — oldinroq sana.</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+navruz = date(2027, 3, 21)
+mustaqillik = date(2026, 9, 1)
+print(mustaqillik &lt; navruz)
+print(max(navruz, mustaqillik))</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Bugungi sana har kuni o'zgaradi</span><code>date.today()</code> va <code>datetime.now()</code> bugungi sana va vaqtni beradi. Lekin ertaga natija boshqacha bo'ladi. Shuning uchun bu darsdagi topshiriqlarda "bugun" doim <b>argument</b> sifatida beriladi: shunda funksiya natijasi har doim bir xil.</div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Tug'ilgan kuningizni <code>date(...)</code> bilan yozing va u haftaning qaysi kuniga to'g'ri kelganini <code>isoweekday()</code> bilan toping.</div>
+</div>
+</section>
+<section class="sec off" data-key="n2" data-group="Nazariya" data-ico="⏳" data-title="timedelta: kun qo&#x27;shish, farq, yosh va muddat">
+<h2><span class="mark"></span>timedelta: kun qo&#x27;shish, farq, yosh va muddat</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>timedelta</code> — vaqt oralig'i. Uni sanaga qo'shasiz yoki ayirasiz. Ikki sanani ayirsangiz ham <code>timedelta</code> chiqadi.</div>
+<h3>🔹 Sanaga kun qo'shish</h3>
+<p>Kutubxonadan kitob 14 kunga beriladi. Qaytarish sanasini qo'lda sanash shart emas: Python oylarning necha kunligini o'zi biladi.</p>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date, timedelta
+
+olindi = date(2026, 10, 25)
+qaytarish = olindi + timedelta(days=14)
+print(qaytarish)                       # 2026-11-08
+print(olindi - timedelta(weeks=1))     # bir hafta oldin</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Ikki sana orasidagi farq</h3>
+<p>Ikki sanani ayirsangiz, natija <code>timedelta</code> bo'ladi. Uning <code>.days</code> qismi — kunlar soni.</p>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+bugun = date(2026, 10, 18)
+yangi_yil = date(2027, 1, 1)
+farq = yangi_yil - bugun
+print(farq)        # 75 days, 0:00:00
+print(farq.days)   # 75</textarea></div><div class="out" hidden></div></div>
+<p>Vaqt bilan ham shunday. <code>datetime</code> lar farqining <code>.total_seconds()</code> usuli butun oraliqni soniyalarda beradi. Uni 3600 ga bo'lsangiz — soat chiqadi.</p>
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+keldi = datetime(2026, 10, 19, 8, 45)
+ketdi = datetime(2026, 10, 19, 17, 15)
+ish = ketdi - keldi
+print(ish)                         # 8:30:00
+print(ish.total_seconds() / 3600)  # 8.5 soat</textarea></div><div class="out" hidden></div></div>
+<h3>🧩 To'liq yosh qanday hisoblanadi?</h3>
+<p>Kunlar farqini 365 ga bo'lish <b>xato</b> beradi: kabisa yillarida 366 kun bor. To'g'ri yo'l: yillarni ayirasiz, so'ng bu yil tug'ilgan kun hali kelmagan bo'lsa, 1 ni olib tashlaysiz.</p>
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+tugilgan = date(2010, 12, 25)
+bugun = date(2026, 10, 18)
+yosh = bugun.year - tugilgan.year
+if (bugun.month, bugun.day) &lt; (tugilgan.month, tugilgan.day):
+    yosh -= 1      # tug&#x27;ilgan kun hali kelmadi
+print(yosh)        # 15</textarea></div><div class="out" hidden></div></div>
+<div class="note">🎂 <code>(oy, kun)</code> juftligini tuple sifatida solishtirish qulay: avval oylar, oylar teng bo'lsa kunlar solishtiriladi.</div>
+<div class="real"><b>Real loyihada:</b> bank kredit muddatini, maktab elektron jurnali dars kunlarini, internet-do'kon yetkazib berish sanasini shunday hisoblaydi.</div>
+</div>
+</section>
+<section class="sec off" data-key="n3" data-group="Nazariya" data-ico="🔁" data-title="strftime va strptime: sana ↔ matn">
+<h2><span class="mark"></span>strftime va strptime: sana ↔ matn</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>strftime</code> — sanadan <b>matn</b> yasaydi (f = format). <code>strptime</code> — matndan <b>sana</b> o'qiydi (p = parse, ya'ni tahlil qilish).</div>
+<h3>🔹 Format kodlari</h3>
+<p>Format satrida <code>%</code> bilan boshlanadigan kodlar sananing qismlarini bildiradi. Qolgan belgilar (nuqta, chiziqcha, bo'shliq) o'zgarmay qoladi.</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Kod</th><th>Ma'nosi</th><th>Misol</th></tr>
+<tr><td><code>%d</code></td><td>kun, 2 xonali</td><td><code>05</code>, <code>18</code></td></tr>
+<tr><td><code>%m</code></td><td>oy, 2 xonali</td><td><code>03</code>, <code>10</code></td></tr>
+<tr><td><code>%Y</code></td><td>yil, 4 xonali</td><td><code>2026</code></td></tr>
+<tr><td><code>%y</code></td><td>yil, 2 xonali</td><td><code>26</code></td></tr>
+<tr><td><code>%H</code></td><td>soat (00–23)</td><td><code>08</code>, <code>17</code></td></tr>
+<tr><td><code>%M</code></td><td>daqiqa</td><td><code>30</code></td></tr>
+<tr><td><code>%S</code></td><td>soniya</td><td><code>05</code></td></tr>
+<tr><td><code>%A</code></td><td>hafta kuni (inglizcha)</td><td><code>Sunday</code></td></tr></table></div>
+<h3>🔹 strftime: sanadan matn</h3>
+<div class="editor" data-ed="e8" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date, datetime
+
+d = date(2026, 3, 5)
+print(d.strftime(&quot;%d.%m.%Y&quot;))     # 05.03.2026
+print(d.strftime(&quot;%Y/%m/%d&quot;))     # 2026/03/05
+v = datetime(2026, 10, 19, 8, 5)
+print(v.strftime(&quot;%H:%M&quot;))        # 08:05</textarea></div><div class="out" hidden></div></div>
+<p><code>%A</code> hafta kunini inglizcha beradi. O'zbekcha nom kerak bo'lsa, o'z ro'yxatingizdan <code>weekday()</code> indeksi bilan olasiz:</p>
+<div class="editor" data-ed="e9" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+KUNLAR = [&quot;Dushanba&quot;, &quot;Seshanba&quot;, &quot;Chorshanba&quot;, &quot;Payshanba&quot;, &quot;Juma&quot;, &quot;Shanba&quot;, &quot;Yakshanba&quot;]
+d = date(2026, 9, 1)
+print(KUNLAR[d.weekday()])   # Seshanba</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 strptime: matndan sana</h3>
+<p>Foydalanuvchi sanani matn qilib kiritadi: <code>"18.10.2026"</code>. Uni hisoblash uchun avval sanaga aylantirish kerak. <code>strptime</code> <b>datetime</b> qaytaradi; faqat sana kerak bo'lsa, oxiriga <code>.date()</code> qo'shasiz.</p>
+<div class="editor" data-ed="e10" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+matn = &quot;18.10.2026&quot;
+d = datetime.strptime(matn, &quot;%d.%m.%Y&quot;).date()
+print(d, d.year)
+
+vaqt = datetime.strptime(&quot;08:30&quot;, &quot;%H:%M&quot;)
+print(vaqt.hour, vaqt.minute)</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Format matnga aynan mos bo'lishi kerak</span>Matnda nuqta bo'lsa, formatda ham nuqta bo'ladi. <code>datetime.strptime("18.10.2026", "%d-%m-%Y")</code> xato beradi: <code>ValueError: time data '18.10.2026' does not match format '%d-%m-%Y'</code>. Mavjud bo'lmagan sana (<code>31.02.2026</code>) ham <code>ValueError</code> beradi.</div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Yuqoridagi oynada <code>"%d.%m.%Y"</code> ni <code>"%Y.%m.%d"</code> ga almashtiring va xato xabarini o'qing.</div>
+</div>
+</section>
+<section class="sec off" data-key="n4" data-group="Nazariya" data-ico="🔎" data-title="Regex asoslari va re.findall">
+<h2><span class="mark"></span>Regex asoslari va re.findall</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <b>Regex</b> (regular expression — muntazam ifoda) — matndagi <b>shablon</b> tavsifi. "Ketma-ket 4 ta raqam" yoki "@ belgisi bor so'z" kabi narsalarni bir qatorda qidiradi.</div>
+<p>Pochtachi xatlarni manzil shabloniga qarab ajratadi: "shahar, ko'cha, uy raqami". Regex ham shunday: siz shablon berasiz, Python matndan unga mos bo'laklarni topadi. Buning uchun <code>re</code> moduli bor.</p>
+<h3>🔹 Eng kerakli belgilar</h3>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Belgi</th><th>Ma'nosi</th><th>Misol shablon → mos matn</th></tr>
+<tr><td><code>\d</code></td><td>bitta raqam (0–9)</td><td><code>\d\d</code> → <code>42</code></td></tr>
+<tr><td><code>\w</code></td><td>harf, raqam yoki <code>_</code></td><td><code>\w+</code> → <code>Ali_07</code></td></tr>
+<tr><td><code>\s</code></td><td>bo'shliq (probel, tab, yangi qator)</td><td><code>\d\s\d</code> → <code>4 5</code></td></tr>
+<tr><td><code>.</code></td><td><b>istalgan</b> bitta belgi</td><td><code>a.a</code> → <code>ana</code>, <code>a7a</code></td></tr>
+<tr><td><code>+</code></td><td>oldingisi 1 yoki ko'p marta</td><td><code>\d+</code> → <code>12000</code></td></tr>
+<tr><td><code>*</code></td><td>oldingisi 0 yoki ko'p marta</td><td><code>ab*</code> → <code>a</code>, <code>abbb</code></td></tr>
+<tr><td><code>?</code></td><td>oldingisi bo'lishi ham, bo'lmasligi ham mumkin</td><td><code>kitoblar?</code> → <code>kitobla</code>, <code>kitoblar</code></td></tr>
+<tr><td><code>{n}</code>, <code>{n,m}</code></td><td>aynan n marta; n dan m gacha</td><td><code>\d{4}</code> → <code>2026</code></td></tr>
+<tr><td><code>[ ]</code></td><td>qavs ichidagi belgilardan bittasi</td><td><code>[a-z]</code>, <code>[0-9.,]</code></td></tr>
+<tr><td><code>\.</code>, <code>\+</code>, <code>\*</code></td><td>belgining <b>o'zi</b> (maxsus ma'nosiz)</td><td><code>\+998</code> → <code>+998</code></td></tr></table></div>
+<h3>🔹 r"..." — raw satr</h3>
+<p>Shablonni doim <code>r</code> harfi bilan yozing: <code>r"\d+"</code>. <code>r</code> (raw — xom) Python'ga teskari chiziqqa tegmaslikni aytadi. Shunda <code>\d</code> aynan regex'ga yetib boradi.</p>
+<h3>🔹 re.findall — hamma moslar ro'yxati</h3>
+<p><code>re.findall(shablon, matn)</code> matndagi <b>barcha</b> mos bo'laklarni ro'yxat qilib qaytaradi. Topilmasa, bo'sh ro'yxat <code>[]</code>. Natija doim <b>satrlar</b>: son kerak bo'lsa, <code>int()</code> qiling.</p>
+<div class="editor" data-ed="e11" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+matn = &quot;Sinfda 28 o&#x27;quvchi: 15 qiz va 13 o&#x27;g&#x27;il.&quot;
+sonlar = re.findall(r&quot;\d+&quot;, matn)
+print(sonlar)                     # [&#x27;28&#x27;, &#x27;15&#x27;, &#x27;13&#x27;]
+print([int(s) for s in sonlar])   # [28, 15, 13]
+
+print(re.findall(r&quot;\d{4}&quot;, &quot;Yillar: 1991, 2026 va 77&quot;))
+print(re.findall(r&quot;[A-Z]\w+&quot;, &quot;Ali va Vali Xivaga ketdi&quot;))
+print(re.findall(r&quot;\d+&quot;, &quot;raqam yo&#x27;q&quot;))</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Nuqta — maxsus belgi</span><code>.</code> shablonda "istalgan belgi" degani. Matndagi haqiqiy nuqtani qidirish uchun <code>\.</code> yozing. Aks holda <code>\d{2}.\d{2}</code> shabloni <code>18-10</code> va <code>18/10</code> ga ham mos keladi.</div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Oynada <code>r"\d+"</code> ni <code>r"\d"</code> ga o'zgartiring. Natija qanday o'zgardi va nega?</div>
+</div>
+</section>
+<section class="sec off" data-key="n5" data-group="Nazariya" data-ico="🧲" data-title="search, match, fullmatch, guruhlar va sub">
+<h2><span class="mark"></span>search, match, fullmatch, guruhlar va sub</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>re.search</code> birinchi moslikni topadi va <b>Match</b> obyekt qaytaradi (topilmasa <code>None</code>). Shablondagi qavslar <b>guruh</b> hosil qiladi: ular yordamida moslikning kerakli qismlarini alohida olasiz.</div>
+<h3>🔹 Uch xil tekshiruv</h3>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Funksiya</th><th>Qayerdan qidiradi</th><th>Qachon ishlatiladi</th></tr>
+<tr><td><code>re.search</code></td><td>matnning istalgan joyidan</td><td>"matn ichida bormi?"</td></tr>
+<tr><td><code>re.match</code></td><td>faqat matn <b>boshidan</b></td><td>"shu bilan boshlanadimi?"</td></tr>
+<tr><td><code>re.fullmatch</code></td><td><b>butun</b> matn shablonga mos bo'lishi kerak</td><td>"email/telefon to'g'rimi?" (tekshiruv)</td></tr></table></div>
+<div class="editor" data-ed="e12" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+s = &quot;Tel: +998 90 123 45 67&quot;
+print(re.search(r&quot;\d{2} \d{3}&quot;, s))    # topildi: Match obyekt
+print(re.match(r&quot;\d{2} \d{3}&quot;, s))     # None — boshida &quot;Tel&quot; turibdi
+print(re.fullmatch(r&quot;\d{4}&quot;, &quot;2026&quot;))   # butun matn mos
+print(re.fullmatch(r&quot;\d{4}&quot;, &quot;2026y&quot;))  # None — oxirida ortiqcha belgi</textarea></div><div class="out" hidden></div></div>
+<p>Natija <code>None</code> bo'lishi mumkinligi uchun, uni ishlatishdan oldin doim tekshiring: <code>if m:</code> yoki <code>if m is None:</code>.</p>
+<h3>🧩 Guruhlar: ( )</h3>
+<p>Shablon qismini qavsga olsangiz, u <b>guruh</b> bo'ladi. <code>m.group(0)</code> — butun moslik, <code>m.group(1)</code> — 1-qavs, <code>m.group(2)</code> — 2-qavs. <code>m.groups()</code> esa hamma guruhlarni tuple qilib beradi.</p>
+<div class="editor" data-ed="e13" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+m = re.search(r&quot;(\d{2})\.(\d{2})\.(\d{4})&quot;, &quot;Imtihon 25.12.2026 kuni bo&#x27;ladi&quot;)
+if m:
+    print(m.group(0))   # 25.12.2026
+    print(m.group(1))   # 25
+    print(m.group(3))   # 2026
+    print(m.groups())   # (&#x27;25&#x27;, &#x27;12&#x27;, &#x27;2026&#x27;)</textarea></div><div class="out" hidden></div></div>
+<p>Shablonda guruhlar bo'lsa, <code>findall</code> ham har bir moslik uchun guruhlar tuple'ini qaytaradi:</p>
+<div class="editor" data-ed="e14" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+matn = &quot;Ali 87 ball, Vali 92 ball, Malika 100 ball&quot;
+print(re.findall(r&quot;(\w+) (\d+) ball&quot;, matn))</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 re.sub — almashtirish</h3>
+<p><code>re.sub(shablon, yangi, matn)</code> barcha moslarni <code>yangi</code> bilan almashtiradi. <code>yangi</code> ichida <code>\1</code>, <code>\2</code> — mos guruhning qiymati.</p>
+<div class="editor" data-ed="e15" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+print(re.sub(r&quot;\d&quot;, &quot;#&quot;, &quot;PIN: 4417&quot;))                       # PIN: ####
+print(re.sub(r&quot;\s+&quot;, &quot; &quot;, &quot;Ko&#x27;p     bo&#x27;shliqli    matn&quot;))     # ortiqcha bo&#x27;shliqlar
+print(re.sub(r&quot;(\d{2})\.(\d{2})\.(\d{4})&quot;, r&quot;\3-\2-\1&quot;, &quot;Sana: 18.10.2026&quot;))</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Guruh raqami 1 dan boshlanadi</span>Ro'yxat indeksi 0 dan boshlanadi, lekin guruhlar <b>1 dan</b>. <code>group(0)</code> — butun moslik. Mavjud bo'lmagan guruh (<code>group(4)</code>, agar 3 ta qavs bo'lsa) <code>IndexError: no such group</code> beradi.</div>
+</div>
+</section>
+<section class="sec off" data-key="n6" data-group="Nazariya" data-ico="🛠️" data-title="Amaliy shablonlar: telefon, email, sana">
+<h2><span class="mark"></span>Amaliy shablonlar: telefon, email, sana</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Ko'p uchraydigan ma'lumotlar uchun shablon bir marta yoziladi va hamma joyda ishlatiladi. Regex matndan <b>topadi</b>, datetime esa topilganini <b>hisoblaydi</b>.</div>
+<h3>🔹 Uchta tayyor shablon</h3>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Nima</th><th>Shablon</th><th>Mos misol</th></tr>
+<tr><td>📞 Telefon</td><td><code>\+998 \d{2} \d{3} \d{2} \d{2}</code></td><td><code>+998 90 123 45 67</code></td></tr>
+<tr><td>✉️ Email (sodda)</td><td><code>[\w.]+@[a-z0-9]+\.[a-z]{2,}</code></td><td><code>ali.valiyev@mail.uz</code></td></tr>
+<tr><td>📅 Sana</td><td><code>(\d{2})\.(\d{2})\.(\d{4})</code></td><td><code>18.10.2026</code></td></tr></table></div>
+<p>Shablonni bo'laklab o'qing. Telefon: <code>\+</code> — plyus belgisining o'zi, <code>998</code>, bo'shliq, 2 ta raqam, bo'shliq, 3 ta raqam va hokazo.</p>
+<div class="editor" data-ed="e16" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+e_lon = &quot;Murojaat: +998 90 123 45 67 yoki +998 91 555 66 77, email: info@maktab.uz&quot;
+print(re.findall(r&quot;\+998 \d{2} \d{3} \d{2} \d{2}&quot;, e_lon))
+print(re.findall(r&quot;[\w.]+@[a-z0-9]+\.[a-z]{2,}&quot;, e_lon))</textarea></div><div class="out" hidden></div></div>
+<h3>🧩 Regex + datetime birga</h3>
+<p>Matndan sanani regex bilan topasiz, keyin uni <code>date</code> ga aylantirib hisoblaysiz.</p>
+<div class="editor" data-ed="e17" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+from datetime import date
+
+xabar = &quot;Hurmatli ota-onalar! Majlis 25.10.2026 kuni soat 17:00 da.&quot;
+bugun = date(2026, 10, 18)
+m = re.search(r&quot;(\d{2})\.(\d{2})\.(\d{4})&quot;, xabar)
+if m:
+    kun, oy, yil = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    majlis = date(yil, oy, kun)
+    print(&quot;Majlisgacha&quot;, (majlis - bugun).days, &quot;kun qoldi&quot;)</textarea></div><div class="out" hidden></div></div>
+<div class="note">✉️ Haqiqiy email qoidalari juda murakkab. Darsdagi shablon — o'quv uchun sodda variant. Real saytlarda email odatda unga xat yuborib tasdiqlanadi.</div>
+<div class="real"><b>Real loyihada:</b> regex ro'yxatdan o'tish formalarida (telefon, email), log fayllarni tahlil qilishda, Telegram-botlarda buyruqlarni ajratishda va bank SMS'larini avtomatik hisobga olishda ishlatiladi.</div>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="Sana obyekti va uning qismlari" data-task="t01">
+<div class="card step" data-task="t01" data-title="Sana obyekti va uning qismlari" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>Sana obyekti va uning qismlari <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada sananing qismlari alohida chiqariladi. Siz ularni bitta chiroyli matnga yig'adigan funksiya yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e18" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+d = date(2026, 9, 2)
+print(&quot;Yil:&quot;, d.year)
+print(&quot;Oy:&quot;, d.month)
+print(&quot;Kun:&quot;, d.day)
+print(&quot;weekday():&quot;, d.weekday())
+print(&quot;isoweekday():&quot;, d.isoweekday())
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring va har qator nima chiqarganini kuzating.</li><li><code>sana_qismlari(d)</code> funksiyasini yozing. <code>d</code> — <code>date</code> obyekt.</li><li>Funksiya shu ko'rinishdagi matn qaytarsin: <code>Yil: 2027, oy: 3, kun: 21, hafta kuni: 7</code>.</li><li>Hafta kuni <code>isoweekday()</code> bilan olinsin (dushanba = 1, yakshanba = 7). Oy va kun oldida <code>0</code> bo'lmaydi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>sana_qismlari(date(2027, 3, 21))  # 'Yil: 2027, oy: 3, kun: 21, hafta kuni: 7'</code></li><li><code>sana_qismlari(date(2026, 9, 1))  # 'Yil: 2026, oy: 9, kun: 1, hafta kuni: 2'</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+
+def sana_qismlari(d):
+    # d.year, d.month, d.day va d.isoweekday() dan matn yasang
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sana_qismlari(date(2027, 3, 21)))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="re.findall bilan matndan raqamlar" data-task="t02">
+<div class="card step" data-task="t02" data-title="re.findall bilan matndan raqamlar" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>re.findall bilan matndan raqamlar <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada matndagi sonlar satr ko'rinishida topiladi. Siz chekdagi narxlarni <b>butun son</b> qilib qaytarasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e19" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+matn = &quot;Sinfda 28 o&#x27;quvchi, 15 qiz va 13 o&#x27;g&#x27;il&quot;
+topildi = re.findall(r&quot;\d+&quot;, matn)
+print(topildi)
+print(type(topildi[0]))
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ishga tushiring: <code>re.findall</code> nima qaytarganiga qarang.</li><li><code>narxlar(matn)</code> funksiyasini yozing.</li><li>U matndagi barcha sonlarni topib, <b>int</b> ro'yxat qilib qaytarsin (tartibi matndagidek).</li><li>Matnda son bo'lmasa, bo'sh ro'yxat <code>[]</code> qaytarsin. <code>re.findall</code> dan foydalaning.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>narxlar("Non 4000 so'm, sut 12000 so'm")  # [4000, 12000]</code></li><li><code>narxlar("Bepul")  # []</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def narxlar(matn):
+    # re.findall bilan sonlarni toping va int ga aylantiring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(narxlar(&quot;Non 4000 so&#x27;m, sut 12000 so&#x27;m&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="Sanaga timedelta(days=45) qo&#x27;shilsa" data-task="t03">
+<div class="card step" data-task="t03" data-title="Sanaga timedelta(days=45) qo&#x27;shilsa" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>Sanaga timedelta(days=45) qo&#x27;shilsa <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Python oylarning necha kunligini o'zi hisoblaydi. Siz ham hisoblab ko'ring.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing: 18-oktabrga 45 kun qo'shiladi.</li><li>Oktabrda 31 kun, noyabrda 30 kun borligini eslang.</li><li>Ikki qator chiqadi: yangi sana (<code>YYYY-MM-DD</code> ko'rinishida) va uning oyi. Ikkalasini yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">from datetime import date, timedelta
+
+bugun = date(2026, 10, 18)
+yangi = bugun + timedelta(days=45)
+print(yangi)
+print(yangi.month)
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="Sanani 18.10.2026 ko&#x27;rinishida" data-task="t04">
+<div class="card step" data-task="t04" data-title="Sanani 18.10.2026 ko&#x27;rinishida" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>Sanani 18.10.2026 ko&#x27;rinishida <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc"><code>strftime</code> yordamida sanani o'zbekcha odatiy ko'rinishga keltiramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>chiroyli_sana(yil, oy, kun)</code> funksiyasini yozing.</li><li>Ichida <code>date(yil, oy, kun)</code> yarating.</li><li><code>strftime</code> bilan <code>KK.OO.YYYY</code> ko'rinishidagi matn qaytaring: kun va oy doim <b>2 xonali</b> (<code>05</code>, <code>03</code>).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>chiroyli_sana(2026, 10, 18)  # '18.10.2026'</code></li><li><code>chiroyli_sana(2027, 3, 5)  # '05.03.2027'</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import date
+
+
+def chiroyli_sana(yil, oy, kun):
+    # date yarating va strftime bilan formatlang
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(chiroyli_sana(2026, 10, 18))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="Tug&#x27;ilgan sanadan to&#x27;liq yosh" data-task="t05">
+<div class="card step" data-task="t05" data-title="Tug&#x27;ilgan sanadan to&#x27;liq yosh" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>Tug&#x27;ilgan sanadan to&#x27;liq yosh <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Ikki matnli sanadan odamning <b>to'liq</b> yoshini hisoblaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>toliq_yosh(tugilgan, bugun)</code> funksiyasini yozing. Ikkala argument ham <code>"KK.OO.YYYY"</code> ko'rinishidagi matn.</li><li>Ularni <code>datetime.strptime(..., "%d.%m.%Y")</code> bilan sanaga aylantiring.</li><li>To'liq yoshni <b>int</b> qilib qaytaring: yillar farqi; agar bu yil tug'ilgan kun hali kelmagan bo'lsa, 1 kam.</li><li>Tug'ilgan kun aynan bugun bo'lsa, yosh allaqachon to'lgan hisoblanadi.</li></ol><p>Kunlar farqini 365 ga bo'lmang — kabisa yillari tufayli ba'zan xato chiqadi.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>toliq_yosh("15.03.2010", "18.10.2026")  # 16</code></li><li><code>toliq_yosh("25.12.2010", "18.10.2026")  # 15</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def toliq_yosh(tugilgan, bugun):
+    # matnlarni sanaga aylantiring va to&#x27;liq yoshni hisoblang
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(toliq_yosh(&quot;15.03.2010&quot;, &quot;18.10.2026&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Muddatgacha necha kun qoldi" data-task="t06">
+<div class="card step" data-task="t06" data-title="Muddatgacha necha kun qoldi" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Muddatgacha necha kun qoldi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Topshiriq muddatigacha necha kun qolganini hisoblaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>qolgan_kun(bugun, muddat)</code> funksiyasini yozing. Ikkala argument <code>"YYYY-MM-DD"</code> ko'rinishidagi matn (masalan, <code>"2026-10-18"</code>).</li><li>Ularni <code>strptime</code> bilan sanaga aylantiring (format: <code>"%Y-%m-%d"</code>).</li><li>Farqning <code>.days</code> qismini qaytaring.</li><li>Muddat bugun bo'lsa yoki o'tib ketgan bo'lsa, <code>0</code> qaytaring (manfiy son emas).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>qolgan_kun("2026-10-18", "2026-10-25")  # 7</code></li><li><code>qolgan_kun("2026-10-18", "2027-01-01")  # 75</code></li><li><code>qolgan_kun("2026-10-18", "2026-10-01")  # 0</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def qolgan_kun(bugun, muddat):
+    # ikki sananing farqini kunlarda qaytaring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(qolgan_kun(&quot;2026-10-18&quot;, &quot;2026-10-25&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="strptime formati sanaga mos emas" data-task="t07">
+<div class="card step" data-task="t07" data-title="strptime formati sanaga mos emas" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>strptime formati sanaga mos emas <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Funksiya <code>"18.10.2026"</code> kabi sanani <code>"2026-10-18"</code> ko'rinishiga o'tkazishi kerak. Lekin u xato bilan to'xtayapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xato xabarini diqqat bilan o'qing.</li><li>Xatoni tuzating.</li><li><code>iso_korinish(matn)</code> <code>"KK.OO.YYYY"</code> ko'rinishidagi matnni olib, <code>"YYYY-MM-DD"</code> ko'rinishidagi matn qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>iso_korinish("18.10.2026")  # '2026-10-18'</code></li><li><code>iso_korinish("05.03.2027")  # '2027-03-05'</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def iso_korinish(matn):
+    sana = datetime.strptime(matn, &quot;%d-%m-%Y&quot;)
+    return sana.strftime(&quot;%Y-%m-%d&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    print(iso_korinish(&quot;18.10.2026&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="Sanadan o&#x27;zbekcha hafta kuni nomi" data-task="t08">
+<div class="card step" data-task="t08" data-title="Sanadan o&#x27;zbekcha hafta kuni nomi" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>Sanadan o&#x27;zbekcha hafta kuni nomi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc"><code>%A</code> inglizcha nom beradi. Biz o'zbekcha nom chiqaramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>hafta_kuni(matn)</code> funksiyasini yozing. <code>matn</code> — <code>"KK.OO.YYYY"</code> ko'rinishidagi sana.</li><li>Funksiya ichida (yoki tepasida) ro'yxat yarating: <code>["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]</code>.</li><li>Matnni sanaga aylantiring va <code>weekday()</code> indeksi bilan ro'yxatdan nomni olib qaytaring.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>hafta_kuni("18.10.2026")  # 'Yakshanba'</code></li><li><code>hafta_kuni("01.09.2026")  # 'Seshanba'</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def hafta_kuni(matn):
+    # o&#x27;zbekcha kunlar ro&#x27;yxati va weekday()
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(hafta_kuni(&quot;18.10.2026&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="Matndagi barcha telefon raqamlari" data-task="t09">
+<div class="card step" data-task="t09" data-title="Matndagi barcha telefon raqamlari" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>Matndagi barcha telefon raqamlari <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">E'lon matnidan barcha telefon raqamlarini regex bilan ajratib olamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>telefonlar(matn)</code> funksiyasini yozing.</li><li>Telefon raqami aynan shu ko'rinishda: <code>+998 90 123 45 67</code> — <code>+998</code>, bo'shliq, 2 raqam, bo'shliq, 3 raqam, bo'shliq, 2 raqam, bo'shliq, 2 raqam.</li><li>Funksiya matndagi barcha shunday raqamlarni (matndagi tartibda) ro'yxat qilib qaytarsin.</li><li>Bu ko'rinishga mos kelmaydigan raqamlar (masalan, <code>+998 9 123 45 67</code>) olinmasin. Raqam bo'lmasa <code>[]</code>.</li></ol><p>Eslatma: <code>+</code> — regex'da maxsus belgi. Uning o'zini <code>\+</code> deb yozing.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>telefonlar("Ali: +998 90 123 45 67, Vali: +998 91 555 66 77")  # ['+998 90 123 45 67', '+998 91 555 66 77']</code></li><li><code>telefonlar("Raqam yo'q")  # []</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def telefonlar(matn):
+    # +998 XX XXX XX XX shablonini yozing
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(telefonlar(&quot;Ali: +998 90 123 45 67, Vali: +998 91 555 66 77&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="Email to&#x27;g&#x27;riligini tekshirish" data-task="t10">
+<div class="card step" data-task="t10" data-title="Email to&#x27;g&#x27;riligini tekshirish" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>Email to&#x27;g&#x27;riligini tekshirish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ro'yxatdan o'tish formasidagi email manzilini sodda qoidalar bo'yicha tekshiramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>email_togrimi(email)</code> funksiyasini yozing. U <code>True</code> yoki <code>False</code> qaytarsin.</li><li>Qoidalar: <b>@ dan oldin</b> kamida 1 ta belgi — lotin harfi, raqam, nuqta yoki <code>_</code>; keyin <b>bitta</b> <code>@</code>; keyin domen nomi — kamida 1 ta kichik lotin harfi yoki raqam; keyin <b>nuqta</b>; oxirida kamida 2 ta kichik lotin harfi (<code>uz</code>, <code>com</code>).</li><li><b>Butun</b> satr shu qoidaga mos bo'lishi kerak: <code>re.fullmatch</code> ishlating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>email_togrimi("ali.valiyev@mail.uz")  # True</code></li><li><code>email_togrimi("dilnoza_07@gmail.com")  # True</code></li><li><code>email_togrimi("ali@mail")  # False</code></li><li><code>email_togrimi("@mail.uz")  # False</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def email_togrimi(email):
+    # re.fullmatch bilan tekshiring va True/False qaytaring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(email_togrimi(&quot;ali.valiyev@mail.uz&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="re.sub bilan karta raqamini yashirish" data-task="t11">
+<div class="card step" data-task="t11" data-title="re.sub bilan karta raqamini yashirish" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>re.sub bilan karta raqamini yashirish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Chekda karta raqamining faqat oxirgi 4 raqami ko'rinsin.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>karta_yashir(matn)</code> funksiyasini yozing.</li><li>Karta raqami: 4 ta raqamdan iborat 4 guruh, ular bitta bo'shliq bilan ajratilgan (<code>8600 1234 5678 9012</code>).</li><li><code>re.sub</code> bilan har bir karta raqamini <code>**** **** **** 9012</code> ko'rinishiga almashtiring: oxirgi 4 raqam saqlanadi.</li><li>Matnning qolgan qismi o'zgarmasin. Karta raqami bo'lmasa, matn o'zgarishsiz qaytsin. Bir nechta karta bo'lsa, hammasi yashirilsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>karta_yashir("Karta: 8600 1234 5678 9012")  # 'Karta: **** **** **** 9012'</code></li><li><code>karta_yashir("Naqd to'lov")  # "Naqd to'lov"</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def karta_yashir(matn):
+    # re.sub va guruh (\1) dan foydalaning
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(karta_yashir(&quot;Karta: 8600 1234 5678 9012&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="Regex shablon bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="Regex shablon bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>Regex shablon bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Matndan birinchi sanani topib, <code>YYYY-MM-DD</code> ko'rinishida qaytaradigan funksiyaning bo'sh joylarini to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Har bir <code>___</code> o'rniga mos narsa yozing.</li><li>Sana ko'rinishi: <code>KK.OO.YYYY</code> (kun va oy 2 xonali, yil 4 xonali, orasida nuqta).</li><li><code>sana_top(matn)</code> matndagi <b>birinchi</b> sanani <code>"YYYY-MM-DD"</code> ko'rinishida qaytarsin. Sana bo'lmasa — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>sana_top("Imtihon 25.12.2026 kuni")  # '2026-12-25'</code></li><li><code>sana_top("Sana hali aniq emas")  # None</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def sana_top(matn):
+    m = re.___(r&quot;(\d{2})___(\d{2})\.(\d{___})&quot;, matn)
+    if m ___ None:
+        return None
+    return m.group(___) + &quot;-&quot; + m.group(2) + &quot;-&quot; + m.group(1)
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sana_top(&quot;Imtihon 25.12.2026 kuni&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title=". belgisi ekranlanmagan" data-task="t13">
+<div class="card step" data-task="t13" data-title=". belgisi ekranlanmagan" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>. belgisi ekranlanmagan <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Funksiya sana faqat <code>KK.OO.YYYY</code> ko'rinishida (nuqtalar bilan) yozilganini tekshirishi kerak. Lekin u boshqa ko'rinishlarni ham to'g'ri deb hisoblayapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni ishga tushiring: <code>sana_formatmi("18-10-2026")</code> nima qaytaryapti?</li><li>Xatoni toping va tuzating.</li><li><code>sana_formatmi(matn)</code> faqat <code>2 raqam . 2 raqam . 4 raqam</code> ko'rinishidagi satr uchun <code>True</code> qaytarsin. Chiziqcha, qiya chiziq yoki boshqa belgi bo'lsa — <code>False</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>sana_formatmi("18.10.2026")  # True</code></li><li><code>sana_formatmi("18-10-2026")  # False</code></li><li><code>sana_formatmi("1.10.2026")  # False</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def sana_formatmi(matn):
+    return re.fullmatch(r&quot;\d{2}.\d{2}.\d{4}&quot;, matn) is not None
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sana_formatmi(&quot;18.10.2026&quot;))
+    print(sana_formatmi(&quot;18-10-2026&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="Guruhli re.search natijasi" data-task="t14">
+<div class="card step" data-task="t14" data-title="Guruhli re.search natijasi" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>Guruhli re.search natijasi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Shablonda ikkita guruh bor. <code>search</code> qaysi moslikni topadi va guruhlar nima bo'ladi?</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li><code>re.search</code> <b>birinchi</b> moslikni topishini eslang.</li><li><code>\w+</code> so'zdan keyin aynan bo'shliq kelishi kerak. <code>Natija:</code> so'zidan keyin nima turibdi?</li><li>To'rt qator chiqadi. Ularni aynan yozing (tuple ko'rinishini ham).</li></ol></div>
+<pre class="static pred"><code class="language-python">import re
+
+matn = &quot;Natija: Dilnoza 87 ball, Sardor 92 ball&quot;
+m = re.search(r&quot;(\w+) (\d+) ball&quot;, matn)
+print(m.group(0))
+print(m.group(1))
+print(int(m.group(2)) + 10)
+print(m.groups())
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Log qatoridan sana, daraja va xabarni ajratish" data-task="t15">
+<div class="card step" data-task="t15" data-title="Log qatoridan sana, daraja va xabarni ajratish" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Log qatoridan sana, daraja va xabarni ajratish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Server log faylidagi qatorni bo'laklarga ajratamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>log_ajrat(qator)</code> funksiyasini yozing.</li><li>Qator ko'rinishi: <code>2026-10-18 09:15:02 [ERROR] Baza bilan aloqa uzildi</code> — sana (<code>YYYY-MM-DD</code>), bo'shliq, vaqt (<code>SS:DD:SS</code>), bo'shliq, kvadrat qavs ichida daraja, bo'shliq, xabar.</li><li>Daraja faqat katta lotin harflaridan iborat (<code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>).</li><li>Funksiya tuple qaytarsin: <code>(sana, daraja, xabar)</code> — uchalasi ham satr. Qator shu ko'rinishga mos kelmasa — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>log_ajrat("2026-10-18 09:15:02 [ERROR] Baza bilan aloqa uzildi")  # ('2026-10-18', 'ERROR', 'Baza bilan aloqa uzildi')</code></li><li><code>log_ajrat("salom")  # None</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def log_ajrat(qator):
+    # guruhlar: (sana) ... [(daraja)] (xabar)
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(log_ajrat(&quot;2026-10-18 09:15:02 [ERROR] Baza bilan aloqa uzildi&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="Dars jadvalidan keyingi dars vaqti" data-task="t16">
+<div class="card step" data-task="t16" data-title="Dars jadvalidan keyingi dars vaqti" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>Dars jadvalidan keyingi dars vaqti <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Qo'ng'iroq jadvalidan keyingi dars qachon boshlanishini va unga necha daqiqa qolganini topamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>keyingi_dars(jadval, hozir)</code> funksiyasini yozing. <code>jadval</code> — <code>"SS:DD"</code> ko'rinishidagi dars boshlanish vaqtlari ro'yxati (<b>tartibsiz</b> bo'lishi mumkin). <code>hozir</code> — hozirgi vaqt, shu ko'rinishda.</li><li>Vaqtlarni <code>datetime.strptime(..., "%H:%M")</code> bilan o'qing.</li><li><code>hozir</code> dan <b>qat'iy keyin</b> boshlanadigan eng yaqin darsni toping (aynan hozir boshlangan dars hisobga olinmaydi).</li><li>Natija: <code>"10:10 (25 daqiqadan keyin)"</code> ko'rinishidagi matn. Bunday dars bo'lmasa: <code>"Bugun darslar tugadi"</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>keyingi_dars(["08:30", "09:20", "10:10", "11:00"], "09:45")  # '10:10 (25 daqiqadan keyin)'</code></li><li><code>keyingi_dars(["08:30", "09:20"], "12:00")  # 'Bugun darslar tugadi'</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def keyingi_dars(jadval, hozir):
+    # 1) hozir ni datetime ga aylantiring
+    # 2) undan keyingi eng yaqin dars vaqtini toping
+    # 3) farqni daqiqalarda hisoblang
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(keyingi_dars([&quot;08:30&quot;, &quot;09:20&quot;, &quot;10:10&quot;, &quot;11:00&quot;], &quot;09:45&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="Ish vaqti: kirish/chiqish yozuvlaridan haftalik soatlar" data-task="t17">
+<div class="card step" data-task="t17" data-title="Ish vaqti: kirish/chiqish yozuvlaridan haftalik soatlar" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>Ish vaqti: kirish/chiqish yozuvlaridan haftalik soatlar <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Do'kon xodimining bir haftalik kirish-chiqish yozuvlaridan jami ishlagan soatini hisoblaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>haftalik_soat(yozuvlar)</code> funksiyasini yozing. <code>yozuvlar</code> — satrlar ro'yxati, har biri: <code>"YYYY-MM-DD SS:DD SS:DD"</code> (sana, kirish vaqti, chiqish vaqti).</li><li>Har yozuv uchun kirish va chiqishni <code>datetime</code> ga aylantiring (masalan, <code>"%Y-%m-%d %H:%M"</code> formati bilan) va farqini oling. Chiqish doim kirishdan keyin, o'sha kuni.</li><li>Hamma kunlarning jami ishlagan vaqtini <b>soatlarda</b> qaytaring, <code>round(..., 2)</code> bilan 2 xonagacha yaxlitlang.</li><li>Ro'yxat bo'sh bo'lsa — <code>0</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>haftalik_soat(["2026-10-12 09:00 18:00", "2026-10-13 08:30 17:15"])  # 17.75</code></li><li><code>haftalik_soat([])  # 0</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from datetime import datetime
+
+
+def haftalik_soat(yozuvlar):
+    # har bir yozuvni split() bilan sana, kirish, chiqish ga ajrating
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(haftalik_soat([&quot;2026-10-12 09:00 18:00&quot;, &quot;2026-10-13 08:30 17:15&quot;]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Ikki xato: oylar indeksi va regex guruhi" data-task="t18">
+<div class="card step" data-task="t18" data-title="Ikki xato: oylar indeksi va regex guruhi" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Ikki xato: oylar indeksi va regex guruhi <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Funksiya <code>"18.10.2026"</code> ni <code>"18-oktabr, 2026"</code> ko'rinishiga keltirishi kerak. Unda <b>ikkita</b> xato bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xabarni o'qing. Birinchi xatoni tuzating.</li><li>Yana ishga tushiring va natijani diqqat bilan tekshiring: u to'g'rimi?</li><li><code>sana_sozda(matn)</code> <code>"KK.OO.YYYY"</code> ko'rinishidagi matn uchun <code>"kun-oy_nomi, yil"</code> qaytarsin. Kun oldida <code>0</code> bo'lmasin (<code>"05"</code> → <code>5</code>). Matn shu ko'rinishda bo'lmasa — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>sana_sozda("18.10.2026")  # '18-oktabr, 2026'</code></li><li><code>sana_sozda("05.03.2027")  # '5-mart, 2027'</code></li><li><code>sana_sozda("ertaga")  # None</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+OYLAR = [&quot;yanvar&quot;, &quot;fevral&quot;, &quot;mart&quot;, &quot;aprel&quot;, &quot;may&quot;, &quot;iyun&quot;,
+         &quot;iyul&quot;, &quot;avgust&quot;, &quot;sentabr&quot;, &quot;oktabr&quot;, &quot;noyabr&quot;, &quot;dekabr&quot;]
+
+
+def sana_sozda(matn):
+    m = re.fullmatch(r&quot;(\d{2})\.(\d{2})\.(\d{4})&quot;, matn)
+    if m is None:
+        return None
+    kun = int(m.group(1))
+    oy = OYLAR[int(m.group(2))]
+    yil = m.group(4)
+    return f&quot;{kun}-{oy}, {yil}&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sana_sozda(&quot;18.10.2026&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="split/find bilan qo&#x27;lda ajratishni regex&#x27;ga" data-task="t19">
+<div class="card step" data-task="t19" data-title="split/find bilan qo&#x27;lda ajratishni regex&#x27;ga" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>split/find bilan qo&#x27;lda ajratishni regex&#x27;ga <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Buyurtma matnini <code>find</code> va <code>split</code> bilan bo'laklayotgan uzun kodni bitta regex bilan qayta yozamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kod ishlaydi: <code>"Buyurtma #1542: 3 x Non, jami 12000 so'm"</code> dan <code>(1542, 3, 'Non', 12000)</code> tuple'ini oladi.</li><li>Uni <b>bitta regex</b> (guruhlar bilan) yordamida qayta yozing: <code>re.search</code>, <code>re.match</code> yoki <code>re.fullmatch</code>.</li><li><code>.find(</code> va <code>.split(</code> ishlatilmasin.</li><li>Natija avvalgidek: buyurtma raqami, soni va jami — <code>int</code>, mahsulot nomi — satr (bir nechta so'zli bo'lishi mumkin). Matn bu ko'rinishda bo'lmasa — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><ul><li><code>buyurtma_ajrat("Buyurtma #1542: 3 x Non, jami 12000 so'm")  # (1542, 3, 'Non', 12000)</code></li><li><code>buyurtma_ajrat("Salom")  # None</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def buyurtma_ajrat(matn):
+    i = matn.find(&quot;#&quot;)
+    j = matn.find(&quot;:&quot;)
+    if i == -1 or j == -1:
+        return None
+    raqam = int(matn[i + 1:j])
+    qismlar = matn[j + 1:].split(&quot;,&quot;)
+    soni_nom = qismlar[0].strip().split(&quot; x &quot;)
+    soni = int(soni_nom[0])
+    nom = soni_nom[1]
+    jami_qism = qismlar[1].strip().split(&quot; &quot;)
+    jami = int(jami_qism[1])
+    return (raqam, soni, nom, jami)
+
+
+if __name__ == &quot;__main__&quot;:
+    print(buyurtma_ajrat(&quot;Buyurtma #1542: 3 x Non, jami 12000 so&#x27;m&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Bank SMS&#x27;laridan oylik hisobot" data-task="t20">
+<div class="card step" data-task="t20" data-title="Bank SMS&#x27;laridan oylik hisobot" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Bank SMS&#x27;laridan oylik hisobot <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Real vaziyat: telefoningizdagi bank SMS'laridan bir oylik kirim, xarajat va ishlatilgan kartalar hisobotini tuzamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p>SMS ko'rinishi (aynan shunday):</p><pre class="static"><code class="language-python">HUMO *4417: Xarid 45 000 so&#x27;m. 05.10.2026 14:22. Korzinka
+UZCARD *9012: To&#x27;ldirish 1 200 000 so&#x27;m. 01.10.2026 09:00. Ish haqi</code></pre><ol><li><code>oylik_hisobot(smslar, oy, yil)</code> funksiyasini yozing. <code>smslar</code> — satrlar ro'yxati, <code>oy</code> va <code>yil</code> — butun sonlar.</li><li>Har SMS'dan regex bilan ajrating: karta turi (<code>HUMO</code> yoki <code>UZCARD</code>), <code>*</code> dan keyingi <b>4 raqam</b>, amal (<code>Xarid</code> yoki <code>To'ldirish</code>), summa (raqamlar orasida bo'shliq bo'lishi mumkin: <code>1 200 000</code>) va sana (<code>KK.OO.YYYY</code>).</li><li>Shu ko'rinishga mos kelmaydigan SMS'larni (reklama va h.k.) o'tkazib yuboring. Sanasi boshqa oy yoki yilga tegishlilarini ham hisobga olmang.</li><li>Lug'at qaytaring: <code>"kirim"</code> — To'ldirishlar yig'indisi, <code>"xarajat"</code> — Xaridlar yig'indisi, <code>"qoldiq"</code> — kirim − xarajat, <code>"kartalar"</code> — ishlatilgan kartalarning oxirgi 4 raqami, <b>takrorlanmas</b> va <b>o'sish tartibida saralangan</b> satrlar ro'yxati. Summalar — <code>int</code>.</li><li>Mos SMS bo'lmasa: <code>{"kirim": 0, "xarajat": 0, "qoldiq": 0, "kartalar": []}</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> yuqoridagi ikki SMS uchun <code>oylik_hisobot(smslar, 10, 2026)</code> →<br><code>{'kirim': 1200000, 'xarajat': 45000, 'qoldiq': 1155000, 'kartalar': ['4417', '9012']}</code></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+
+
+def oylik_hisobot(smslar, oy, yil):
+    # 1) har bir SMS ni regex bilan tahlil qiling
+    # 2) oy va yil mos kelsa, kirim yoki xarajatga qo&#x27;shing
+    # 3) kartalar to&#x27;plamini yig&#x27;ing
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    smslar = [
+        &quot;HUMO *4417: Xarid 45 000 so&#x27;m. 05.10.2026 14:22. Korzinka&quot;,
+        &quot;UZCARD *9012: To&#x27;ldirish 1 200 000 so&#x27;m. 01.10.2026 09:00. Ish haqi&quot;,
+    ]
+    print(oylik_hisobot(smslar, 10, 2026))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Eslatmalar rejalashtiruvchisi" data-task="mini">
+<div class="card step" data-task="mini" data-title="Eslatmalar rejalashtiruvchisi" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Eslatmalar rejalashtiruvchisi <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Sanali va haftalik takrorlanuvchi eslatmalarni o'qib, qolgan kunlari bilan tartiblangan ro'yxat chiqaradigan dastur.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p><b>Umumiy rasm:</b> siz eslatmalar rejalashtiruvchisini yozasiz. Eslatmalar matn qatorlari ko'rinishida beriladi. Dastur ularni regex bilan o'qiydi, sanalarni <code>datetime</code> bilan hisoblaydi va eng yaqinidan boshlab ro'yxat chiqaradi. Har qadamdan keyin ▶ bosib tekshirib boring.</p>
+<p>Eslatma qatorlari ikki xil bo'ladi:</p>
+<pre class="static"><code class="language-python">25.10.2026 | Matematika olimpiadasi
+har hafta 12.10.2026 | Ingliz tili to&#x27;garagi</code></pre>
+<ol>
+<li><b>Sana o'qish.</b> <code>sana_oqi(matn)</code>: <code>"KK.OO.YYYY"</code> matnni <code>date</code> obyektga aylantiradi. Noto'g'ri sana (masalan, <code>"31.02.2026"</code> yoki <code>"ertaga"</code>) bo'lsa <code>None</code> qaytaradi (<code>try/except ValueError</code>).</li>
+<li><b>Qatorni ajratish.</b> <code>eslatma_ajrat(qator)</code>: regex bilan qatorni tahlil qiladi va lug'at qaytaradi: <code>{"sana": date, "matn": "...", "haftalik": True/False}</code>. Qator boshida <code>har hafta </code> bo'lsa — <code>haftalik</code> <code>True</code>. Qator ko'rinishi noto'g'ri yoki sana noto'g'ri bo'lsa — <code>None</code>. Shablon: ixtiyoriy <code>har hafta </code>, sana, <code> | </code>, matn.</li>
+<li><b>Haftalik takror.</b> <code>keyingi_takror(boshlanish, bugun)</code>: ikkala argument <code>date</code>. Boshlanishdan 7 kunlab oldinga yurib, <code>bugun</code> dan oldin bo'lmagan (bugun yoki undan keyingi) birinchi sanani qaytaradi. Boshlanish bugundan keyin bo'lsa, uning o'zini qaytaradi.</li>
+<li><b>Holat matni.</b> <code>holat(sana, bugun)</code>: farq 0 kun bo'lsa <code>"bugun"</code>, 1 kun — <code>"ertaga"</code>, ko'proq — <code>"N kun qoldi"</code> (masalan, <code>"7 kun qoldi"</code>), sana o'tib ketgan bo'lsa — <code>"o'tib ketgan"</code>.</li>
+<li><b>Rejalashtirish.</b> <code>rejalashtir(qatorlar, bugun_matn)</code>: <code>bugun_matn</code> — <code>"KK.OO.YYYY"</code>. Har bir qatorni ajrating; noto'g'ri qatorlarni o'tkazib yuboring. Haftalik eslatmaning sanasi o'rniga <code>keyingi_takror</code> natijasini oling. Bir martalik eslatmaning sanasi o'tib ketgan bo'lsa, uni tashlab yuboring.</li>
+<li><b>Tartib va ko'rinish.</b> Natija — satrlar ro'yxati, sana bo'yicha o'sish tartibida (bir xil sanalar — qatorlardagi tartibda). Har satr: <code>"25.10.2026 - Matematika olimpiadasi (7 kun qoldi)"</code>. Haftalik eslatma oxiriga <code> [har hafta]</code> qo'shiladi.</li>
+<li><b>Ulash va sinash.</b> <code>if __name__ == "__main__":</code> ichida 3–4 ta eslatma bilan <code>rejalashtir</code> ni chaqirib, natijani qatorma-qator chiqaring.</li>
+</ol>
+<p>Misol: <code>bugun_matn = "18.10.2026"</code> va qatorlar:</p>
+<pre class="static"><code class="language-python">25.10.2026 | Matematika olimpiadasi
+har hafta 12.10.2026 | Ingliz tili to&#x27;garagi
+01.10.2026 | O&#x27;tgan majlis
+noto&#x27;g&#x27;ri qator
+18.10.2026 | Kitob qaytarish</code></pre>
+<pre class="console">18.10.2026 - Kitob qaytarish (bugun)
+19.10.2026 - Ingliz tili to&#x27;garagi (ertaga) [har hafta]
+25.10.2026 - Matematika olimpiadasi (7 kun qoldi)</pre>
+<div class="res"><b>✅ Natijada shular bo'ladi:</b><ul><li><code>sana_oqi</code>, <code>eslatma_ajrat</code>, <code>keyingi_takror</code>, <code>holat</code>, <code>rejalashtir</code> funksiyalari</li><li>Noto'g'ri qator va sanalar xatosiz o'tkazib yuboriladi</li><li>Haftalik eslatmalar keyingi takror sanasi bilan, <code> [har hafta]</code> belgisi bilan chiqadi</li><li>Ro'yxat sana bo'yicha tartiblangan, har birida qolgan kunlar yozilgan</li></ul></div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import re
+from datetime import datetime, date, timedelta
+
+
+def sana_oqi(matn):
+    # &quot;KK.OO.YYYY&quot; -&gt; date yoki None
+    pass
+
+
+def eslatma_ajrat(qator):
+    # {&quot;sana&quot;: date, &quot;matn&quot;: &quot;...&quot;, &quot;haftalik&quot;: True/False} yoki None
+    pass
+
+
+def keyingi_takror(boshlanish, bugun):
+    # bugundan oldin bo&#x27;lmagan birinchi takror sanasi
+    pass
+
+
+def holat(sana, bugun):
+    # &quot;bugun&quot;, &quot;ertaga&quot;, &quot;N kun qoldi&quot; yoki &quot;o&#x27;tib ketgan&quot;
+    pass
+
+
+def rejalashtir(qatorlar, bugun_matn):
+    # tartiblangan satrlar ro&#x27;yxati
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    qatorlar = [
+        &quot;25.10.2026 | Matematika olimpiadasi&quot;,
+        &quot;har hafta 12.10.2026 | Ingliz tili to&#x27;garagi&quot;,
+        &quot;18.10.2026 | Kitob qaytarish&quot;,
+    ]
+    for s in rejalashtir(qatorlar, &quot;18.10.2026&quot;):
+        print(s)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> Sana va regex xatolarining ko'pchiligi "Python meni tushundi" deb o'ylashdan chiqadi. Format va shablon <b>aynan</b> mos bo'lishi kerak: bitta belgi ham muhim.</div>
+<div class="warn"><span class="lbl">⚠️ strptime formati matnga mos emas</span><code>datetime.strptime("18.10.2026", "%d-%m-%Y")</code> → <code>ValueError: ... does not match format</code>. Matndagi ajratuvchi belgilar formatda ham aynan shunday bo'lsin: <code>"%d.%m.%Y"</code>.</div>
+<div class="warn"><span class="lbl">⚠️ %m va %M ni adashtirish</span><code>%m</code> — oy, <code>%M</code> — daqiqa. <code>d.strftime("%d.%M.%Y")</code> oy o'rniga <code>00</code> (daqiqa) chiqaradi. Katta-kichik harfga e'tibor bering.</div>
+<div class="warn"><span class="lbl">⚠️ Yoshni 365 ga bo'lib hisoblash</span><code>(bugun - tugilgan).days // 365</code> kabisa yillari tufayli tug'ilgan kun arafasida 1 yil ortiq chiqaradi. To'g'ri yo'l: yillar farqi, tug'ilgan kun hali kelmagan bo'lsa <code>- 1</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Ekranlanmagan nuqta</span><code>r"\d{2}.\d{2}"</code> — nuqta istalgan belgiga mos: <code>18-10</code> ham o'tadi. Haqiqiy nuqta uchun <code>\.</code> yozing. <code>+</code>, <code>*</code>, <code>?</code>, <code>(</code>, <code>[</code>, <code>|</code> ham shunday.</div>
+<div class="warn"><span class="lbl">⚠️ Natijani None ga tekshirmaslik</span><code>re.search(...).group(1)</code> — moslik topilmasa <code>AttributeError: 'NoneType' object has no attribute 'group'</code>. Avval <code>m = re.search(...)</code>, keyin <code>if m:</code>.</div>
+<div class="warn"><span class="lbl">⚠️ search, match va fullmatch farqi</span><code>re.match</code> faqat boshidan qidiradi, <code>re.search</code> esa hamma joydan. Tekshiruv (email, telefon) uchun <code>search</code> ishlatsangiz, <code>"xato ali@mail.uz xato"</code> ham to'g'ri deb o'tadi. Tekshiruvda <code>fullmatch</code> kerak.</div>
+<div class="warn"><span class="lbl">⚠️ Guruh raqami va natija turi</span>Guruhlar <b>1 dan</b> boshlanadi, <code>group(0)</code> — butun moslik. Guruh qiymati doim <b>satr</b>: <code>m.group(2) + 10</code> → <code>TypeError</code>. Avval <code>int(m.group(2))</code>.</div>
+<div class="warn"><span class="lbl">⚠️ r harfini unutish</span><code>"\d+"</code> ko'pincha ishlaydi, lekin <code>"\b"</code> yoki <code>"\1"</code> kabi belgilarni Python o'zi boshqacha tushunadi. Shablonni doim <code>r"..."</code> ko'rinishida yozing.</div>
+<div class="real"><b>Maslahat:</b> murakkab shablonni bo'laklab sinang. Avval <code>re.findall(r"\d{2}", matn)</code> ni tekshiring, keyin unga keyingi bo'lakni qo'shing. Har qadamda natijani <code>print</code> qiling.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎁 Bonus: "Juma 13" ovchisi.</b> 2026–2030 yillar oralig'ida oyning 13-kuni juma kuniga to'g'ri keladigan barcha sanalarni toping. <code>date(yil, oy, 13).weekday() == 4</code> sharti yordam beradi. Natijani <code>13.02.2026 (Juma)</code> ko'rinishida chiqaring va har yili nechta bunday kun borligini sanang.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Tug'ilgan kun hisoblagichi.</b> VS Code'da <code>tugilgan_kun.py</code> fayl yarating. <code>input("Tug'ilgan sana (KK.OO.YYYY): ")</code> bilan sana so'rang, <code>date.today()</code> dan foydalanib to'liq yoshingizni, keyingi tug'ilgan kuningizgacha necha kun qolganini va u haftaning qaysi kuniga to'g'ri kelishini (o'zbekcha) chiqaring.</li>
+<li><b>Imtihonlar taqvimi.</b> 5 ta fan va imtihon sanasidan iborat lug'at yozing. Dastur imtihonlarni sana bo'yicha tartiblab, har biriga necha kun qolganini chiqarsin; o'tib ketganlarini "o'tdi" deb belgilasin.</li>
+<li><b>Kontaktlarni ajratish.</b> Bir nechta e'lon matnini bitta satrga yozing (telefon va email aralash). <code>re.findall</code> bilan barcha telefonlar va emaillarni alohida ro'yxatga ajrating va <code>kontaktlar.txt</code> fayliga yozing.</li>
+<li><b>Sana formatini almashtirish.</b> <code>re.sub</code> bilan matndagi barcha <code>KK.OO.YYYY</code> sanalarni <code>YYYY-MM-DD</code> ga almashtiradigan funksiya yozing va uni 3 xil matnda sinang.</li>
+<li><b>O'z SMS hisobotingiz.</b> 10 ta o'ylab topilgan bank SMS'ini (darsdagi ko'rinishda) <code>sms.txt</code> faylga yozing. Dastur faylni o'qib, <code>oylik_hisobot</code> natijasini chiroyli jadval ko'rinishida chiqarsin.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="B"><b>1. date(2026, 10, 18).weekday() nima qaytaradi, agar bu kun yakshanba bo&#x27;lsa?</b><ul><li><button class="opt" type="button" data-l="A">A) 7</button></li><li><button class="opt" type="button" data-l="B">B) 6</button></li><li><button class="opt" type="button" data-l="C">C) 0</button></li><li><button class="opt" type="button" data-l="D">D) 1</button></li></ul><span class="q-ex" hidden>weekday() dushanbani 0 deb sanaydi, shuning uchun yakshanba — 6. isoweekday() esa 7 qaytarardi.</span></div><div class="q" data-ok="A"><b>2. Sanani 05.03.2027 ko&#x27;rinishida chiqarish uchun qaysi format to&#x27;g&#x27;ri?</b><ul><li><button class="opt" type="button" data-l="A">A) &quot;%d.%m.%Y&quot;</button></li><li><button class="opt" type="button" data-l="B">B) &quot;%d.%M.%Y&quot;</button></li><li><button class="opt" type="button" data-l="C">C) &quot;%D.%m.%y&quot;</button></li><li><button class="opt" type="button" data-l="D">D) &quot;%dd.%mm.%yyyy&quot;</button></li></ul><span class="q-ex" hidden>%d — kun, %m — oy (kichik m), %Y — 4 xonali yil. %M esa daqiqa.</span></div><div class="q" data-ok="D"><b>3. (date(2027, 1, 1) - date(2026, 12, 25)).days nimaga teng?</b><ul><li><button class="opt" type="button" data-l="A">A) 6</button></li><li><button class="opt" type="button" data-l="B">B) 8</button></li><li><button class="opt" type="button" data-l="C">C) -7</button></li><li><button class="opt" type="button" data-l="D">D) 7</button></li></ul><span class="q-ex" hidden>25-dekabrdan 1-yanvargacha 7 kun bor. Ikki sananing farqi timedelta, .days — kunlar soni.</span></div><div class="q" data-ok="C"><b>4. re.findall(r&quot;\d+&quot;, &quot;5 ta olma va 12 ta nok&quot;) natijasi qanday?</b><ul><li><button class="opt" type="button" data-l="A">A) [5, 12]</button></li><li><button class="opt" type="button" data-l="B">B) [&#x27;5&#x27;, &#x27;1&#x27;, &#x27;2&#x27;]</button></li><li><button class="opt" type="button" data-l="C">C) [&#x27;5&#x27;, &#x27;12&#x27;]</button></li><li><button class="opt" type="button" data-l="D">D) &#x27;5 12&#x27;</button></li></ul><span class="q-ex" hidden>\d+ — bir yoki ko&#x27;p raqam ketma-ketligi. findall satrlar ro&#x27;yxatini qaytaradi.</span></div><div class="q" data-ok="B"><b>5. Email to&#x27;g&#x27;riligini tekshirish uchun qaysi funksiya eng mos?</b><ul><li><button class="opt" type="button" data-l="A">A) re.search</button></li><li><button class="opt" type="button" data-l="B">B) re.fullmatch</button></li><li><button class="opt" type="button" data-l="C">C) re.findall</button></li><li><button class="opt" type="button" data-l="D">D) re.sub</button></li></ul><span class="q-ex" hidden>fullmatch butun satr shablonga mos bo&#x27;lishini talab qiladi. search esa matn ichida bo&#x27;lagi bo&#x27;lsa ham topadi.</span></div><div class="q" data-ok="D"><b>6. Regex&#x27;da r&quot;a.c&quot; shabloni qaysi matnga mos KELMAYDI (fullmatch bilan)?</b><ul><li><button class="opt" type="button" data-l="A">A) abc</button></li><li><button class="opt" type="button" data-l="B">B) a.c</button></li><li><button class="opt" type="button" data-l="C">C) a7c</button></li><li><button class="opt" type="button" data-l="D">D) ac</button></li></ul><span class="q-ex" hidden>Nuqta aynan bitta istalgan belgini bildiradi. &quot;ac&quot; da a va c orasida belgi yo&#x27;q.</span></div><div class="q" data-ok="A"><b>7. m = re.search(r&quot;(\w+)@(\w+)&quot;, &quot;ali@mail&quot;) bo&#x27;lsa, m.group(2) nima?</b><ul><li><button class="opt" type="button" data-l="A">A) &#x27;mail&#x27;</button></li><li><button class="opt" type="button" data-l="B">B) &#x27;ali&#x27;</button></li><li><button class="opt" type="button" data-l="C">C) &#x27;ali@mail&#x27;</button></li><li><button class="opt" type="button" data-l="D">D) IndexError</button></li></ul><span class="q-ex" hidden>1-guruh — @ dan oldingi qism, 2-guruh — @ dan keyingisi: &#x27;mail&#x27;. group(0) butun moslik bo&#x27;lardi.</span></div><div class="q" data-ok="C"><b>8. re.sub(r&quot;(\d{2})\.(\d{2})&quot;, r&quot;\2/\1&quot;, &quot;18.10&quot;) natijasi qanday?</b><ul><li><button class="opt" type="button" data-l="A">A) 18/10</button></li><li><button class="opt" type="button" data-l="B">B) 10.18</button></li><li><button class="opt" type="button" data-l="C">C) 10/18</button></li><li><button class="opt" type="button" data-l="D">D) \2/\1</button></li></ul><span class="q-ex" hidden>\1 — 1-guruh (18), \2 — 2-guruh (10). Almashtiruvchi matn \2/\1, ya&#x27;ni 10/18.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">date</td><td>sana obyekti — yil, oy, kun</td></tr><tr><td class="en">datetime</td><td>sana va vaqt obyekti — yil, oy, kun, soat, daqiqa, soniya</td></tr><tr><td class="en">timedelta</td><td>vaqt oralig&#x27;i — necha kun, soat, daqiqa</td></tr><tr><td class="en">weekday()</td><td>hafta kuni raqami: dushanba = 0 ... yakshanba = 6</td></tr><tr><td class="en">strftime</td><td>sanani berilgan formatdagi matnga aylantirish</td></tr><tr><td class="en">strptime</td><td>matnni format bo&#x27;yicha o&#x27;qib, sanaga aylantirish</td></tr><tr><td class="en">format code</td><td>format kodi — %d, %m, %Y kabi sana qismlarini bildiruvchi belgi</td></tr><tr><td class="en">regular expression (regex)</td><td>muntazam ifoda — matndagi shablon tavsifi</td></tr><tr><td class="en">pattern</td><td>shablon — qidirilayotgan matn ko&#x27;rinishi</td></tr><tr><td class="en">match</td><td>moslik — matnning shablonga mos kelgan bo&#x27;lagi (Match obyekt)</td></tr><tr><td class="en">group</td><td>guruh — shablondagi qavs ichidagi qism va unga mos matn</td></tr><tr><td class="en">raw string</td><td>xom satr — r&quot;...&quot;, teskari chiziq o&#x27;zgarmay qoladi</td></tr><tr><td class="en">escape</td><td>ekranlash — maxsus belgini oddiy belgi qilish: \. , \+</td></tr><tr><td class="en">quantifier</td><td>miqdor belgisi — +, *, ?, {n}: oldingi belgi necha marta takrorlanadi</td></tr><tr><td class="en">substitute (sub)</td><td>almashtirish — mos bo&#x27;laklarni boshqa matnga almashtirish</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-20.html"><small>← Oldingi dars</small><span>CSV va JSON</span></a><a class="lnav next" href="dars-22.html"><small>Keyingi dars →</small><span>Loyiha: xarajatlar hisobchisi</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>21-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 21, "total": 32, "title": "Sana-vaqt va muntazam ifodalar (regex)"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

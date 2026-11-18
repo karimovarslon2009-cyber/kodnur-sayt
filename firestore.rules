@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function userDoc() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function hasUserDoc() { return exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function isActive() { return signedIn() && hasUserDoc() && userDoc().get('active', true) != false; }
+    function isAdmin() { return isActive() && userDoc().role == 'admin'; }
+    function setupDone() { return exists(/databases/$(database)/documents/config/setup); }
+
+    // Birinchi administrator yaratilganini bildiruvchi hujjat
+    match /config/setup {
+      allow read: if true;
+      allow create: if signedIn() && !setupDone() && request.resource.data.by == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Foydalanuvchilar: o'quvchi faqat o'zini ko'radi, administrator hammasini
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin()
+                    || (signedIn() && request.auth.uid == uid && !setupDone() && request.resource.data.role == 'admin');
+      allow update, delete: if isAdmin();
+    }
+
+    // Guruhlar: faol foydalanuvchi o'qiydi, administrator boshqaradi
+    match /groups/{gid} {
+      allow read: if isActive();
+      allow write: if isAdmin();
+    }
+
+    // Progress: o'quvchi faqat o'zinikiga (natija maydonlarini) yozadi
+    match /progress/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin()
+                    || (isActive() && request.auth.uid == uid
+                        && request.resource.data.keys().hasOnly(['last', 'lessons', 'updatedAt']));
+      allow update: if isAdmin()
+                    || (isActive() && request.auth.uid == uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['last', 'lessons', 'updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // Python kursi progressi: o'quvchi faqat o'zinikiga (natija maydonlarini) yozadi
+    match /progress_python/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin()
+                    || (isActive() && request.auth.uid == uid
+                        && request.resource.data.keys().hasOnly(['last', 'lessons', 'updatedAt']));
+      allow update: if isAdmin()
+                    || (isActive() && request.auth.uid == uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['last', 'lessons', 'updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

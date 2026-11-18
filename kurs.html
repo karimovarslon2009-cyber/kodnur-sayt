@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kurs — Al Xorazmiy</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<script src="sinf/brend.js?v=5"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<script src="sinf/pwa.js?v=6"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sinf/sinf.css">
+<link rel="stylesheet" href="assets/yangi.css">
+</head>
+<body>
+<script src="sinf/yangi.js"></script>
+<script>YN.header('kurslar');</script>
+
+<main class="wrap" id="app" hidden>
+  <a class="crumb" href="index.html#kurslar">Barcha kurslar</a>
+  <div id="kmain"></div>
+  <div id="foot"></div>
+</main>
+<div class="load" id="load">Yuklanmoqda…</div>
+
+<script src="sinf/config.js"></script>
+<script src="sinf/kurslar.js"></script>
+<script src="sinf/kurs-map.js"></script>
+<script src="sinf/backend.js"></script>
+<script src="sinf/common.js"></script>
+<script>
+(async function(){
+  var $=SH.$, esc=SH.esc;
+  var u=await SINF.ready;
+  if(!u){ location.replace('login.html'); return; }
+  YN.wire(u);
+  $('#foot').innerHTML = YN.foot();
+
+  var K = YN.courses();
+  var id = new URLSearchParams(location.search).get('k');
+  var c = K.filter(function(x){ return x.id === id; })[0];
+  var crumb = document.querySelector('.crumb');
+  crumb.innerHTML = IK.svg('left',16)+' Barcha kurslar';
+
+  var out = '';
+  if(!c){
+    document.title = 'Kurs topilmadi — Al Xorazmiy';
+    out = '<div class="empty"><span class="hi">'+IK.svg('xc',22)+'</span><div><b>Bunday kurs topilmadi</b>'+
+      '<p>Havola eskirgan yoki kurs olib tashlangan bo\'lishi mumkin. Kurslar ro\'yxatidan kerakli yo\'nalishni tanlang.</p>'+
+      '<a class="btn pri" href="index.html#kurslar">Kurslar ro\'yxati</a></div></div>';
+  } else {
+    document.title = c.nom + ' — Al Xorazmiy';
+    var tayyor = c.holat === 'tayyor';
+    var go = (c.link && !/^kurs\.html/.test(c.link)) ? c.link : 'index.html#darslar';
+    var isPy = /python/i.test((c.id||'')+' '+(c.nom||''));
+
+    out += '<section class="chero" style="--c:'+(c.rang||'var(--brand)')+'">'+
+      '<span class="k-ico">'+YN.kicon(c,44)+'</span>'+
+      '<div><h1>'+esc(c.nom)+'</h1><p>'+esc(c.tavsif||'')+'</p>'+
+      '<div class="k-tags"><span class="tag">'+esc(c.daraja||'')+'</span><span class="tag">'+(c.darslar||0)+' dars</span>'+
+      (tayyor?'<span class="tag ok">'+IK.svg('check',12)+' Tayyor</span>':'<span class="tag soon">'+IK.svg('hourglass',12)+' Tez kunda</span>')+'</div>'+
+      (tayyor
+        ? '<a class="btn pri" href="'+esc(go)+'">Darslarga o\'tish '+IK.svg('right',16)+'</a>'
+        : '<span class="btn" aria-disabled="true">'+IK.svg('hourglass',16)+' Tez kunda ochiladi</span>')+
+      '</div></section>';
+
+    out += '<div class="facts">'+
+      '<div><span>Daraja</span><b>'+esc(c.daraja||'—')+'</b></div>'+
+      '<div><span>Darslar soni</span><b>'+(c.darslar||0)+'</b></div>'+
+      '<div><span>Holati</span><b>'+(tayyor?'Darslar ochiq':'O\'quv rejasi ochilgan')+'</b></div></div>';
+
+    /* O'quv rejasi */
+    var list = c.mavzular || c.bosqichlar || c.reja;
+    if(isPy && tayyor){
+      var s=null;
+      try{ s = SH.sum(await SINF.getMyProgress()); }catch(e){}
+      out += '<section class="part"><h2 class="ph">O\'quv rejasi<small>'+YN.PARTS.length+' bo\'lim</small></h2><div class="plan">'+
+        YN.PARTS.map(function(pt,i){
+          var done=0,tot=0;
+          if(s) for(var n=pt.a;n<=pt.b;n++){ var x=s.per[n]; if(x){done+=x.done;tot+=x.total;} }
+          var title = pt.t.replace(/^\d+-bo'lim\.\s*/,'');
+          return '<a href="index.html#darslar"><span class="pn">'+(i+1)+'</span><div><b>'+esc(title)+'</b><span class="d">'+esc(pt.d)+'</span></div>'+
+            '<span class="rg">'+(pt.a===pt.b?pt.a+'-dars':pt.a+'–'+pt.b+'-darslar')+(s&&tot?' · '+Math.round(100*done/tot)+'%':'')+'</span></a>';
+        }).join('')+'</div></section>';
+    } else if(Array.isArray(list) && list.length){
+      out += '<section class="part"><h2 class="ph">O\'quv rejasi<small>'+list.length+'</small></h2><div class="plan">'+
+        list.map(function(m,i){
+          var t = typeof m === 'string' ? m : (m.t || m.nom || '');
+          var d = typeof m === 'string' ? '' : (m.d || m.tavsif || '');
+          return '<div class="pi"><span class="pn">'+(i+1)+'</span><div><b>'+esc(t)+'</b>'+(d?'<span class="d">'+esc(d)+'</span>':'')+'</div></div>';
+        }).join('')+'</div></section>';
+    } else {
+      out += '<div class="empty"><span class="hi">'+IK.svg('hourglass',22)+'</span><div><b>Darslar tayyorlanmoqda</b>'+
+        '<p>Bu yo\'nalishning darslari bosqichma-bosqich qo\'shiladi. Hozircha Python kursini boshlashingiz mumkin.</p>'+
+        '<a class="btn pri" href="index.html#darslar">Python darslariga o\'tish '+IK.svg('right',16)+'</a></div></div>';
+    }
+
+    /* Boshqa kurslar */
+    var others = K.filter(function(x){ return x.id !== c.id; }).slice(0,6);
+    if(others.length){
+      out += '<section class="part" style="margin-top:44px"><h2 class="ph">Boshqa kurslar</h2><div class="k-grid" style="margin-top:16px">'+
+        others.map(function(o){
+          return '<a class="k-card" href="kurs.html?k='+encodeURIComponent(o.id)+'" style="--c:'+(o.rang||'var(--brand)')+'">'+
+            '<span class="k-ico">'+YN.kicon(o,24)+'</span><div><h3>'+esc(o.nom)+'</h3></div></a>';
+        }).join('')+'</div></section>';
+    }
+  }
+  $('#kmain').innerHTML = out;
+  $('#load').hidden=true; $('#app').hidden=false;
+})();
+</script>
+</body>
+</html>

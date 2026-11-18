@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>27-dars: Generator, dekorator va context manager — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>27-dars</b><span>Generator, dekorator va context manager</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">27-DARS • Chuqurroq Python</span><h1 class="title">Generator, dekorator va context manager</h1><p class="desc">Bu darsda Python'ning uchta kuchli vositasi bilan tanishasiz. <b>Generator</b> qiymatlarni bittadan, kerak bo'lganda beradi: million qatorli faylni ham xotirani to'ldirmay o'qiysiz. <b>Dekorator</b> funksiyaga uni o'zgartirmay yangi imkoniyat qo'shadi (vaqtni o'lchash, jurnal yuritish). <b>Context manager</b> esa <code>with</code> bilan resurslarni o'zi yopadi.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 iter/next, yield, generator ifoda, closure, dekorator, wraps, lru_cache, __enter__/__exit__</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>Iterator va generator</b> — <code>iter</code>, <code>next</code> va <code>yield</code> bilan qiymatlarni bittadan berish.</div></div><div class="g"><span class="dot">2</span><div><b>Dangasa hisoblash</b> — nega generator xotirani tejashini va cheksiz ketma-ketlik yasashini tushunish.</div></div><div class="g"><span class="dot">3</span><div><b>Closure</b> — ichki funksiya tashqi funksiya o'zgaruvchisini eslab qolishini ko'rish.</div></div><div class="g"><span class="dot">4</span><div><b>Dekoratorlar</b> — <code>@dekorator</code>, <code>functools.wraps</code> va argumentli dekorator yozish.</div></div><div class="g"><span class="dot">5</span><div><b>lru_cache</b> — natijalarni eslab qolib, rekursiyani tezlashtirish.</div></div><div class="g"><span class="dot">6</span><div><b>Context manager</b> — <code>with</code> uchun sinf (<code>__enter__</code>, <code>__exit__</code>) yozish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>def sanagich(n):
+    for i in range(n):
+        yield i</span><span class="nb"><span class="sw" style="background:var(--js)"></span>g = (x * x for x in range(5))</span><span class="nb"><span class="sw" style="background:var(--js)"></span>def yasa():
+    son = 0
+    def ichki():
+        nonlocal son
+        son += 1
+        return son
+    return ichki</span><span class="nb"><span class="sw" style="background:var(--js)"></span>@dekorator
+def salom():
+    ...</span><span class="nb"><span class="sw" style="background:var(--js)"></span>@functools.wraps(f)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>from functools import lru_cache</span><span class="nb"><span class="sw" style="background:var(--js)"></span>def __enter__(self):
+    return self</span><span class="nb"><span class="sw" style="background:var(--js)"></span>def __exit__(self, tur, qiymat, iz):
+    return False</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="n1" data-group="Nazariya" data-ico="🔁" data-title="Iterator va generator: yield">
+<h2><span class="mark"></span>Iterator va generator: yield</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Generator — qiymatlarni <b>hammasini birdan emas, bittadan</b> beradigan funksiya. <code>return</code> o'rniga <code>yield</code> yoziladi.</div>
+<h3>🔹 next() nima qiladi</h3>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">royxat = [10, 20, 30]
+it = iter(royxat)
+print(next(it))
+print(next(it))
+print(next(it))
+try:
+    next(it)
+except StopIteration:
+    print(&quot;Tugadi&quot;)</textarea></div><div class="out" hidden></div></div>
+<p><code>for</code> sikli ham xuddi shunday ishlaydi: <code>next</code> ni chaqiradi, <code>StopIteration</code> kelganda to'xtaydi.</p>
+<h3>🔹 yield: funksiya "pauza" qiladi</h3>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def sanagich(n):
+    print(&quot;boshladi&quot;)
+    for i in range(1, n + 1):
+        yield i
+        print(&quot;davom etdi&quot;)
+
+g = sanagich(3)
+print(next(g))
+print(next(g))</textarea></div><div class="out" hidden></div></div>
+<p>Funksiya <code>yield</code> da to'xtaydi va qiymatni beradi. Keyingi <code>next</code> uni <b>to'xtagan joyidan</b> davom ettiradi.</p>
+<div class="warn"><span class="lbl">⚠️ Generator bir marta ishlatiladi</span>Tugagan generatorni qayta aylantirsangiz, u bo'sh bo'ladi. Qayta kerak bo'lsa, yangi generator yarating: <code>sanagich(3)</code>.</div>
+<h3>🔹 Generator ifoda</h3>
+<p>Ro'yxat hosil qilishga o'xshash, lekin <b>kvadrat qavs o'rniga oddiy qavs</b>:</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">kvadratlar = (x * x for x in range(1, 6))
+print(sum(kvadratlar))
+print(sum(x for x in range(1, 1000001)))</textarea></div><div class="out" hidden></div></div>
+</div>
+</section>
+<section class="sec off" data-key="n2" data-group="Nazariya" data-ico="💤" data-title="Dangasa hisoblash va cheksiz ketma-ketlik">
+<h2><span class="mark"></span>Dangasa hisoblash va cheksiz ketma-ketlik</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Generator qiymatni <b>so'ralgandagina</b> hisoblaydi. Shuning uchun xotira deyarli sarflanmaydi va ketma-ketlik cheksiz bo'lishi mumkin.</div>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sys
+royxat = [x for x in range(100000)]
+gen = (x for x in range(100000))
+print(sys.getsizeof(royxat) &gt; sys.getsizeof(gen) * 100)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Cheksiz generator va islice</h3>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from itertools import islice
+
+def fibonachchi():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+print(list(islice(fibonachchi(), 10)))</textarea></div><div class="out" hidden></div></div>
+<p><code>islice(generator, n)</code> cheksiz generatordan faqat birinchi <code>n</code> ta qiymatni oladi. Oddiy <code>list(fibonachchi())</code> esa hech qachon tugamaydi!</p>
+<h3>🔹 Fayl qatorlari</h3>
+<p>Katta faylni <code>read()</code> bilan butunlay o'qimang. <code>for qator in f</code> va <code>yield</code> bilan qatorma-qator oling:</p>
+<pre class="static"><code class="language-python">def qatorlar(fayl):
+    with open(fayl, encoding=&quot;utf-8&quot;) as f:
+        for qator in f:
+            yield qator.strip()</code></pre>
+</div>
+</section>
+<section class="sec off" data-key="n3" data-group="Nazariya" data-ico="🧠" data-title="Closure: eslab qoluvchi funksiya">
+<h2><span class="mark"></span>Closure: eslab qoluvchi funksiya</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Funksiya ichida yozilgan funksiya, tashqi funksiya tugagandan keyin ham, tashqi o'zgaruvchilarini <b>eslab qoladi</b>. Bu — closure.</div>
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def kopaytiruvchi(k):
+    def ichki(x):
+        return x * k
+    return ichki
+
+ikki_baravar = kopaytiruvchi(2)
+uch_baravar = kopaytiruvchi(3)
+print(ikki_baravar(10), uch_baravar(10))</textarea></div><div class="out" hidden></div></div>
+<p>Ichki funksiya tashqi o'zgaruvchini <b>o'zgartirmoqchi</b> bo'lsa, <code>nonlocal</code> kerak:</p>
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def hisoblagich():
+    son = 0
+    def oshir():
+        nonlocal son
+        son += 1
+        return son
+    return oshir
+
+a = hisoblagich()
+b = hisoblagich()
+print(a(), a(), a(), b())</textarea></div><div class="out" hidden></div></div>
+<div class="note">🎒 <b>Ryukzak kabi:</b> ichki funksiya tashqi funksiyaning o'zgaruvchilarini ryukzakka solib olib ketadi. Har <code>hisoblagich()</code> chaqiruvi yangi ryukzak yaratadi.</div>
+</div>
+</section>
+<section class="sec off" data-key="n4" data-group="Nazariya" data-ico="🎁" data-title="Dekorator va functools.wraps">
+<h2><span class="mark"></span>Dekorator va functools.wraps</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Dekorator — funksiyani qabul qilib, <b>yangi (o'ralgan) funksiya</b> qaytaradigan funksiya. <code>@dekorator</code> yozuvi qisqa yo'l.</div>
+<div class="editor" data-ed="e8" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def baqiriq(f):
+    def wrapper(*args, **kwargs):
+        natija = f(*args, **kwargs)
+        return natija.upper() + &quot;!&quot;
+    return wrapper
+
+@baqiriq
+def salom(ism):
+    return &quot;salom, &quot; + ism
+
+print(salom(&quot;ali&quot;))</textarea></div><div class="out" hidden></div></div>
+<p><code>@baqiriq</code> yozuvi <code>salom = baqiriq(salom)</code> bilan bir xil. <code>*args, **kwargs</code> — istalgan argument bilan ishlashi uchun.</p>
+<div class="warn"><span class="lbl">⚠️ return wrapper unutilmasin</span>Dekorator <code>wrapper</code> ni <b>qaytarishi</b> shart. Aks holda funksiya o'rniga <code>None</code> qoladi: <code>TypeError: 'NoneType' object is not callable</code>.</div>
+<h3>🔹 functools.wraps</h3>
+<div class="editor" data-ed="e9" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import functools
+
+def jurnal(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        print(&quot;chaqirildi:&quot;, f.__name__)
+        return f(*args, **kwargs)
+    return wrapper
+
+@jurnal
+def yigindi(a, b):
+    &quot;ikki sonni qo&#x27;shadi&quot;
+    return a + b
+
+print(yigindi(2, 3), yigindi.__name__)</textarea></div><div class="out" hidden></div></div>
+<p><code>wraps</code> bo'lmasa, <code>yigindi.__name__</code> "wrapper" bo'lib qoladi. Hujjat va nom saqlansin uchun doim ishlating.</p>
+<h3>🔹 Argumentli dekorator</h3>
+<p>Dekoratorga parametr bermoqchi bo'lsangiz, bir qavat qo'shiladi: <code>@takrorla(3)</code> → tashqi funksiya parametr oladi, o'rtadagi dekorator, ichkisi wrapper.</p>
+<div class="editor" data-ed="e10" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def takrorla(n):
+    def dekorator(f):
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                f(*args, **kwargs)
+        return wrapper
+    return dekorator
+
+@takrorla(3)
+def salom():
+    print(&quot;Salom!&quot;)
+
+salom()</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Ustma-ust dekoratorlar</h3>
+<p>Pastdagi dekorator birinchi o'raydi, yuqoridagisi uni o'raydi. Ishga tushganda <b>tashqi</b> (yuqoridagi) birinchi ishlaydi.</p>
+</div>
+</section>
+<section class="sec off" data-key="n5" data-group="Nazariya" data-ico="🧰" data-title="lru_cache va context manager">
+<h2><span class="mark"></span>lru_cache va context manager</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>lru_cache</code> funksiya natijalarini eslab qoladi. Context manager esa <code>with</code> blokiga kirish va chiqishda ishni o'zi bajaradi.</div>
+<h3>🔹 lru_cache</h3>
+<div class="editor" data-ed="e11" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n &lt; 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+print(fib(80))
+print(fib.cache_info().hits &gt; 0)</textarea></div><div class="out" hidden></div></div>
+<p>Keshsiz <code>fib(80)</code> milliardlab yillar ishlardi. Kesh bilan — bir lahza.</p>
+<h3>🔹 with uchun sinf</h3>
+<p><code>with X as t:</code> da avval <code>X.__enter__()</code>, blok tugagach (xato bo'lsa ham) <code>X.__exit__(...)</code> chaqiriladi.</p>
+<div class="editor" data-ed="e12" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Qutini:
+    def __enter__(self):
+        print(&quot;ochildi&quot;)
+        return self
+
+    def __exit__(self, tur, qiymat, iz):
+        print(&quot;yopildi&quot;)
+        return False        # xatoni yashirmaydi
+
+with Qutini() as q:
+    print(&quot;ichida&quot;)</textarea></div><div class="out" hidden></div></div>
+<p><code>__exit__</code> <code>False</code> qaytarsa, blokdagi xato tashqariga chiqadi. <code>True</code> qaytarsa, xato yashiriladi (ehtiyot bo'ling).</p>
+<h3>🔹 @contextmanager</h3>
+<p>Sinf yozish o'rniga generator yozish mumkin: <code>yield</code> gacha — kirish, <code>yield</code> dan keyin — chiqish.</p>
+<div class="editor" data-ed="e13" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from contextlib import contextmanager
+
+@contextmanager
+def qavs():
+    print(&quot;(&quot;)
+    try:
+        yield
+    finally:
+        print(&quot;)&quot;)
+
+with qavs():
+    print(&quot;matn&quot;)</textarea></div><div class="out" hidden></div></div>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="yield bilan 1 dan n gacha generator" data-task="t01">
+<div class="card step" data-task="t01" data-title="yield bilan 1 dan n gacha generator" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>yield bilan 1 dan n gacha generator <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada <code>sonlar(n)</code> generatori 1 dan <code>n</code> gacha sonlarni beradi. Siz kvadratlar generatorini yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e14" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def sonlar(n):
+    for i in range(1, n + 1):
+        yield i
+
+
+print(list(sonlar(5)))
+for x in sonlar(3):
+    print(&quot;son:&quot;, x)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring.</li><li><code>kvadratlar(n)</code> generatorini yozing: 1 dan <code>n</code> gacha har sonning kvadratini <code>yield</code> qilsin.</li><li><code>return</code> bilan ro'yxat yasamang, <code>yield</code> ishlating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>list(kvadratlar(4))</code> → <code>[1, 4, 9, 16]</code></div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def kvadratlar(n):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(list(kvadratlar(4)))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="Oddiy dekorator" data-task="t02">
+<div class="card step" data-task="t02" data-title="Oddiy dekorator" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>Oddiy dekorator <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada <code>baqiriq</code> dekoratori natijani katta harfga o'tkazadi. Siz natijani qavsga oladigan dekorator yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e15" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def baqiriq(f):
+    def wrapper(*args, **kwargs):
+        natija = f(*args, **kwargs)
+        return natija.upper()
+    return wrapper
+
+
+@baqiriq
+def salom(ism):
+    return &quot;salom, &quot; + ism
+
+
+print(salom(&quot;ali&quot;))
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring.</li><li><code>qavsga(f)</code> dekoratorini yozing: ichki <code>wrapper(*args, **kwargs)</code> asl funksiyani chaqirib, natijani <code>"[" + natija + "]"</code> qilib qaytarsin.</li><li>Dekorator <code>wrapper</code> ni qaytarsin.</li><li><code>salom(ism)</code> funksiyasi <code>@qavsga</code> bilan bezatilgan.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>salom("Ali")</code> → <code>[Salom, Ali]</code></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def qavsga(f):
+    pass
+
+
+@qavsga
+def salom(ism):
+    return &quot;Salom, &quot; + ism
+
+
+if __name__ == &quot;__main__&quot;:
+    print(salom(&quot;Ali&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="Generator ikki marta aylantirilsa nima bo&#x27;ladi" data-task="t03">
+<div class="card step" data-task="t03" data-title="Generator ikki marta aylantirilsa nima bo&#x27;ladi" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>Generator ikki marta aylantirilsa nima bo&#x27;ladi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Generator faqat bir marta aylanadi. Natijani oldindan ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing. <code>g</code> generator, <code>royxat</code> esa oddiy ro'yxat.</li><li>Har <code>print</code> da nima chiqishini aniqlang.</li></ol></div>
+<pre class="static pred"><code class="language-python">def uchtasi():
+    yield 1
+    yield 2
+    yield 3
+
+
+g = uchtasi()
+royxat = [1, 2, 3]
+
+print(sum(g))
+print(sum(g))
+print(sum(royxat))
+print(sum(royxat))
+print(list(uchtasi()), list(uchtasi()))
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="Juft sonlar generatori" data-task="t04">
+<div class="card step" data-task="t04" data-title="Juft sonlar generatori" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>Juft sonlar generatori <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Cheklangan juft sonlar generatorini yozamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>juftlar(n)</code> generatorini yozing.</li><li>U 2 dan boshlab <code>n</code> gacha (n kirsa kiradi) juft sonlarni bittadan bersin.</li><li><code>n</code> 2 dan kichik bo'lsa, hech narsa bermasin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>list(juftlar(9))</code> → <code>[2, 4, 6, 8]</code></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def juftlar(n):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(list(juftlar(9)))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="Cheksiz Fibonachchi + islice" data-task="t05">
+<div class="card step" data-task="t05" data-title="Cheksiz Fibonachchi + islice" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>Cheksiz Fibonachchi + islice <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Fibonachchi sonlari: 0, 1, 1, 2, 3, 5, 8... Cheksiz generator yasaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>fibonachchi()</code> generatori: <code>a, b = 0, 1</code> dan boshlab abadiy <code>a</code> larni bersin (<code>while True</code>).</li><li><code>birinchi(n)</code> funksiyasi: <code>itertools.islice</code> yordamida fibonachchining birinchi <code>n</code> ta sonini <b>ro'yxat</b> qilib qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>birinchi(8)</code> → <code>[0, 1, 1, 2, 3, 5, 8, 13]</code></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from itertools import islice
+
+
+def fibonachchi():
+    pass
+
+
+def birinchi(n):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(birinchi(8))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Closure: hisoblagich_yasa()" data-task="t06">
+<div class="card step" data-task="t06" data-title="Closure: hisoblagich_yasa()" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Closure: hisoblagich_yasa() <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Har chaqiruvda bittaga oshib boradigan hisoblagich yasaymiz. Har birining o'z qiymati bo'lsin.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>hisoblagich_yasa(boshi=0)</code> funksiyasini yozing: u ichki funksiya qaytaradi.</li><li>Ichki funksiya har chaqirilganda sonni 1 ga oshirib, yangi qiymatni qaytarsin. Birinchi chaqiruv <code>boshi + 1</code> ni beradi.</li><li>Hisoblagichdagi sonni <code>nonlocal</code> bilan o'zgartiring.</li><li>Ikki hisoblagich bir-biriga ta'sir qilmasin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>a = hisoblagich_yasa(); a(), a(), a()</code> → <code>1, 2, 3</code>; <code>hisoblagich_yasa(10)()</code> → <code>11</code></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def hisoblagich_yasa(boshi=0):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    a = hisoblagich_yasa()
+    print(a(), a(), a())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="Dekoratorda return wrapper unutilgan" data-task="t07">
+<div class="card step" data-task="t07" data-title="Dekoratorda return wrapper unutilgan" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>Dekoratorda return wrapper unutilgan <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur "None chaqirib bo'lmaydi" degan xato beradi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xato xabarini o'qing.</li><li>Dekoratorni tuzating. Funksiya va dekorator nomlarini o'zgartirmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Boshlandi</code>, <code>15</code>, <code>Tugadi</code> (uch qator)</div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def xabar(f):
+    def wrapper(*args, **kwargs):
+        print(&quot;Boshlandi&quot;)
+        natija = f(*args, **kwargs)
+        print(&quot;Tugadi&quot;)
+        return natija
+
+
+@xabar
+def yigindi(a, b):
+    return a + b
+
+
+print(yigindi(10, 5))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="Bajarilish vaqtini o&#x27;lchovchi dekorator" data-task="t08">
+<div class="card step" data-task="t08" data-title="Bajarilish vaqtini o&#x27;lchovchi dekorator" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>Bajarilish vaqtini o&#x27;lchovchi dekorator <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Funksiya qancha vaqt ishlaganini o'lchaydigan dekorator.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>vaqt_olchash(f)</code> dekoratorini yozing. <code>time.perf_counter()</code> bilan boshlanish va tugash vaqtini oling.</li><li>Funksiya natijasini <b>o'zgartirmasdan</b> qaytaring.</li><li>Har chaqiruvdan keyin ketgan vaqtni (soniyalarda, <code>float</code>) <code>wrapper.oxirgi_vaqt</code> atributiga yozing.</li><li><code>functools.wraps(f)</code> ishlating, funksiya nomi saqlansin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>sekin()</code> chaqirilgach <code>sekin.oxirgi_vaqt</code> — 0 yoki undan katta <code>float</code>; <code>sekin.__name__</code> → <code>sekin</code></div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import time
+import functools
+
+
+def vaqt_olchash(f):
+    pass
+
+
+@vaqt_olchash
+def sekin(n):
+    jami = 0
+    for i in range(n):
+        jami += i
+    return jami
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sekin(100000))
+    print(sekin.oxirgi_vaqt &gt;= 0)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="Chaqiruv va argumentlarni yozib boruvchi dekorator" data-task="t09">
+<div class="card step" data-task="t09" data-title="Chaqiruv va argumentlarni yozib boruvchi dekorator" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>Chaqiruv va argumentlarni yozib boruvchi dekorator <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Har chaqiruvni jurnalga yozadigan dekorator. Xatoni qidirishda juda foydali.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>JURNAL = []</code> ro'yxati tayyor. <code>jurnal_yurit(f)</code> dekoratorini yozing.</li><li>Har chaqiruvda <code>JURNAL</code> ga satr qo'shing: <code>nom(arg1, arg2, kalit=qiymat) -&gt; natija</code>.</li><li>Pozitsion argumentlar <code>repr</code> bilan, so'ng nomli argumentlar <code>kalit=repr(qiymat)</code> shaklida, hammasi <code>", "</code> bilan ajratiladi. Natija ham <code>repr</code> bilan.</li><li>Funksiya natijasini o'zgartirmang. <code>wraps</code> ishlating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>yigindi(2, 3)</code> dan so'ng <code>JURNAL[-1]</code> → <code>yigindi(2, 3) -&gt; 5</code>; <code>salom("Ali", baland=True)</code> → <code>salom('Ali', baland=True) -&gt; 'SALOM, ALI'</code></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import functools
+
+JURNAL = []
+
+
+def jurnal_yurit(f):
+    pass
+
+
+@jurnal_yurit
+def yigindi(a, b):
+    return a + b
+
+
+@jurnal_yurit
+def salom(ism, baland=False):
+    s = &quot;salom, &quot; + ism
+    return s.upper() if baland else s
+
+
+if __name__ == &quot;__main__&quot;:
+    yigindi(2, 3)
+    salom(&quot;Ali&quot;, baland=True)
+    print(JURNAL)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="Katta faylni qatorma-qator beruvchi generator" data-task="t10">
+<div class="card step" data-task="t10" data-title="Katta faylni qatorma-qator beruvchi generator" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>Katta faylni qatorma-qator beruvchi generator <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Fayl qancha katta bo'lmasin, xotira to'lmasligi uchun qatorlarni generator bilan o'qiymiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (matn.txt) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">matn.txt</div><pre class="static"><code class="language-none">Birinchi qator
+
+  Ikkinchi qator  
+Uchinchi
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>qatorlar(fayl)</code> generatorini yozing.</li><li>Faylni <code>encoding="utf-8"</code> bilan <code>with</code> ichida oching va <b>for</b> bilan qatorlarni aylantiring.</li><li>Har qatorning chetidagi bo'shliq va <code>\n</code> larni olib tashlang (<code>strip</code>). <b>Bo'sh</b> qatorlarni o'tkazib yuboring.</li><li><code>read()</code> va <code>readlines()</code> ishlatmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> fayl <code>"a\n\n b \nc"</code> bo'lsa → <code>['a', 'b', 'c']</code></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def qatorlar(fayl):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    for q in qatorlar(&quot;matn.txt&quot;):
+        print(q)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="lru_cache bilan rekursiv Fibonachchini tezlashtirish" data-task="t11">
+<div class="card step" data-task="t11" data-title="lru_cache bilan rekursiv Fibonachchini tezlashtirish" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>lru_cache bilan rekursiv Fibonachchini tezlashtirish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Oddiy rekursiv Fibonachchi katta sonlarda juda sekin. Keshlash uni bir lahzaga aylantiradi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>fib(n)</code> rekursiv funksiyasini yozing: <code>n &lt; 2</code> bo'lsa <code>n</code>, aks holda <code>fib(n-1) + fib(n-2)</code>.</li><li>Uni <code>functools.lru_cache</code> bilan bezang (<code>@lru_cache(maxsize=None)</code>).</li><li>Shunda <code>fib(80)</code> darhol hisoblanadi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>fib(10)</code> → <code>55</code>, <code>fib(80)</code> → <code>23416728348467685</code></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from functools import lru_cache
+
+
+def fib(n):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(fib(10))
+    print(fib(80))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="Generator va dekorator bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="Generator va dekorator bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>Generator va dekorator bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Generator va dekoratorning bo'sh joylarini (<code>___</code>) to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Hamma <code>___</code> o'rniga to'g'ri kod yozing.</li><li><code>teskari(s)</code> matnni oxiridan boshlab harfma-harf beradi. <code>ikki_baravar</code> dekoratori natijani 2 ga ko'paytiradi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>a m l o</code> (<code>olma</code> teskarisi, harflar bo'sh joy bilan), keyin <code>16</code></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def teskari(s):
+    for i in range(len(s) - 1, -1, -1):
+        ___ s[i]
+
+
+def ikki_baravar(f):
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs) * ___
+    return ___
+
+
+@ikki_baravar
+def sakkiz():
+    return 8
+
+
+if __name__ == &quot;__main__&quot;:
+    print(&quot; &quot;.join(teskari(&quot;olma&quot;)))
+    print(sakkiz())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="Tugagan generatordan qayta foydalanish" data-task="t13">
+<div class="card step" data-task="t13" data-title="Tugagan generatordan qayta foydalanish" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>Tugagan generatordan qayta foydalanish <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur kutilganidan boshqacha natija chiqaradi. Generator bir marta aylanishini eslang.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring. Ikkinchi qator <code>12</code> bo'lishi kerak edi.</li><li>Sababini toping va tuzating. <code>juftlar</code> funksiyasini o'zgartirmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[2, 4, 6]</code> va <code>12</code></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def juftlar(n):
+    for i in range(2, n + 1, 2):
+        yield i
+
+
+g = juftlar(6)
+print(list(g))
+print(sum(g))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="Ikki dekorator ustma-ust: chiqish tartibi" data-task="t14">
+<div class="card step" data-task="t14" data-title="Ikki dekorator ustma-ust: chiqish tartibi" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>Ikki dekorator ustma-ust: chiqish tartibi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ikki dekorator ketma-ket qo'llanganda qaysi biri birinchi ishlaydi?</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing. <code>@a</code> va <code>@b</code> ning qaysi biri funksiyaga yaqin?</li><li>Funksiya chaqirilganda tashqi o'rovchi birinchi ishlashini eslang.</li><li>Chiqadigan qatorlarni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">def a(f):
+    def w():
+        print(&quot;a boshlandi&quot;)
+        f()
+        print(&quot;a tugadi&quot;)
+    return w
+
+
+def b(f):
+    def w():
+        print(&quot;b boshlandi&quot;)
+        f()
+        print(&quot;b tugadi&quot;)
+    return w
+
+
+@a
+@b
+def ish():
+    print(&quot;ish&quot;)
+
+
+ish()
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Iterator sinfi Sanagich(start, stop)" data-task="t15">
+<div class="card step" data-task="t15" data-title="Iterator sinfi Sanagich(start, stop)" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Iterator sinfi Sanagich(start, stop) <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Generator o'rniga iterator protokolini qo'lda yozamiz: <code>__iter__</code> va <code>__next__</code>.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Sanagich(start, stop)</code> sinfi: <code>start</code> dan <code>stop</code> gacha (stop kirmaydi) sonlarni bersin.</li><li><code>__iter__(self)</code> obyektning o'zini qaytarsin.</li><li><code>__next__(self)</code>: joriy sonni qaytarib, uni 1 ga oshirsin; <code>stop</code> ga yetganda <code>StopIteration</code> ko'tarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>list(Sanagich(3, 7))</code> → <code>[3, 4, 5, 6]</code></div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Sanagich:
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    for x in Sanagich(3, 7):
+        print(x)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="Context manager Taymer" data-task="t16">
+<div class="card step" data-task="t16" data-title="Context manager Taymer" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>Context manager Taymer <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc"><code>with</code> bloki qancha vaqt ishlaganini o'lchaydigan context manager.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Taymer</code> sinfini yozing. <code>__enter__</code>: boshlanish vaqtini (<code>time.perf_counter()</code>) saqlab, <code>self</code> ni qaytarsin.</li><li><code>__exit__(self, tur, qiymat, iz)</code>: ketgan vaqtni <code>self.vaqt</code> ga (float) yozsin.</li><li>Blokda xato bo'lsa, u yashirilmasin (<code>__exit__</code> <code>False</code> qaytarsin).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>with Taymer() as t: ...</code> dan keyin <code>t.vaqt &gt;= 0</code> (<code>float</code>)</div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import time
+
+
+class Taymer:
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    with Taymer() as t:
+        jami = sum(range(100000))
+    print(jami)
+    print(t.vaqt &gt;= 0)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="Argumentli dekorator qayta_urin(n)" data-task="t17">
+<div class="card step" data-task="t17" data-title="Argumentli dekorator qayta_urin(n)" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>Argumentli dekorator qayta_urin(n) <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Tarmoq yoki fayl bilan ishlaganda xato vaqtincha bo'lishi mumkin. Dekorator funksiyani yana urinib ko'rsin.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>qayta_urin(n)</code> — argumentli dekorator: funksiyani <b>ko'pi bilan n marta</b> chaqirib ko'radi.</li><li>Funksiya xato (<code>Exception</code>) bersa, yana urinadi. Birinchi muvaffaqiyatli natijani qaytaring.</li><li>Hamma <code>n</code> urinish muvaffaqiyatsiz bo'lsa, <b>oxirgi xatoni</b> qayta ko'taring.</li><li><code>functools.wraps</code> ishlating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> 2 marta xato berib, 3-sida ishlaydigan funksiya <code>@qayta_urin(3)</code> bilan <code>"tayyor"</code> qaytaradi.</div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import functools
+
+
+def qayta_urin(n):
+    pass
+
+
+holat = {&quot;chaqiruv&quot;: 0}
+
+
+@qayta_urin(3)
+def beqaror():
+    holat[&quot;chaqiruv&quot;] += 1
+    if holat[&quot;chaqiruv&quot;] &lt; 3:
+        raise ConnectionError(&quot;uzildi&quot;)
+    return &quot;tayyor&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    print(beqaror(), holat[&quot;chaqiruv&quot;])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Ikki xato: wraps yo&#x27;q va yield o&#x27;rniga return" data-task="t18">
+<div class="card step" data-task="t18" data-title="Ikki xato: wraps yo&#x27;q va yield o&#x27;rniga return" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Ikki xato: wraps yo&#x27;q va yield o&#x27;rniga return <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kodda ikkita xato bor. Birinchisini tuzatgach, ikkinchisi ko'rinadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring. Birinchi qator <code>kvadratlar</code> bo'lishi kerak, hozir boshqacha.</li><li>Uni tuzating va qayta ishga tushiring: yangi xato chiqadi.</li><li>Ikkinchi xatoni ham tuzating. Funksiya va dekorator nomlari o'zgarmasin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>kvadratlar</code> va <code>[1, 4, 9]</code></div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import functools
+
+
+def hisobla(f):
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@hisobla
+def kvadratlar(n):
+    for i in range(1, n + 1):
+        return i * i
+
+
+print(kvadratlar.__name__)
+print(list(kvadratlar(3)))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="Ro&#x27;yxat qaytaradigan funksiyani generatorga" data-task="t19">
+<div class="card step" data-task="t19" data-title="Ro&#x27;yxat qaytaradigan funksiyani generatorga" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>Ro&#x27;yxat qaytaradigan funksiyani generatorga <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bu funksiya ro'yxatni to'liq yasaydi. Katta <code>n</code> da xotira tugaydi. Uni generatorga aylantiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Eski <code>toq_kvadratlar_royxat(n)</code> toq sonlar kvadratini ro'yxat qilib qaytaradi (tayyor).</li><li>Xuddi shu ishni qiladigan <code>toq_kvadratlar(n)</code> <b>generatorini</b> yozing: 1 dan <code>n</code> gacha toq sonlarning kvadratlarini bittadan bersin.</li><li>Natija eski funksiya bilan bir xil bo'lsin, lekin ro'yxat yasalmasin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>list(toq_kvadratlar(7))</code> → <code>[1, 9, 25, 49]</code></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def toq_kvadratlar_royxat(n):
+    natija = []
+    for i in range(1, n + 1):
+        if i % 2 == 1:
+            natija.append(i * i)
+    return natija
+
+
+def toq_kvadratlar(n):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(toq_kvadratlar_royxat(7))
+    print(list(toq_kvadratlar(7)))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Ma&#x27;lumot quvuri: log → filtr → o&#x27;zgartirish → hisob" data-task="t20">
+<div class="card step" data-task="t20" data-title="Ma&#x27;lumot quvuri: log → filtr → o&#x27;zgartirish → hisob" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Ma&#x27;lumot quvuri: log → filtr → o&#x27;zgartirish → hisob <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Server jurnalini o'qiydigan quvur yasaymiz. Har bosqich generator, ma'lumot ular orasida bittadan oqadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>parsla(qatorlar)</code> — qatorlar (matnlar ketma-ketligi) ni oladi. Har to'g'ri qator uchun <code>(sana, vaqt, daraja, xabar)</code> tuple beradi. Qator <code>"2025-03-01 10:05:12 ERROR db: ulanish uzildi"</code> ko'rinishida: birinchi 3 so'z sana, vaqt, daraja, qolgani xabar. Bo'sh yoki 4 so'zdan qisqa qatorlar o'tkazib yuboriladi.</li><li><code>faqat(daraja, yozuvlar)</code> — faqat shu darajali yozuvlarni beradi.</li><li><code>kunlik_xatolar(qatorlar)</code> — <code>parsla</code> va <code>faqat</code> yordamida har sanada nechta <code>ERROR</code> borligini <code>{sana: soni}</code> lug'ati qilib qaytaradi.</li><li>Hammasi generator bo'lsin, <code>list()</code> bilan oraliq ro'yxat yasamang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> 1-mart 1 ta, 2-mart 2 ta xato bo'lsa → <code>{'2025-03-01': 1, '2025-03-02': 2}</code></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def parsla(qatorlar):
+    pass
+
+
+def faqat(daraja, yozuvlar):
+    pass
+
+
+def kunlik_xatolar(qatorlar):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    qatorlar = [
+        &quot;2025-03-01 10:00:01 INFO server: ishga tushdi&quot;,
+        &quot;2025-03-01 10:05:12 ERROR db: ulanish uzildi&quot;,
+        &quot;&quot;,
+        &quot;2025-03-02 09:30:45 ERROR api: 500 xato&quot;,
+        &quot;2025-03-02 11:11:11 ERROR db: ulanish uzildi&quot;,
+    ]
+    print(kunlik_xatolar(qatorlar))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Log tahlilchisi" data-task="mini">
+<div class="card step" data-task="mini" data-title="Log tahlilchisi" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Log tahlilchisi <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Server jurnalini (<code>server.log</code>) generatorlar zanjiri bilan o'qiymiz, vaqtni dekorator bilan o'lchaymiz va hisobot chiqaramiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (server.log) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">server.log</div><pre class="static"><code class="language-none">2025-03-01 10:00:01 INFO server: ishga tushdi
+2025-03-01 10:05:12 ERROR db: ulanish uzildi
+2025-03-01 10:06:00 WARNING db: sekin javob
+2025-03-02 09:00:00 INFO server: yangilandi
+2025-03-02 09:30:45 ERROR api: 500 xato
+
+2025-03-02 11:11:11 ERROR db: ulanish uzildi
+noto&#x27;g&#x27;ri qator
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p>Umumiy rasm: <code>oqi</code> faylni qatorma-qator beradi, <code>parsla</code> uni yozuvga aylantiradi, <code>tahlil</code> hisoblaydi, <code>hisobot</code> chiroyli chiqaradi. Fayl <code>server.log</code> tayyor.</p><ol><li><b>oqi(fayl).</b> Generator: faylni qatorma-qator beradi (tozalangan, bo'sh qatorlarsiz).</li><li><b>parsla(qatorlar).</b> Generator: har to'g'ri qator uchun <code>(sana, vaqt, daraja, xabar)</code> tuple (4 so'zdan kam qatorlar tashlanadi).</li><li><b>vaqt_olchash.</b> Dekorator: natijani o'zgartirmaydi, ketgan vaqtni <code>wrapper.oxirgi_vaqt</code> ga yozadi (<code>wraps</code> bilan).</li><li><b>tahlil(fayl).</b> <code>@vaqt_olchash</code> bilan bezatilgan. Lug'at qaytaradi: <code>{"jami": yozuvlar soni, "darajalar": {daraja: soni}, "manba": {manba: ERROR soni}}</code>. Manba — xabarning birinchi so'zi, oxiridagi <code>:</code> siz (<code>db:</code> → <code>db</code>).</li><li><b>hisobot(fayl).</b> Quyidagi qatorlarni chiqaradi: <code>Jami yozuvlar: N</code>, so'ng <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code> uchun <code>DARAJA: soni</code> (shu tartibda, yo'q bo'lsa 0), oxirida <code>Eng ko'p xato: manba (soni)</code> (xato bo'lmasa <code>Eng ko'p xato: yo'q</code>).</li><li><b>Ulash.</b> <code>if __name__ == "__main__":</code> da <code>hisobot("server.log")</code> ni chaqiring.</li></ol><div class="res"><b>✅ Natijada:</b><pre class="console">Jami yozuvlar: 6
+INFO: 2
+WARNING: 1
+ERROR: 3
+Eng ko&#x27;p xato: db (2)</pre></div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def oqi(fayl):
+    pass
+
+
+# qolgan funksiyalarni yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    pass
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> Generator va dekorator xatolari ko'pincha "sezilmaydi": dastur yiqilmaydi, faqat natija bo'sh yoki g'alati bo'ladi.</div>
+<div class="warn"><span class="lbl">⚠️ Generator ikkinchi marta bo'sh</span>Tugagan generatorni qayta aylantirsangiz, bo'sh natija olasiz. Har safar yangi generator yarating yoki natijani <code>list()</code> ga saqlang.</div>
+<div class="warn"><span class="lbl">⚠️ yield o'rniga return</span><code>return</code> funksiyani birinchi qiymatdayoq tugatadi va generator bo'lmaydi. Ketma-ketlik uchun <code>yield</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Cheksiz generatorni list() qilish</span><code>list(fibonachchi())</code> hech qachon tugamaydi. <code>islice</code> bilan cheklang.</div>
+<div class="warn"><span class="lbl">⚠️ Dekoratorda wrapper qaytarilmagan</span><code>TypeError: 'NoneType' object is not callable</code> — <code>return wrapper</code> unutilgan.</div>
+<div class="warn"><span class="lbl">⚠️ wrapper ichida natija qaytarilmagan</span><code>f(*args, **kwargs)</code> chaqirilib, natijasi <code>return</code> qilinmasa, dekoratsiyalangan funksiya doim <code>None</code> beradi.</div>
+<div class="warn"><span class="lbl">⚠️ functools.wraps unutilgan</span>Funksiya nomi va hujjati "wrapper" ga almashadi. Nosozlik izlash qiyinlashadi.</div>
+<div class="warn"><span class="lbl">⚠️ nonlocal yozilmagan</span>Ichki funksiyada <code>son += 1</code> yozsangiz, <code>UnboundLocalError</code> chiqadi. Tashqi o'zgaruvchini o'zgartirish uchun <code>nonlocal son</code>.</div>
+<div class="warn"><span class="lbl">⚠️ __exit__ True qaytaradi</span>Bu blokdagi xatoni yashiradi. Aniq sababi bo'lmasa <code>False</code> qaytaring.</div>
+<div class="real"><b>Maslahat:</b> Generatorni sinash uchun <code>next(g)</code> ni qo'lda bir necha marta chaqirib ko'ring. Dekoratorda esa avval <code>print</code> bilan qaysi qatorlar qachon ishlashini kuzating.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎁 Bonus: dekoratorli sinf.</b> <code>@singleton</code> dekoratorini yozing: dekoratsiyalangan sinfdan necha marta obyekt yaratmang, har doim <b>bitta va o'sha</b> obyekt qaytsin. Birinchi chaqiruvdagi argumentlar bilan yaratilsin. <code>is</code> bilan tekshirib ko'ring.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Tub sonlar generatori.</b> Cheksiz <code>tub_sonlar()</code> generatorini yozing. <code>islice</code> bilan birinchi 20 tasini chiqaring.</li>
+<li><b>Kesh dekoratori.</b> Funksiya natijalarini lug'atda eslab qoladigan o'z <code>kesh</code> dekoratoringizni yozing (<code>lru_cache</code> ishlatmasdan). Sekin funksiya bilan tezlikni solishtiring.</li>
+<li><b>Ruxsat dekoratori.</b> <code>faqat_admin(f)</code>: global <code>JORIY_ROL</code> "admin" bo'lmasa <code>PermissionError</code> ko'tarsin. Ikki xil rolda sinab ko'ring.</li>
+<li><b>Faylga yozuvchi context manager.</b> <code>YozuvFayli(nom)</code> sinfi faylni ochadi, <code>with</code> blokida <code>yoz(satr)</code> bilan satr qo'shadi va chiqishda yopadi. Xato bo'lsa ham fayl yopilishini isbotlang.</li>
+<li><b>O'z log tahlilchingiz.</b> Mini-loyihaga eng sekin 3 ta <code>ERROR</code> manbasini chiqarishni qo'shing.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="B"><b>1. Funksiyada return o&#x27;rniga yield yozsak, funksiya nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Xato beradi</button></li><li><button class="opt" type="button" data-l="B">B) Generator qaytaradi</button></li><li><button class="opt" type="button" data-l="C">C) Ro&#x27;yxat qaytaradi</button></li><li><button class="opt" type="button" data-l="D">D) Hech narsa o&#x27;zgarmaydi</button></li></ul><span class="q-ex" hidden>yield bor funksiya chaqirilganda generator obyektini qaytaradi; qiymatlar next() bilan bittadan olinadi.</span></div><div class="q" data-ok="B"><b>2. g = (x for x in range(3)); print(sum(g), sum(g)) nima chiqaradi?</b><ul><li><button class="opt" type="button" data-l="A">A) 3 3</button></li><li><button class="opt" type="button" data-l="B">B) 3 0</button></li><li><button class="opt" type="button" data-l="C">C) 0 3</button></li><li><button class="opt" type="button" data-l="D">D) Xato</button></li></ul><span class="q-ex" hidden>Birinchi sum generatorni tugatadi. Ikkinchi marta u bo&#x27;sh, yig&#x27;indi 0.</span></div><div class="q" data-ok="C"><b>3. Generator ro&#x27;yxatdan nimasi bilan yaxshi?</b><ul><li><button class="opt" type="button" data-l="A">A) Tezroq indekslanadi</button></li><li><button class="opt" type="button" data-l="B">B) Qiymatlarni hammasini xotirada saqlaydi</button></li><li><button class="opt" type="button" data-l="C">C) Qiymatni kerak bo&#x27;lganda hisoblaydi, xotira tejaladi</button></li><li><button class="opt" type="button" data-l="D">D) Qayta-qayta aylantirsa bo&#x27;ladi</button></li></ul><span class="q-ex" hidden>Generator dangasa: qiymatni so&#x27;ralganda hisoblaydi. Shuning uchun katta yoki cheksiz ketma-ketlikka mos.</span></div><div class="q" data-ok="D"><b>4. Ichki funksiya tashqi funksiyaning o&#x27;zgaruvchisini o&#x27;zgartirishi uchun nima yoziladi?</b><ul><li><button class="opt" type="button" data-l="A">A) global</button></li><li><button class="opt" type="button" data-l="B">B) static</button></li><li><button class="opt" type="button" data-l="C">C) self</button></li><li><button class="opt" type="button" data-l="D">D) nonlocal</button></li></ul><span class="q-ex" hidden>nonlocal tashqi (lekin global emas) funksiya o&#x27;zgaruvchisini o&#x27;zgartirishga ruxsat beradi.</span></div><div class="q" data-ok="A"><b>5. @a @b def f(): ... yozuvi qaysi biriga teng?</b><ul><li><button class="opt" type="button" data-l="A">A) f = a(b(f))</button></li><li><button class="opt" type="button" data-l="B">B) f = b(a(f))</button></li><li><button class="opt" type="button" data-l="C">C) f = a(f) + b(f)</button></li><li><button class="opt" type="button" data-l="D">D) f = a(f); b(f)</button></li></ul><span class="q-ex" hidden>Dekoratorlar pastdan yuqoriga qo&#x27;llanadi: avval b, keyin a. Ishlaganda esa tashqi (a) birinchi boshlanadi.</span></div><div class="q" data-ok="B"><b>6. functools.wraps nima uchun ishlatiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Dekoratorni tezlashtiradi</button></li><li><button class="opt" type="button" data-l="B">B) Funksiyaning nomi va hujjatini saqlab qoladi</button></li><li><button class="opt" type="button" data-l="C">C) Xatolarni yashiradi</button></li><li><button class="opt" type="button" data-l="D">D) Funksiyani generatorga aylantiradi</button></li></ul><span class="q-ex" hidden>wraps bo&#x27;lmasa bezatilgan funksiyaning __name__ va __doc__ i wrapper niki bo&#x27;lib qoladi.</span></div><div class="q" data-ok="B"><b>7. with X() as t: da __enter__ nimani qaytarsa, t shu bo&#x27;ladi. Odatda u nima?</b><ul><li><button class="opt" type="button" data-l="A">A) None</button></li><li><button class="opt" type="button" data-l="B">B) self (obyektning o&#x27;zi)</button></li><li><button class="opt" type="button" data-l="C">C) Xato matni</button></li><li><button class="opt" type="button" data-l="D">D) True</button></li></ul><span class="q-ex" hidden>Ko&#x27;p hollarda __enter__ self qaytaradi, shunda t obyektning o&#x27;zi bo&#x27;ladi.</span></div><div class="q" data-ok="A"><b>8. lru_cache nimaga yordam beradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Funksiya natijalarini eslab qolib, takroriy hisobni qisqartiradi</button></li><li><button class="opt" type="button" data-l="B">B) Xotirani tozalaydi</button></li><li><button class="opt" type="button" data-l="C">C) Faylni o&#x27;qiydi</button></li><li><button class="opt" type="button" data-l="D">D) Funksiyani asinxron qiladi</button></li></ul><span class="q-ex" hidden>Bir xil argument bilan chaqiruv bo&#x27;lsa, natija qayta hisoblanmaydi, keshdan olinadi.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">iterator</td><td>iterator — __iter__ va __next__ bor, qiymatlarni bittadan beradigan obyekt</td></tr><tr><td class="en">generator</td><td>generator — yield bilan yoziladigan, qiymatni bittadan beruvchi funksiya</td></tr><tr><td class="en">yield</td><td>qiymatni berib, funksiyani pauzaga qo&#x27;yadigan so&#x27;z</td></tr><tr><td class="en">lazy evaluation</td><td>dangasa hisoblash — qiymat faqat kerak bo&#x27;lganda hisoblanadi</td></tr><tr><td class="en">StopIteration</td><td>iterator tugaganini bildiruvchi istisno</td></tr><tr><td class="en">closure</td><td>yopilma — tashqi o&#x27;zgaruvchilarni eslab qoluvchi ichki funksiya</td></tr><tr><td class="en">nonlocal</td><td>tashqi funksiya o&#x27;zgaruvchisini o&#x27;zgartirish uchun kalit so&#x27;z</td></tr><tr><td class="en">decorator</td><td>dekorator — funksiyani o&#x27;rab, unga yangi imkoniyat qo&#x27;shuvchi funksiya</td></tr><tr><td class="en">wrapper</td><td>o&#x27;rovchi — dekorator qaytaradigan yangi funksiya</td></tr><tr><td class="en">functools.wraps</td><td>o&#x27;ralgan funksiyaning nomi va hujjatini saqlaydigan yordamchi</td></tr><tr><td class="en">lru_cache</td><td>natijalarni eslab qoluvchi (keshlovchi) dekorator</td></tr><tr><td class="en">context manager</td><td>with bilan ishlaydigan, kirish va chiqishda ish bajaruvchi obyekt</td></tr><tr><td class="en">__enter__ / __exit__</td><td>with blokiga kirish va chiqishda chaqiriladigan metodlar</td></tr><tr><td class="en">pipeline</td><td>quvur — bir generator natijasi ikkinchisiga oqib boradigan zanjir</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-26.html"><small>← Oldingi dars</small><span>Loyiha: kutubxona tizimi</span></a><a class="lnav next" href="dars-28.html"><small>Keyingi dars →</small><span>Type hints va testlash</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>27-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 27, "total": 32, "title": "Generator, dekorator va context manager"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kirish — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="stylesheet" href="assets/kurs.css">
+<link rel="stylesheet" href="sinf/sinf.css">
+<link rel="prefetch" href="assets/py-asm.js" as="script">
+<link rel="prefetch" href="assets/py-wasm.js" as="script">
+<link rel="prefetch" href="assets/py-stdlib.js" as="script">
+</head>
+<body>
+<div class="login-wrap"><div class="login-box">
+  <div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>Amaliy kurs</b><span>Python — noldan real loyihagacha</span></div></div>
+  <div id="demo" class="warnmsg" hidden style="margin-top:14px"><b>DEMO rejim.</b> Firebase hali ulanmagan: ma'lumotlar faqat shu brauzerda saqlanadi. <code>sinf/config.js</code> ni to'ldiring.</div>
+
+  <form class="card" id="f-login" autocomplete="on" hidden>
+    <h1>Kirish</h1>
+    <div class="muted">Login va parolingizni kiriting.</div>
+    <label class="f" for="l">Login</label>
+    <input class="t" id="l" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    <label class="f" for="p">Parol</label>
+    <div class="pw"><input class="t" id="p" name="password" type="password" autocomplete="current-password" required><button type="button" id="eye">Ko'rsat</button></div>
+    <div id="e1" class="err" hidden></div>
+    <button class="btn pri" id="go" style="width:100%;justify-content:center;margin-top:18px;padding:12px">Kirish</button>
+    <p class="muted" style="font-size:.82rem;margin:14px 0 0">Login va parolni o'qituvchingiz beradi. Parolni unutsangiz, o'qituvchingizga ayting.</p>
+  </form>
+
+  <form class="card" id="f-setup" autocomplete="off" hidden>
+    <h1>Birinchi sozlash</h1>
+    <div class="muted">Hali administrator yo'q. O'qituvchi akkauntini yarating — bu faqat bir marta bajariladi.</div>
+    <label class="f" for="sn">Ismingiz</label>
+    <input class="t" id="sn" placeholder="Masalan: Aziza opa" required>
+    <label class="f" for="sl">Login</label>
+    <input class="t" id="sl" autocapitalize="none" spellcheck="false" placeholder="masalan: ustoz" required>
+    <label class="f" for="sp">Parol (kamida 6 belgi)</label>
+    <input class="t" id="sp" type="password" autocomplete="new-password" required>
+    <div id="e2" class="err" hidden></div>
+    <button class="btn pri" id="go2" style="width:100%;justify-content:center;margin-top:18px;padding:12px">Administratorni yaratish</button>
+  </form>
+  <div id="load" class="muted" style="text-align:center;margin-top:30px">Yuklanmoqda…</div>
+</div></div>
+<script src="sinf/config.js"></script>
+<script src="sinf/kurs-map.js"></script>
+<script src="sinf/backend.js"></script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  function nextUrl(u){
+    var n=new URLSearchParams(location.search).get('next');
+    if(u.role==='admin') return 'admin.html';
+    return n && /^[A-Za-z0-9_.\-]+\.html(\?[A-Za-z0-9_=&\-]*)?$/.test(n) ? n : 'index.html';
+  }
+  function show(el,m){el.textContent=m;el.hidden=!m}
+  if(SINF.mode==='demo') $('#demo').hidden=false;
+  SINF.ready.then(async function(u){
+    if(u){ location.replace(nextUrl(u)); return; }
+    $('#load').hidden=true;
+    var open=false; try{ open=await SINF.setupOpen(); }catch(e){ $('#f-login').hidden=false; show($('#e1'),SINF.nice(e)); return; }
+    if(open) $('#f-setup').hidden=false; else $('#f-login').hidden=false;
+    (open?$('#sn'):$('#l')).focus();
+  }).catch(function(e){ $('#load').textContent='Xatolik: '+SINF.nice(e); });
+  $('#eye').onclick=function(){var p=$('#p');var s=p.type==='password';p.type=s?'text':'password';this.textContent=s?'Yashir':"Ko'rsat"};
+  $('#f-login').onsubmit=async function(ev){
+    ev.preventDefault(); var b=$('#go'); b.disabled=true; b.textContent='Tekshirilmoqda…'; show($('#e1'),'');
+    try{ var u=await SINF.login($('#l').value,$('#p').value); location.replace(nextUrl(u)); }
+    catch(e){ show($('#e1'),e.message); b.disabled=false; b.textContent='Kirish'; }
+  };
+  $('#f-setup').onsubmit=async function(ev){
+    ev.preventDefault(); var b=$('#go2'); b.disabled=true; b.textContent='Yaratilmoqda…'; show($('#e2'),'');
+    try{ var u=await SINF.setupAdmin($('#sl').value,$('#sp').value,$('#sn').value.trim()); location.replace('admin.html'); }
+    catch(e){ show($('#e2'),e.message); b.disabled=false; b.textContent='Administratorni yaratish'; }
+  };
+})();
+</script>
+</body>
+</html>

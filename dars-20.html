@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20-dars: CSV va JSON — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>20-dars</b><span>CSV va JSON</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">20-DARS • Fayllar va ma&#x27;lumotlar</span><h1 class="title">CSV va JSON</h1><p class="desc">Excel jadvali, maktab jurnali, do'kon savdosi, telefon kontaktlari — bularning hammasi ma'lumot. Uni oddiy matn faylida saqlash mumkin, lekin keyin qayta o'qib, ustunlarga ajratish qiyin. Bu darsda siz ikkita eng mashhur formatni o'rganasiz: jadvallar uchun <b>CSV</b> va murakkab ma'lumot uchun <b>JSON</b>. Dasturingiz ma'lumotni saqlaydi, yopilib qayta ochilganda esa uni <b>qayta yuklaydi</b>.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 csv.reader/writer, DictReader/DictWriter, newline="", json.dump/load, dumps/loads, ensure_ascii, indent</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>CSV o'qish</b> — <code>csv.reader</code> va <code>csv.DictReader</code> bilan jadval faylini qatorma-qator o'qish, sarlavhani ajratish.</div></div><div class="g"><span class="dot">2</span><div><b>CSV yozish</b> — <code>csv.writer</code> va <code>csv.DictWriter</code> bilan jadval yaratish; nega <code>newline=""</code> kerakligini tushunish.</div></div><div class="g"><span class="dot">3</span><div><b>Turlar</b> — CSV'dan kelgan har qiymat satr ekanini bilish va uni <code>int()</code>, <code>float()</code> bilan songa o'tkazish.</div></div><div class="g"><span class="dot">4</span><div><b>JSON</b> — <code>json.dumps</code>/<code>loads</code> (satr bilan) va <code>json.dump</code>/<code>load</code> (fayl bilan) farqini bilish; <code>true</code>, <code>null</code> kabi JSON turlari.</div></div><div class="g"><span class="dot">5</span><div><b>O'zbekcha harflar va chiroyli fayl</b> — <code>ensure_ascii=False</code> va <code>indent=2</code> bilan o'qiladigan JSON yozish.</div></div><div class="g"><span class="dot">6</span><div><b>Saqlash va qayta yuklash</b> — <code>yukla()</code> / <code>saqla()</code> usuli: dastur ma'lumotini faylda saqlab, keyin davom ettirish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>import csv, json</span><span class="nb"><span class="sw" style="background:var(--js)"></span>csv.reader(f)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>next(oqiydi)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>csv.DictReader(f)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>csv.DictWriter(f, fieldnames=[...])</span><span class="nb"><span class="sw" style="background:var(--js)"></span>open(..., newline=&quot;&quot;)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>json.dumps(obj) / json.loads(matn)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>json.dump(obj, f, ensure_ascii=False, indent=2)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>json.load(f)</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="n1" data-group="Nazariya" data-ico="📊" data-title="CSV nima va csv.reader">
+<h2><span class="mark"></span>CSV nima va csv.reader</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> CSV — vergul bilan ajratilgan jadval. <code>csv</code> moduli uni o'qib, har qatorni <b>ro'yxatga</b> aylantirib beradi.</div>
+<h3>🔹 CSV qanday ko'rinadi?</h3>
+<p>CSV (Comma-Separated Values — vergul bilan ajratilgan qiymatlar) — oddiy matn fayli. Har qator jadvalning bitta qatori, ustunlar esa vergul bilan ajratiladi. Birinchi qator odatda <b>sarlavha</b> (ustun nomlari).</p>
+<pre class="static"><code class="language-python">ism,sinf,ball
+Ali,10-A,87
+Dilnoza,10-B,95</code></pre>
+<p>Bunday faylni Excel yoki Google Sheets ham ochadi. Shuning uchun maktab jurnali, do'kon savdosi kabi jadvallar ko'pincha CSV'da saqlanadi.</p>
+<h3>🔹 csv.reader bilan o'qish</h3>
+<p>Quyidagi kod avval faylni yaratadi, keyin uni <code>csv.reader</code> bilan o'qiydi. <code>next()</code> birinchi qatorni (sarlavhani) oladi, sikl esa qolganlarini.</p>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+with open(&quot;jurnal.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    f.write(&quot;ism,sinf,ball\nAli,10-A,87\nDilnoza,10-B,95\n&quot;)
+
+with open(&quot;jurnal.csv&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    oqiydi = csv.reader(f)
+    sarlavha = next(oqiydi)
+    print(&quot;Sarlavha:&quot;, sarlavha)
+    for qator in oqiydi:
+        print(qator)</textarea></div><div class="out" hidden></div></div>
+<div class="note">📚 <b>Kutubxonachi kabi:</b> <code>csv.reader</code> kitobni (faylni) varaqlab, har sahifani (qatorni) ustunlarga ajratib beradi. Siz faqat kerakli ustunni olasiz: <code>qator[0]</code> — ism, <code>qator[2]</code> — ball.</div>
+<h3>🔹 Har qiymat — satr!</h3>
+<p>Faylda hamma narsa matn. Shuning uchun <code>csv</code> ham har qiymatni <b>satr</b> qilib beradi: <code>"87"</code>, son emas. Hisoblashdan oldin <code>int()</code> yoki <code>float()</code> bilan o'tkazing.</p>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">qator = [&quot;Ali&quot;, &quot;10-A&quot;, &quot;87&quot;]
+print(qator[2] + qator[2])
+print(int(qator[2]) + int(qator[2]))</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Nega split(",") yetmaydi?</h3>
+<p>Qiymat ichida vergul bo'lsa, u qo'shtirnoqqa olinadi: <code>Ali,"Xiva, Ichan qala"</code>. <code>split(",")</code> uni noto'g'ri bo'lib yuboradi. <code>csv</code> moduli esa qo'shtirnoqni tushunadi.</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+matn = &#x27;Ali,&quot;Xiva, Ichan qala&quot;,+998901112233&#x27;
+print(matn.split(&quot;,&quot;))
+print(next(csv.reader([matn])))</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ newline=""</span>CSV faylni ochganda doim <code>newline=""</code> yozing. <code>csv</code> moduli qator oxirlarini o'zi boshqaradi. Bu bo'lmasa, Windows'da yozilgan faylda qatorlar orasida <b>bo'sh qatorlar</b> paydo bo'ladi.</div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Ikkinchi oynada <code>for</code> siklini <code>for qator in oqiydi: print(qator[0], "-", qator[2])</code> ga o'zgartiring.</div>
+</div>
+</section>
+<section class="sec off" data-key="n2" data-group="Nazariya" data-ico="✍️" data-title="csv.writer, DictReader va DictWriter">
+<h2><span class="mark"></span>csv.writer, DictReader va DictWriter</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>writer</code> ro'yxatni CSV qatoriga aylantiradi. <code>DictReader</code> va <code>DictWriter</code> esa ustunlarga <b>nomi bilan</b> murojaat qilishga imkon beradi.</div>
+<h3>🔹 csv.writer bilan yozish</h3>
+<p><code>writerow(ro'yxat)</code> bitta qator yozadi, <code>writerows(ro'yxatlar)</code> — bir nechta qator. Vergul va qo'shtirnoqlarni modul o'zi qo'yadi.</p>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+narxlar = [[&quot;Non&quot;, 4000], [&quot;Sut&quot;, 12000], [&quot;Choy&quot;, 15000]]
+with open(&quot;narxlar.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    yozuvchi = csv.writer(f)
+    yozuvchi.writerow([&quot;nomi&quot;, &quot;narx&quot;])
+    yozuvchi.writerows(narxlar)
+
+with open(&quot;narxlar.csv&quot;, encoding=&quot;utf-8&quot;) as f:
+    print(f.read())</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 DictReader — har qator lug'at</h3>
+<p><code>DictReader</code> sarlavhani o'zi o'qiydi. Har qator <b>lug'at</b> bo'lib keladi: kalit — ustun nomi. <code>qator[2]</code> o'rniga <code>qator["ball"]</code> deb yozasiz. Bu tushunarliroq, ustunlar tartibi o'zgarsa ham kod buzilmaydi.</p>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+with open(&quot;jurnal.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    f.write(&quot;ism,sinf,ball\nAli,10-A,87\nDilnoza,10-B,95\n&quot;)
+
+with open(&quot;jurnal.csv&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    for qator in csv.DictReader(f):
+        print(qator[&quot;ism&quot;], &quot;-&gt;&quot;, int(qator[&quot;ball&quot;]) + 5)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 DictWriter — lug'atlarni yozish</h3>
+<p><code>DictWriter</code> ga <code>fieldnames</code> (ustun nomlari ro'yxati) beriladi. <code>writeheader()</code> sarlavha qatorini yozadi, <code>writerow(lug'at)</code> — bitta qatorni.</p>
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+oquvchilar = [{&quot;ism&quot;: &quot;Ali&quot;, &quot;ball&quot;: 87}, {&quot;ism&quot;: &quot;Lola&quot;, &quot;ball&quot;: 92}]
+with open(&quot;reyting.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    yozuvchi = csv.DictWriter(f, fieldnames=[&quot;ism&quot;, &quot;ball&quot;])
+    yozuvchi.writeheader()
+    yozuvchi.writerows(oquvchilar)
+
+with open(&quot;reyting.csv&quot;, encoding=&quot;utf-8&quot;) as f:
+    print(f.read())</textarea></div><div class="out" hidden></div></div>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Vosita</th><th>Har qator</th><th>Qachon qulay</th></tr>
+<tr><td><code>csv.reader</code></td><td>ro'yxat: <code>["Ali", "87"]</code></td><td>ustunlar kam, tartibi aniq</td></tr>
+<tr><td><code>csv.DictReader</code></td><td>lug'at: <code>{"ism": "Ali", "ball": "87"}</code></td><td>ustunlar ko'p, nomi bilan ishlash</td></tr>
+<tr><td><code>csv.writer</code></td><td>ro'yxatdan qator yozadi</td><td>ma'lumot ro'yxatlarda</td></tr>
+<tr><td><code>csv.DictWriter</code></td><td>lug'atdan qator yozadi</td><td>ma'lumot lug'atlarda</td></tr></table></div>
+<div class="real"><b>Real loyihada:</b> buxgalteriya, bank ko'chirmasi, onlayn do'kon buyurtmalari ko'pincha CSV ko'rinishida yuklab olinadi. Python bilan ularni bir necha soniyada tahlil qilish mumkin.</div>
+</div>
+</section>
+<section class="sec off" data-key="n3" data-group="Nazariya" data-ico="🧾" data-title="JSON nima: dumps va loads">
+<h2><span class="mark"></span>JSON nima: dumps va loads</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> JSON — lug'at va ro'yxatlarni <b>matn</b> ko'rinishida yozish usuli. <code>json.dumps</code> obyektni matnga aylantiradi, <code>json.loads</code> esa matndan obyektni tiklaydi.</div>
+<h3>🔹 JSON qanday ko'rinadi?</h3>
+<p>JSON (JavaScript Object Notation) Python lug'atiga juda o'xshaydi. Uni deyarli hamma dasturlar tushunadi: saytlar, telefon ilovalari, Telegram-botlar. CSV faqat tekis jadval saqlaydi. JSON esa ichma-ich ma'lumotni ham saqlaydi: lug'at ichida ro'yxat, ro'yxat ichida lug'at.</p>
+<pre class="static"><code class="language-python">{
+  &quot;ism&quot;: &quot;Dilnoza&quot;,
+  &quot;sinf&quot;: &quot;10-B&quot;,
+  &quot;baholar&quot;: [5, 4, 5],
+  &quot;faol&quot;: true,
+  &quot;manzil&quot;: null
+}</code></pre>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Python</th><th>JSON</th></tr>
+<tr><td><code>dict</code></td><td>obyekt <code>{...}</code></td></tr>
+<tr><td><code>list</code>, <code>tuple</code></td><td>massiv <code>[...]</code></td></tr>
+<tr><td><code>str</code></td><td>satr — faqat <b>qo'shtirnoq</b> <code>"..."</code> bilan</td></tr>
+<tr><td><code>int</code>, <code>float</code></td><td>son</td></tr>
+<tr><td><code>True</code> / <code>False</code></td><td><code>true</code> / <code>false</code></td></tr>
+<tr><td><code>None</code></td><td><code>null</code></td></tr></table></div>
+<h3>🔹 dumps — obyektdan matnga</h3>
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+oquvchi = {&quot;ism&quot;: &quot;Ali&quot;, &quot;baholar&quot;: [5, 4], &quot;faol&quot;: True, &quot;tel&quot;: None}
+matn = json.dumps(oquvchi)
+print(matn)
+print(type(matn))</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 loads — matndan obyektga</h3>
+<p>Masalan, sayt sizga JSON matn yuboradi. <code>json.loads</code> uni lug'atga aylantiradi, keyin oddiy lug'at kabi ishlatasiz.</p>
+<div class="editor" data-ed="e8" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+matn = &#x27;{&quot;shahar&quot;: &quot;Xiva&quot;, &quot;harorat&quot;: 18, &quot;yomgir&quot;: false}&#x27;
+obhavo = json.loads(matn)
+print(obhavo[&quot;shahar&quot;], obhavo[&quot;harorat&quot;] + 2)
+print(obhavo[&quot;yomgir&quot;], type(obhavo))</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ JSON'da faqat qo'shtirnoq</span><code>json.loads("{'a': 1}")</code> xato beradi (<code>JSONDecodeError</code>). JSON'da kalit va satrlar faqat <code>"</code> bilan yoziladi, bitta tirnoq <code>'</code> mumkin emas.</div>
+<div class="note">✉️ <b>Pochta kabi:</b> lug'atni boshqa dasturga yuborish uchun uni konvertga solasiz (<code>dumps</code> — matnga). Qabul qilgan dastur konvertni ochadi (<code>loads</code> — yana lug'atga).</div>
+</div>
+</section>
+<section class="sec off" data-key="n4" data-group="Nazariya" data-ico="💾" data-title="json.dump va json.load: faylga saqlash">
+<h2><span class="mark"></span>json.dump va json.load: faylga saqlash</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>dump</code> va <code>load</code> (oxirida <b>s</b> yo'q) to'g'ridan-to'g'ri <b>fayl</b> bilan ishlaydi. <code>s</code> harfi esa <b>string</b> (satr) degani.</div>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Funksiya</th><th>Nima qiladi</th></tr>
+<tr><td><code>json.dumps(obj)</code></td><td>obyekt → JSON <b>satr</b></td></tr>
+<tr><td><code>json.loads(matn)</code></td><td>JSON satr → obyekt</td></tr>
+<tr><td><code>json.dump(obj, f)</code></td><td>obyektni <b>faylga</b> yozadi</td></tr>
+<tr><td><code>json.load(f)</code></td><td><b>fayldan</b> o'qib, obyekt qaytaradi</td></tr></table></div>
+<h3>🔹 Saqlash va qayta o'qish</h3>
+<div class="editor" data-ed="e9" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+kitob = {&quot;nomi&quot;: &quot;O&#x27;tkan kunlar&quot;, &quot;muallif&quot;: &quot;Abdulla Qodiriy&quot;, &quot;yil&quot;: 1926}
+with open(&quot;kitob.json&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    json.dump(kitob, f, ensure_ascii=False, indent=2)
+
+with open(&quot;kitob.json&quot;, encoding=&quot;utf-8&quot;) as f:
+    print(f.read())
+
+with open(&quot;kitob.json&quot;, encoding=&quot;utf-8&quot;) as f:
+    yuklangan = json.load(f)
+print(yuklangan[&quot;yil&quot;] + 100)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 indent — chiroyli ko'rinish</h3>
+<p><code>indent=2</code> har darajani 2 ta bo'shliq bilan suradi. Fayl odam o'qiy oladigan bo'ladi. <code>indent</code> bo'lmasa, hammasi bitta uzun qatorga yoziladi.</p>
+<h3>🔹 ensure_ascii=False — o'zbekcha harflar</h3>
+<p>Rasmiy o'zbek lotin alifbosida <code>oʻ</code> va <code>gʻ</code> harflarida maxsus belgi <code>ʻ</code> ishlatiladi. U ASCII (ingliz harflari to'plami) ga kirmaydi. Odatda <code>json</code> bunday belgilarni kod bilan yozadi: <code>ʻ</code> → <code>\u02bb</code>. Kirill harflari ham shunday bo'ladi.</p>
+<div class="editor" data-ed="e10" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+print(json.dumps(&quot;Oʻzbekiston&quot;))
+print(json.dumps(&quot;Oʻzbekiston&quot;, ensure_ascii=False))
+print(json.dumps(&quot;Тошкент&quot;))</textarea></div><div class="out" hidden></div></div>
+<p>Ikkala holatda ham <code>json.loads</code> matnni to'g'ri tiklaydi. Lekin faylni odam ochib o'qishi uchun <code>ensure_ascii=False</code> yozing.</p>
+<div class="warn"><span class="lbl">⚠️ dump faylni so'raydi</span><code>json.dump(kitob)</code> xato beradi: qayerga yozishni aytmadingiz. To'g'ri: <code>json.dump(kitob, f)</code>. <code>f</code> esa <code>"w"</code> rejimida ochilgan bo'lishi kerak.</div>
+<div class="real"><b>Real loyihada:</b> o'yin sozlamalari, VS Code sozlamalari (<code>settings.json</code>), saytlarning API javoblari — hammasi JSON. Bu formatni bilish har bir dasturchiga kerak.</div>
+</div>
+</section>
+<section class="sec off" data-key="n5" data-group="Nazariya" data-ico="🔁" data-title="Ma&#x27;lumotni saqlash va qayta yuklash">
+<h2><span class="mark"></span>Ma&#x27;lumotni saqlash va qayta yuklash</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Dastur yopilsa, o'zgaruvchilar yo'qoladi. Ma'lumotni saqlab qolish uchun ikki funksiya yozamiz: <code>yukla()</code> (fayldan o'qiydi) va <code>saqla()</code> (faylga yozadi).</div>
+<h3>🔹 yukla / saqla usuli</h3>
+<p>Dastur birinchi marta ishlaganda fayl hali yo'q bo'ladi. Shuning uchun <code>yukla()</code> <code>FileNotFoundError</code> ni ushlab, bo'sh ro'yxat qaytaradi. Har o'zgarishdan keyin <code>saqla()</code> chaqiriladi.</p>
+<div class="editor" data-ed="e11" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+FAYL = &quot;vazifalar.json&quot;
+
+
+def yukla():
+    try:
+        with open(FAYL, encoding=&quot;utf-8&quot;) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+
+def saqla(vazifalar):
+    with open(FAYL, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        json.dump(vazifalar, f, ensure_ascii=False, indent=2)
+
+
+vazifalar = yukla()
+print(&quot;Boshida:&quot;, vazifalar)
+vazifalar.append(&quot;Fizikadan masala yechish&quot;)
+saqla(vazifalar)
+print(&quot;Qayta yuklandi:&quot;, yukla())</textarea></div><div class="out" hidden></div></div>
+<div class="note">🏪 <b>Do'kon kabi:</b> kechqurun sotuvchi daftarga qoldiqni yozadi (<code>saqla</code>). Ertalab daftarni ochib, kechagi holatdan davom etadi (<code>yukla</code>).</div>
+<h3>🔹 CSV yoki JSON?</h3>
+<div class="tbl-wrap"><table class="cmp2"><tr><th></th><th>CSV</th><th>JSON</th></tr>
+<tr><td>Tuzilma</td><td>tekis jadval: qator va ustun</td><td>ichma-ich: lug'at, ro'yxat</td></tr>
+<tr><td>Qiymat turlari</td><td>hammasi satr</td><td>son, satr, <code>true</code>, <code>null</code> saqlanadi</td></tr>
+<tr><td>Kim ochadi</td><td>Excel, Google Sheets</td><td>dasturlar, saytlar, API</td></tr>
+<tr><td>Misol</td><td>jurnal, savdo, kontaktlar ro'yxati</td><td>sozlamalar, hisobot, ma'lumotlar bazasi</td></tr></table></div>
+<h3>🔹 Noto'g'ri qatorlar</h3>
+<p>Real fayllarda xato qatorlar uchraydi: ustun yetishmaydi yoki son o'rniga so'z yozilgan. Dastur yiqilmasligi uchun har qatorni <code>try/except</code> bilan tekshiring va xatolarni alohida yig'ing.</p>
+<div class="editor" data-ed="e12" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+qatorlar = [[&quot;Ali&quot;, &quot;87&quot;], [&quot;Vali&quot;, &quot;o&#x27;n&quot;], [&quot;Sardor&quot;], [&quot;Lola&quot;, &quot;92&quot;]]
+yaxshi, xato = [], []
+for qator in qatorlar:
+    try:
+        yaxshi.append((qator[0], int(qator[1])))
+    except (ValueError, IndexError):
+        xato.append(qator)
+print(&quot;Yaxshi:&quot;, yaxshi)
+print(&quot;Xato:&quot;, xato)</textarea></div><div class="out" hidden></div></div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Birinchi oynani 2–3 marta ishga tushiring. Har safar yangi fayl yaratilgani uchun ro'yxat qaytadan boshlanadi. VS Code'da esa fayl saqlanib qoladi va ro'yxat har safar uzayadi.</div>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="CSV faylni o&#x27;qish" data-task="t01">
+<div class="card step" data-task="t01" data-title="CSV faylni o&#x27;qish" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>CSV faylni o&#x27;qish <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada <code>csv.reader</code> narxlar jadvalini o'qiydi. Siz shunday usulda sinf ro'yxatini o'qiysiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (mahsulotlar.csv, sinf.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">mahsulotlar.csv</div><pre class="static"><code class="language-none">nomi,narx
+Non,4000
+Sut,12000
+Choy,15000
+</code></pre><div class="sol-file">sinf.csv</div><pre class="static"><code class="language-none">ism,sinf,shahar
+Ali,10-A,Urganch
+Dilnoza,10-B,Xiva
+Sardor,10-A,Xiva
+Malika,10-B,Toshkent
+Bobur,10-A,Xiva
+</code></pre></details>
+<div class="editor" data-ed="e13" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+with open(&quot;mahsulotlar.csv&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    oqiydi = csv.reader(f)
+    sarlavha = next(oqiydi)
+    print(&quot;Ustunlar:&quot;, sarlavha)
+    for qator in oqiydi:
+        print(qator[0], &quot;-&quot;, qator[1], &quot;so&#x27;m&quot;)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring: u <code>mahsulotlar.csv</code> ni o'qiydi.</li><li>O'z oynangizda <code>sinf.csv</code> faylini <code>encoding="utf-8"</code> va <code>newline=""</code> bilan oching.</li><li><code>csv.reader</code> bilan o'qing, sarlavha qatorini <code>next()</code> bilan o'tkazib yuboring.</li><li>Har o'quvchi uchun bitta qator chiqaring: <code>Ism: sinf</code> (masalan <code>Ali: 10-A</code>). Shahar ustuni kerak emas.</li></ol><p>Tekshiruv boshqa <code>sinf.csv</code> bilan ham sinaydi, shuning uchun ismlarni qo'lda yozmang.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">Ali: 10-A
+Dilnoza: 10-B
+Sardor: 10-A
+Malika: 10-B
+Bobur: 10-A</pre></div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+# 1) sinf.csv ni oching (encoding=&quot;utf-8&quot;, newline=&quot;&quot;)
+# 2) csv.reader bilan o&#x27;qing, sarlavhani next() bilan o&#x27;tkazing
+# 3) har o&#x27;quvchi uchun &quot;Ism: sinf&quot; chiqaring
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="Lug&#x27;atni JSON&#x27;ga yozish va o&#x27;qish" data-task="t02">
+<div class="card step" data-task="t02" data-title="Lug&#x27;atni JSON&#x27;ga yozish va o&#x27;qish" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>Lug&#x27;atni JSON&#x27;ga yozish va o&#x27;qish <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namuna kitob lug'atini JSON faylga saqlaydi va qayta o'qiydi. Siz o'quvchi ma'lumotini shunday saqlaysiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e14" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+kitob = {&quot;nomi&quot;: &quot;O&#x27;tkan kunlar&quot;, &quot;muallif&quot;: &quot;Abdulla Qodiriy&quot;, &quot;yil&quot;: 1926}
+with open(&quot;kitob.json&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    json.dump(kitob, f, ensure_ascii=False, indent=2)
+
+with open(&quot;kitob.json&quot;, encoding=&quot;utf-8&quot;) as f:
+    yuklangan = json.load(f)
+print(yuklangan[&quot;nomi&quot;], &quot;-&quot;, yuklangan[&quot;yil&quot;])
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ishga tushiring va kodni o'qing.</li><li>Starterda <code>ism</code> va <code>sinf</code> klaviaturadan o'qiladi. Ulardan <code>oquvchi</code> lug'atini tuzing: kalitlar <code>"ism"</code> va <code>"sinf"</code>.</li><li>Lug'atni <code>oquvchi.json</code> fayliga <code>json.dump</code> bilan yozing (<code>ensure_ascii=False</code>, <code>indent=2</code>).</li><li>Faylni <code>json.load</code> bilan qayta o'qing va <b>o'qilgan</b> lug'atdan foydalanib chiqaring: <code>Saqlandi: ism, sinf</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>Dilnoza</code> va <code>10-B</code> bo'lsa: <code>Saqlandi: Dilnoza, 10-B</code>. <code>oquvchi.json</code> faylida esa <code>{"ism": "Dilnoza", "sinf": "10-B"}</code>.</div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+ism = input(&quot;Ism: &quot;)
+sinf = input(&quot;Sinf: &quot;)
+# 1) oquvchi lug&#x27;atini tuzing
+# 2) uni oquvchi.json ga json.dump bilan yozing
+# 3) faylni json.load bilan qayta o&#x27;qing va natijani chiqaring
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="json.dumps natijasi" data-task="t03">
+<div class="card step" data-task="t03" data-title="json.dumps natijasi" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>json.dumps natijasi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc"><code>json.dumps</code> Python obyektini JSON matnga aylantiradi. Natija qanday ko'rinishini oldindan ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Har bir <code>print</code> nima chiqarishini o'ylang.</li><li>Satrlar JSON'da qanday tirnoq bilan yoziladi?</li><li><code>ʻ</code> belgisi (rasmiy o'zbek apostrofi) ASCII emas. U kod bilan qanday yoziladi? Nazariyadagi misolni eslang.</li><li><code>True</code> va <code>None</code> JSON'da qanday yoziladi?</li></ol></div>
+<pre class="static pred"><code class="language-python">import json
+
+print(json.dumps(&quot;Gʻayrat&quot;))
+print(json.dumps(&quot;Gʻayrat&quot;, ensure_ascii=False))
+print(json.dumps({&quot;ism&quot;: &quot;Ali&quot;, &quot;faol&quot;: True, &quot;tel&quot;: None}))
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="CSV&#x27;dan o&#x27;rtacha baho" data-task="t04">
+<div class="card step" data-task="t04" data-title="CSV&#x27;dan o&#x27;rtacha baho" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>CSV&#x27;dan o&#x27;rtacha baho <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Baholar jadvalini o'qib, o'rtacha bahoni hisoblaydigan funksiya yozamiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (baholar.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">baholar.csv</div><pre class="static"><code class="language-none">ism,baho
+Ali,5
+Vali,4
+Sardor,3
+Dilnoza,5
+Malika,4
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>ortacha_baho(fayl_nomi)</code> funksiyasini yozing. Fayl ustunlari: <code>ism,baho</code> (tayyor <code>baholar.csv</code> ga qarang).</li><li>Faylni <code>csv</code> moduli bilan o'qing, sarlavhani o'tkazib yuboring.</li><li>Baholar satr bo'lib keladi: ularni <code>int()</code> bilan songa o'tkazing.</li><li>O'rtachani <code>round(..., 2)</code> bilan qaytaring.</li><li>Faylda faqat sarlavha bo'lsa (o'quvchi yo'q), <code>0</code> qaytaring.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="static"><code class="language-python">ortacha_baho(&quot;baholar.csv&quot;)  # 4.2   (5+4+3+5+4 = 21, 21 / 5)
+# 5, 4, 4 baholi faylda  -&gt; 4.33
+# faqat sarlavha bo&#x27;lsa  -&gt; 0</code></pre></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def ortacha_baho(fayl_nomi):
+    # faylni oching, sarlavhani o&#x27;tkazing, baholarni int() ga o&#x27;tkazib yig&#x27;ing
+    # o&#x27;quvchi bo&#x27;lmasa 0 qaytaring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(ortacha_baho(&quot;baholar.csv&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="DictReader: Xivadagi o&#x27;quvchilar" data-task="t05">
+<div class="card step" data-task="t05" data-title="DictReader: Xivadagi o&#x27;quvchilar" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>DictReader: Xivadagi o&#x27;quvchilar <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc"><code>DictReader</code> bilan ustunga nomi orqali murojaat qilamiz va shahar bo'yicha saralaymiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (sinf.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">sinf.csv</div><pre class="static"><code class="language-none">ism,sinf,shahar
+Ali,10-A,Urganch
+Dilnoza,10-B,Xiva
+Sardor,10-A,Xiva
+Malika,10-B,Toshkent
+Bobur,10-A,Xiva
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>shahardagilar(fayl_nomi, shahar)</code> funksiyasini yozing.</li><li>Faylni <code>csv.DictReader</code> bilan o'qing. Har qator lug'at: <code>qator["ism"]</code>, <code>qator["shahar"]</code>.</li><li><code>shahar</code> ustuni berilgan shaharga teng bo'lgan o'quvchilar <b>ismlari ro'yxatini</b> fayldagi tartibda qaytaring.</li><li>Hech kim topilmasa <code>[]</code> qaytsin.</li><li>Boshqa fayllarda ustunlar tartibi boshqacha bo'lishi mumkin (masalan <code>shahar,ism,sinf</code>). Shuning uchun raqam bilan emas, <b>nomi bilan</b> oling.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="static"><code class="language-python">shahardagilar(&quot;sinf.csv&quot;, &quot;Xiva&quot;)     # [&#x27;Dilnoza&#x27;, &#x27;Sardor&#x27;, &#x27;Bobur&#x27;]
+shahardagilar(&quot;sinf.csv&quot;, &quot;Urganch&quot;)  # [&#x27;Ali&#x27;]
+shahardagilar(&quot;sinf.csv&quot;, &quot;Nukus&quot;)    # []</code></pre></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def shahardagilar(fayl_nomi, shahar):
+    # csv.DictReader bilan o&#x27;qing, qator[&quot;shahar&quot;] ni tekshiring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(shahardagilar(&quot;sinf.csv&quot;, &quot;Xiva&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Ro&#x27;yxatni CSV&#x27;ga yozish" data-task="t06">
+<div class="card step" data-task="t06" data-title="Ro&#x27;yxatni CSV&#x27;ga yozish" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Ro&#x27;yxatni CSV&#x27;ga yozish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc"><code>csv.writer</code> bilan narxlar jadvalini faylga yozamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>saqlash(fayl_nomi, mahsulotlar)</code> funksiyasini yozing. <code>mahsulotlar</code> — <code>[nomi, narx]</code> juftliklari ro'yxati.</li><li>Faylni <code>"w"</code> rejimida, <code>encoding="utf-8"</code> va <code>newline=""</code> bilan oching.</li><li><code>csv.writer</code> bilan avval sarlavha <code>nomi,narx</code>, keyin har bir mahsulotni yozing.</li><li>Ro'yxat bo'sh bo'lsa, faylda faqat sarlavha bo'ladi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>saqlash("narxlar.csv", [["Non", 4000], ["Sut", 12000]])</code> dan keyin fayl:<pre class="console">nomi,narx
+Non,4000
+Sut,12000</pre></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def saqlash(fayl_nomi, mahsulotlar):
+    # faylni &quot;w&quot; rejimida, newline=&quot;&quot; bilan oching
+    # csv.writer: avval sarlavha, keyin mahsulotlar
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    saqlash(&quot;narxlar.csv&quot;, [[&quot;Non&quot;, 4000], [&quot;Sut&quot;, 12000]])
+    with open(&quot;narxlar.csv&quot;, encoding=&quot;utf-8&quot;) as f:
+        print(f.read())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="Buzilgan o&#x27;zbekcha harflar" data-task="t07">
+<div class="card step" data-task="t07" data-title="Buzilgan o&#x27;zbekcha harflar" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>Buzilgan o&#x27;zbekcha harflar <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Dastur shaharlar ro'yxatini JSON faylga saqlaydi. Lekin faylni ochgan odam harflar o'rnida g'alati kodlarni ko'ryapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni ▶ bilan ishga tushiring va fayl mazmuniga qarang.</li><li>Kodni tuzating: <code>shaharlar.json</code> faylida nomlar odam o'qiy oladigan ko'rinishda, <b>harflari bilan</b> saqlansin.</li><li>Ro'yxatni va fayl nomini o'zgartirmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">[&quot;Oʻzbekiston&quot;, &quot;Gʻijduvon&quot;, &quot;Toshkent&quot;]</pre></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+shaharlar = [&quot;Oʻzbekiston&quot;, &quot;Gʻijduvon&quot;, &quot;Toshkent&quot;]
+with open(&quot;shaharlar.json&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    json.dump(shaharlar, f)
+
+with open(&quot;shaharlar.json&quot;, encoding=&quot;utf-8&quot;) as f:
+    print(f.read())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="CSV ustuni yig&#x27;indisi" data-task="t08">
+<div class="card step" data-task="t08" data-title="CSV ustuni yig&#x27;indisi" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>CSV ustuni yig&#x27;indisi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Istalgan ustun nomini berib, uning yig'indisini hisoblaymiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (savdo.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">savdo.csv</div><pre class="static"><code class="language-none">sana,mahsulot,soni,narx
+2026-10-01,Non,10,4000
+2026-10-01,Sut,3,12000
+2026-10-02,Non,8,4000
+2026-10-02,Choy,2,15000
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>ustun_yigindisi(fayl_nomi, ustun)</code> funksiyasini yozing.</li><li>Faylni <code>csv.DictReader</code> bilan o'qing va har qatordan <code>qator[ustun]</code> ni oling.</li><li>Qiymatlarni <code>int()</code> bilan songa o'tkazib, yig'indisini qaytaring. Qiymat atrofida bo'shliq bo'lsa ham <code>int()</code> uni to'g'ri o'qiydi (<code>int(" 5")</code> → <code>5</code>).</li><li>Faylda faqat sarlavha bo'lsa, <code>0</code> qaytsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> tayyor <code>savdo.csv</code> uchun:<pre class="static"><code class="language-python">ustun_yigindisi(&quot;savdo.csv&quot;, &quot;soni&quot;)  # 23
+ustun_yigindisi(&quot;savdo.csv&quot;, &quot;narx&quot;)  # 35000</code></pre></div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def ustun_yigindisi(fayl_nomi, ustun):
+    # DictReader, qator[ustun], int()
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(ustun_yigindisi(&quot;savdo.csv&quot;, &quot;soni&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="JSON sozlamalar fayli" data-task="t09">
+<div class="card step" data-task="t09" data-title="JSON sozlamalar fayli" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>JSON sozlamalar fayli <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur sozlamalarini JSON faylda saqlaymiz: o'qiymiz, bitta qiymatni o'zgartiramiz va qayta yozamiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (sozlamalar.json) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">sozlamalar.json</div><pre class="static"><code class="language-none">{
+  &quot;til&quot;: &quot;uz&quot;,
+  &quot;tema&quot;: &quot;yorug&#x27;&quot;,
+  &quot;shrift&quot;: 14
+}
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>sozlamani_ozgartir(fayl_nomi, kalit, qiymat)</code> funksiyasini yozing.</li><li>Fayldagi lug'atni <code>json.load</code> bilan o'qing. Fayl <b>yo'q</b> bo'lsa (<code>FileNotFoundError</code>), bo'sh lug'atdan boshlang.</li><li><code>kalit</code> ga <code>qiymat</code> ni yozing (yangi kalit bo'lsa qo'shiladi).</li><li>Lug'atni o'sha faylga <code>json.dump</code> bilan qayta yozing (<code>ensure_ascii=False</code>, <code>indent=2</code>).</li><li>Yangilangan lug'atni qaytaring.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="static"><code class="language-python">sozlamani_ozgartir(&quot;sozlamalar.json&quot;, &quot;shrift&quot;, 16)
+# {&#x27;til&#x27;: &#x27;uz&#x27;, &#x27;tema&#x27;: &quot;yorug&#x27;&quot;, &#x27;shrift&#x27;: 16}  va fayl ham yangilanadi
+sozlamani_ozgartir(&quot;yangi.json&quot;, &quot;til&quot;, &quot;ru&quot;)
+# {&#x27;til&#x27;: &#x27;ru&#x27;}  — fayl yo&#x27;q edi, yangi yaratildi</code></pre></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+
+def sozlamani_ozgartir(fayl_nomi, kalit, qiymat):
+    # 1) o&#x27;qing (fayl yo&#x27;q bo&#x27;lsa {} dan boshlang)
+    # 2) o&#x27;zgartiring  3) qayta yozing  4) qaytaring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sozlamani_ozgartir(&quot;sozlamalar.json&quot;, &quot;shrift&quot;, 16))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="CSV → JSON konvertor" data-task="t10">
+<div class="card step" data-task="t10" data-title="CSV → JSON konvertor" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>CSV → JSON konvertor <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Jadvalni JSON'ga o'giramiz: har qator lug'atga aylanadi.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (oquvchilar.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">oquvchilar.csv</div><pre class="static"><code class="language-none">ism,sinf
+Gʻayrat,10-A
+Oʻlmas,10-B
+Lola,10-A
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>csv_dan_json(csv_fayl, json_fayl)</code> funksiyasini yozing.</li><li><code>csv_fayl</code> ni <code>csv.DictReader</code> bilan o'qing va qatorlarni <b>lug'atlar ro'yxatiga</b> yig'ing (qiymatlar satrligicha qoladi).</li><li>Ro'yxatni <code>json_fayl</code> ga <code>ensure_ascii=False</code> va <code>indent=2</code> bilan yozing.</li><li>Yozilgan yozuvlar sonini qaytaring. Faqat sarlavha bo'lsa, JSON'da <code>[]</code> va natija <code>0</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>csv_dan_json("oquvchilar.csv", "oquvchilar.json")</code> → <code>3</code>, fayl esa:<pre class="console">[
+  {
+    &quot;ism&quot;: &quot;Gʻayrat&quot;,
+    &quot;sinf&quot;: &quot;10-A&quot;
+  },
+  ...
+]</pre></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+import json
+
+
+def csv_dan_json(csv_fayl, json_fayl):
+    # DictReader -&gt; ro&#x27;yxat -&gt; json.dump -&gt; yozuvlar sonini qaytaring
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(csv_dan_json(&quot;oquvchilar.csv&quot;, &quot;oquvchilar.json&quot;))
+    with open(&quot;oquvchilar.json&quot;, encoding=&quot;utf-8&quot;) as f:
+        print(f.read())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="Ichma-ich JSON&#x27;dan qiymat olish" data-task="t11">
+<div class="card step" data-task="t11" data-title="Ichma-ich JSON&#x27;dan qiymat olish" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>Ichma-ich JSON&#x27;dan qiymat olish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Maktab haqidagi JSON'da sinflar, sinflar ichida o'quvchilar bor. Kerakli sinfni topib, o'rtacha bahoni hisoblaymiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (maktab.json) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">maktab.json</div><pre class="static"><code class="language-none">{
+  &quot;maktab&quot;: &quot;Xiva 5-maktab&quot;,
+  &quot;sinflar&quot;: [
+    {
+      &quot;nomi&quot;: &quot;10-A&quot;,
+      &quot;rahbar&quot;: &quot;Karimova N.&quot;,
+      &quot;oquvchilar&quot;: [
+        {
+          &quot;ism&quot;: &quot;Ali&quot;,
+          &quot;baho&quot;: 5
+        },
+        {
+          &quot;ism&quot;: &quot;Vali&quot;,
+          &quot;baho&quot;: 4
+        },
+        {
+          &quot;ism&quot;: &quot;Sardor&quot;,
+          &quot;baho&quot;: 4
+        }
+      ]
+    },
+    {
+      &quot;nomi&quot;: &quot;10-B&quot;,
+      &quot;rahbar&quot;: &quot;Rahimov A.&quot;,
+      &quot;oquvchilar&quot;: [
+        {
+          &quot;ism&quot;: &quot;Dilnoza&quot;,
+          &quot;baho&quot;: 5
+        },
+        {
+          &quot;ism&quot;: &quot;Malika&quot;,
+          &quot;baho&quot;: 5
+        }
+      ]
+    },
+    {
+      &quot;nomi&quot;: &quot;11-A&quot;,
+      &quot;rahbar&quot;: &quot;Saidova M.&quot;,
+      &quot;oquvchilar&quot;: []
+    }
+  ]
+}
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Tayyor <code>maktab.json</code> tuzilishini o'qing: <code>{"maktab": ..., "sinflar": [{"nomi": ..., "oquvchilar": [{"ism": ..., "baho": ...}]}]}</code>.</li><li><code>sinf_ortachasi(fayl_nomi, sinf_nomi)</code> funksiyasini yozing: faylni <code>json.load</code> bilan o'qiydi.</li><li><code>"sinflar"</code> ro'yxatidan <code>"nomi"</code> si <code>sinf_nomi</code> ga teng sinfni toping.</li><li>Shu sinf o'quvchilarining o'rtacha bahosini <code>round(..., 2)</code> bilan qaytaring.</li><li>Sinfda o'quvchi bo'lmasa <code>0</code>, bunday sinf umuman bo'lmasa <code>None</code> qaytsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="static"><code class="language-python">sinf_ortachasi(&quot;maktab.json&quot;, &quot;10-A&quot;)  # 4.33
+sinf_ortachasi(&quot;maktab.json&quot;, &quot;10-B&quot;)  # 5.0
+sinf_ortachasi(&quot;maktab.json&quot;, &quot;11-A&quot;)  # 0     (o&#x27;quvchi yo&#x27;q)
+sinf_ortachasi(&quot;maktab.json&quot;, &quot;9-V&quot;)   # None  (bunday sinf yo&#x27;q)</code></pre></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+
+def sinf_ortachasi(fayl_nomi, sinf_nomi):
+    # json.load -&gt; ma&#x27;lumot[&quot;sinflar&quot;] -&gt; kerakli sinf -&gt; o&#x27;rtacha
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sinf_ortachasi(&quot;maktab.json&quot;, &quot;10-A&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="DictWriter bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="DictWriter bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>DictWriter bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Reyting jadvalini <code>DictWriter</code> bilan yozadigan kodda bo'sh joylar bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Har bir <code>___</code> ni to'g'ri qiymat yoki metod nomi bilan almashtiring.</li><li>Fayl CSV uchun to'g'ri ochilsin (<code>newline</code>).</li><li><code>DictWriter</code> ga ustunlar <code>ism</code>, <code>sinf</code>, <code>ball</code> tartibida berilsin.</li><li>Avval sarlavha, keyin hamma o'quvchilar bitta metod bilan yozilsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">ism,sinf,ball
+Ali,10-A,87
+Dilnoza,10-B,95
+Sardor,10-A,78</pre></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+oquvchilar = [
+    {&quot;ism&quot;: &quot;Ali&quot;, &quot;sinf&quot;: &quot;10-A&quot;, &quot;ball&quot;: 87},
+    {&quot;ism&quot;: &quot;Dilnoza&quot;, &quot;sinf&quot;: &quot;10-B&quot;, &quot;ball&quot;: 95},
+    {&quot;ism&quot;: &quot;Sardor&quot;, &quot;sinf&quot;: &quot;10-A&quot;, &quot;ball&quot;: 78},
+]
+
+with open(&quot;reyting.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;, newline=___) as f:
+    yozuvchi = csv.___(f, fieldnames=___)
+    yozuvchi.___()
+    yozuvchi.___(oquvchilar)
+
+with open(&quot;reyting.csv&quot;, encoding=&quot;utf-8&quot;) as f:
+    print(f.read())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="Choraklar yig&#x27;indisi noto&#x27;g&#x27;ri" data-task="t13">
+<div class="card step" data-task="t13" data-title="Choraklar yig&#x27;indisi noto&#x27;g&#x27;ri" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>Choraklar yig&#x27;indisi noto&#x27;g&#x27;ri <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur har o'quvchining ikki chorak bahosini qo'shib chiqarishi kerak. U xatosiz ishlaydi, lekin natija g'alati.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (chorak.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">chorak.csv</div><pre class="static"><code class="language-none">ism,chorak1,chorak2
+Ali,5,4
+Dilnoza,5,5
+Sardor,3,4
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni ▶ bilan ishga tushiring va natijaga qarang. <code>Ali</code> uchun 5 + 4 qancha bo'lishi kerak edi?</li><li>Xatoni tuzating.</li><li>Chiqish formati o'zgarmasin: <code>Ism: yig'indi</code>.</li></ol><p>Tekshiruv boshqa <code>chorak.csv</code> bilan ham sinaydi.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">Ali: 9
+Dilnoza: 10
+Sardor: 7</pre></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+with open(&quot;chorak.csv&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    for qator in csv.DictReader(f):
+        jami = qator[&quot;chorak1&quot;] + qator[&quot;chorak2&quot;]
+        print(qator[&quot;ism&quot;] + &quot;:&quot;, jami)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="json.loads dan keyin" data-task="t14">
+<div class="card step" data-task="t14" data-title="json.loads dan keyin" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>json.loads dan keyin <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">JSON matn lug'atga aylangandan keyin har qiymat qanday turga ega bo'ladi? Natijani oldindan ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li><code>matn</code> va <code>d</code> qaysi turda ekanini aniqlang.</li><li><code>"yosh"</code> qiymati son bo'ladimi yoki satr?</li><li>JSON'dagi <code>true</code> va <code>null</code> Python'da nimaga aylanadi?</li><li>Natijani qatorma-qator yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">import json
+
+matn = &#x27;{&quot;ism&quot;: &quot;Ali&quot;, &quot;yosh&quot;: 15, &quot;baholar&quot;: [5, 4], &quot;faol&quot;: true, &quot;manzil&quot;: null}&#x27;
+d = json.loads(matn)
+print(type(matn).__name__, type(d).__name__)
+print(d[&quot;yosh&quot;] + 1)
+print(d[&quot;baholar&quot;][1], type(d[&quot;baholar&quot;]).__name__)
+print(d[&quot;faol&quot;], d[&quot;manzil&quot;])
+print(json.dumps(d[&quot;baholar&quot;]) + &quot;!&quot;)
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Savdo: kategoriya bo&#x27;yicha jami" data-task="t15">
+<div class="card step" data-task="t15" data-title="Savdo: kategoriya bo&#x27;yicha jami" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Savdo: kategoriya bo&#x27;yicha jami <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Do'kon savdosi jadvalidan har kategoriya qancha tushum berganini hisoblaymiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (dokon.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">dokon.csv</div><pre class="static"><code class="language-none">mahsulot,kategoriya,soni,narx
+Non,non mahsulotlari,10,4000
+Sut,sut mahsulotlari,4,12000
+Qatiq,sut mahsulotlari,2,9000
+Somsa,non mahsulotlari,5,6000
+Choy,ichimliklar,3,15000
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>kategoriya_jami(fayl_nomi)</code> funksiyasini yozing. Fayl ustunlari: <code>mahsulot,kategoriya,soni,narx</code>.</li><li>Har qator tushumi: <code>soni * narx</code> (ikkalasini <code>int()</code> ga o'tkazing).</li><li>Natija — lug'at: kalit — kategoriya, qiymat — shu kategoriyadagi tushumlar yig'indisi.</li><li>Faylda faqat sarlavha bo'lsa <code>{}</code> qaytsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="static"><code class="language-python">kategoriya_jami(&quot;dokon.csv&quot;)
+# {&#x27;non mahsulotlari&#x27;: 70000, &#x27;sut mahsulotlari&#x27;: 66000, &#x27;ichimliklar&#x27;: 45000}</code></pre>Non: 10 × 4000 = 40000, Somsa: 5 × 6000 = 30000 → non mahsulotlari: 70000.</div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def kategoriya_jami(fayl_nomi):
+    # DictReader, soni * narx, lug&#x27;atga yig&#x27;ish
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(kategoriya_jami(&quot;dokon.csv&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="JSON «baza»: kitoblar" data-task="t16">
+<div class="card step" data-task="t16" data-title="JSON «baza»: kitoblar" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>JSON «baza»: kitoblar <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kitoblar ro'yxatini JSON faylda saqlaydigan kichik baza yozamiz: yuklash, qo'shish, o'chirish va qidirish.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (kitoblar.json) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">kitoblar.json</div><pre class="static"><code class="language-none">[
+  {
+    &quot;nomi&quot;: &quot;O&#x27;tkan kunlar&quot;,
+    &quot;muallif&quot;: &quot;Abdulla Qodiriy&quot;
+  },
+  {
+    &quot;nomi&quot;: &quot;Mehrobdan chayon&quot;,
+    &quot;muallif&quot;: &quot;Abdulla Qodiriy&quot;
+  },
+  {
+    &quot;nomi&quot;: &quot;Sariq devni minib&quot;,
+    &quot;muallif&quot;: &quot;Xudoyberdi To&#x27;xtaboyev&quot;
+  }
+]
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>yukla(fayl)</code>: fayldagi ro'yxatni qaytaradi. Fayl yo'q bo'lsa <code>[]</code>.</li><li><code>qosh(fayl, nomi, muallif)</code>: ro'yxatga <code>{"nomi": nomi, "muallif": muallif}</code> qo'shadi, faylga saqlaydi (<code>ensure_ascii=False</code>, <code>indent=2</code>) va ro'yxatning yangi uzunligini qaytaradi.</li><li><code>ochir(fayl, nomi)</code>: shu nomli kitobni o'chirib saqlaydi va <code>True</code> qaytaradi. Topilmasa — <code>False</code> (fayl o'zgarmaydi).</li><li><code>qidir(fayl, soz)</code>: nomi yoki muallifida <code>soz</code> uchragan kitoblar <b>nomlari ro'yxatini</b> qaytaradi. Katta-kichik harf farqlanmaydi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> tayyor <code>kitoblar.json</code> (3 ta kitob) uchun:<pre class="static"><code class="language-python">qosh(&quot;kitoblar.json&quot;, &quot;Shum bola&quot;, &quot;Gʻafur Gʻulom&quot;)  # 4
+qidir(&quot;kitoblar.json&quot;, &quot;qodiriy&quot;)   # [&quot;O&#x27;tkan kunlar&quot;, &#x27;Mehrobdan chayon&#x27;]
+ochir(&quot;kitoblar.json&quot;, &quot;Shum bola&quot;)  # True
+ochir(&quot;kitoblar.json&quot;, &quot;Yo&#x27;q kitob&quot;)  # False
+yukla(&quot;yoq.json&quot;)                    # []</code></pre></div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import json
+
+
+def yukla(fayl):
+    pass
+
+
+def saqla(fayl, kitoblar):
+    # yordamchi: ro&#x27;yxatni faylga yozadi
+    pass
+
+
+def qosh(fayl, nomi, muallif):
+    pass
+
+
+def ochir(fayl, nomi):
+    pass
+
+
+def qidir(fayl, soz):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(qosh(&quot;kitoblar.json&quot;, &quot;Shum bola&quot;, &quot;Gʻafur Gʻulom&quot;))
+    print(qidir(&quot;kitoblar.json&quot;, &quot;qodiriy&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="Noto&#x27;g&#x27;ri qatorlar hisoboti" data-task="t17">
+<div class="card step" data-task="t17" data-title="Noto&#x27;g&#x27;ri qatorlar hisoboti" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>Noto&#x27;g&#x27;ri qatorlar hisoboti <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Real fayllarda xato qatorlar bo'ladi. Dastur ularni o'tkazib yuborsin, lekin qaysi qatorlar xato ekanini hisobotda ko'rsatsin.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (royxat.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">royxat.csv</div><pre class="static"><code class="language-none">ism,yosh,ball
+Ali,15,87
+Vali,o&#x27;n besh,90
+Sardor,16
+Dilnoza,15,105
+
+Malika,16,95
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>tekshir(fayl_nomi)</code> funksiyasini yozing. Fayl ustunlari: <code>ism,yosh,ball</code>; birinchi qator — sarlavha.</li><li>Qator <b>to'g'ri</b> hisoblanadi, agar: unda aynan 3 ta qiymat bo'lsa, <code>yosh</code> va <code>ball</code> butun son bo'lsa, <code>ball</code> 0 dan 100 gacha (chegaralar kiradi) bo'lsa.</li><li>Bo'sh qatorlarni o'tkazib yuboring (ular xato ham emas).</li><li>Tuple qaytaring: <code>(to'g'ri ismlar ro'yxati, xato qatorlar raqamlari ro'yxati)</code>. Qator raqami — fayldagi raqam: sarlavha 1-qator, birinchi ma'lumot 2-qator.</li><li><code>hisobot_matni(fayl_nomi)</code> funksiyasini yozing: ikki qatorli matn qaytarsin: <code>To'g'ri: N ta</code> va <code>Xato qatorlar: 3, 4, 5</code>. Xato bo'lmasa: <code>Xato qatorlar: yo'q</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> tayyor <code>royxat.csv</code> uchun:<pre class="static"><code class="language-python">tekshir(&quot;royxat.csv&quot;)  # ([&#x27;Ali&#x27;, &#x27;Malika&#x27;], [3, 4, 5])
+print(hisobot_matni(&quot;royxat.csv&quot;))</code></pre><pre class="console">To&#x27;g&#x27;ri: 2 ta
+Xato qatorlar: 3, 4, 5</pre></div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+
+def tekshir(fayl_nomi):
+    # enumerate(..., start=2) bilan qator raqamini biling
+    # try/except ValueError bilan sonlarni tekshiring
+    pass
+
+
+def hisobot_matni(fayl_nomi):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(tekshir(&quot;royxat.csv&quot;))
+    print(hisobot_matni(&quot;royxat.csv&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Davomat hisoboti: ikki xato" data-task="t18">
+<div class="card step" data-task="t18" data-title="Davomat hisoboti: ikki xato" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Davomat hisoboti: ikki xato <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Dastur davomat jadvalidan nechta o'quvchi borligini va kim kelmaganini aniqlaydi, kelmaganlarni alohida CSV'ga yozadi. Unda <b>ikkita</b> muammo bor.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (davomat.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">davomat.csv</div><pre class="static"><code class="language-none">ism,keldi
+Ali,ha
+Vali,yo&#x27;q
+Sardor,ha
+Dilnoza,yo&#x27;q
+Malika,ha
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni ishga tushiring va natijani <code>davomat.csv</code> bilan solishtiring: jadvalda nechta o'quvchi bor?</li><li>Sinfdoshingiz <code>kelmaganlar.csv</code> ni Windows kompyuterda ochganda qatorlar orasida <b>bo'sh qatorlar</b> chiqqan. Shuni ham tuzating.</li><li>Chiqish formati va fayl nomlari o'zgarmasin.</li></ol><p>Tekshiruv boshqa <code>davomat.csv</code> bilan ham sinaydi.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">Jami o&#x27;quvchi: 5
+Kelmaganlar: 2</pre><code>kelmaganlar.csv</code> da: sarlavha <code>ism</code>, keyin <code>Vali</code> va <code>Dilnoza</code>.</div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+
+with open(&quot;davomat.csv&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    qatorlar = list(csv.reader(f))
+
+kelmaganlar = [q[0] for q in qatorlar if q[1] == &quot;yo&#x27;q&quot;]
+print(&quot;Jami o&#x27;quvchi:&quot;, len(qatorlar))
+print(&quot;Kelmaganlar:&quot;, len(kelmaganlar))
+
+with open(&quot;kelmaganlar.csv&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    yozuvchi = csv.writer(f)
+    yozuvchi.writerow([&quot;ism&quot;])
+    for ism in kelmaganlar:
+        yozuvchi.writerow([ism])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="split(&quot;,&quot;) o&#x27;rniga csv moduli" data-task="t19">
+<div class="card step" data-task="t19" data-title="split(&quot;,&quot;) o&#x27;rniga csv moduli" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>split(&quot;,&quot;) o&#x27;rniga csv moduli <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bu kod oddiy fayllarda ishlaydi, lekin manzil ichida vergul bo'lsa buziladi. Uni <code>csv</code> moduli bilan qayta yozamiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (manzillar.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">manzillar.csv</div><pre class="static"><code class="language-none">ism,manzil,tel
+Ali,&quot;Xiva, Ichan qala&quot;,+998901112233
+Vali,Urganch,+998912223344
+Dilnoza,&quot;Toshkent, Chilonzor, 9-kvartal&quot;,+998933334455
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni ishga tushiring: <code>"Xiva, Ichan qala"</code> manzili ikkiga bo'linib ketadi.</li><li>Faylni <code>with</code> bilan oching (<code>open</code>/<code>close</code> emas) va <code>csv.reader</code> yoki <code>csv.DictReader</code> bilan o'qing.</li><li><code>split</code>, <code>readlines</code> va <code>close</code> ishlatmang.</li><li>Har qator: <code>ism | manzil | tel</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">Ali | Xiva, Ichan qala | +998901112233
+Vali | Urganch | +998912223344
+Dilnoza | Toshkent, Chilonzor, 9-kvartal | +998933334455</pre></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">f = open(&quot;manzillar.csv&quot;, encoding=&quot;utf-8&quot;)
+qatorlar = f.readlines()
+f.close()
+
+for qator in qatorlar[1:]:
+    qismlar = qator.strip().split(&quot;,&quot;)
+    print(qismlar[0], &quot;|&quot;, qismlar[1], &quot;|&quot;, qismlar[2])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Do&#x27;kon savdosi hisoboti" data-task="t20">
+<div class="card step" data-task="t20" data-title="Do&#x27;kon savdosi hisoboti" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Do&#x27;kon savdosi hisoboti <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Do'kon egasi savdo jadvalini beradi. Siz kunlik tushum, eng ko'p tushum bergan 3 mahsulot va jami summani chiqarasiz, hisobotni JSON faylga saqlaysiz.</div>
+<details class="htmlview"><summary>📁 Tayyor fayllar (savdo.csv) — o'qib chiqing, o'zgartirmang</summary><div class="sol-file">savdo.csv</div><pre class="static"><code class="language-none">sana,mahsulot,soni,narx
+2026-10-01,Non,20,4000
+2026-10-01,Sut,5,12000
+2026-10-01,Choy,2,15000
+2026-10-02,Non,15,4000
+2026-10-02,Qatiq,4,9000
+2026-10-02,Sut,3,12000
+2026-10-03,Non,25,4000
+2026-10-03,Choy,4,15000
+2026-10-03,Shakar,2,14000
+</code></pre></details>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>savdo.csv</code> ni o'qing. Ustunlar: <code>sana,mahsulot,soni,narx</code>. Har qator tushumi: <code>soni * narx</code>.</li><li><code>Kunlik savdo:</code> sarlavhasidan keyin har kun uchun <code>sana: summa so'm</code>. Kunlar sana bo'yicha o'sish tartibida.</li><li><code>Top-3 mahsulot:</code> sarlavhasidan keyin tushumi eng katta 3 mahsulot: <code>1. nomi: summa so'm</code>. Tushum teng bo'lsa, nomi alifbo bo'yicha oldin turgani birinchi. Mahsulot 3 tadan kam bo'lsa, borlari chiqadi.</li><li><code>Jami: summa so'm</code> qatorini chiqaring.</li><li><code>hisobot.json</code> ga lug'at yozing (<code>ensure_ascii=False</code>, <code>indent=2</code>): <code>"jami"</code> — son, <code>"kunlar"</code> — <code>{sana: summa}</code>, <code>"top3"</code> — <code>[{"mahsulot": nomi, "summa": summa}, ...]</code> (yuqoridagi tartibda).</li><li>Oxirida <code>Hisobot saqlandi: hisobot.json</code> chiqaring.</li></ol><p>Tekshiruv boshqa <code>savdo.csv</code> bilan ham sinaydi.</p><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">Kunlik savdo:
+2026-10-01: 170000 so&#x27;m
+2026-10-02: 132000 so&#x27;m
+2026-10-03: 188000 so&#x27;m
+Top-3 mahsulot:
+1. Non: 240000 so&#x27;m
+2. Sut: 96000 so&#x27;m
+3. Choy: 90000 so&#x27;m
+Jami: 490000 so&#x27;m
+Hisobot saqlandi: hisobot.json</pre></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+import json
+
+# 1) savdo.csv ni o&#x27;qib, kunlar va mahsulotlar bo&#x27;yicha tushumni yig&#x27;ing
+# 2) kunlik savdoni chiqaring
+# 3) top-3 mahsulotni chiqaring
+# 4) jami summani chiqaring
+# 5) hisobot.json ga saqlang
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Kontaktlar daftari" data-task="mini">
+<div class="card step" data-task="mini" data-title="Kontaktlar daftari" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Kontaktlar daftari <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Telefon kontaktlarini JSON faylda saqlaydigan daftar yozamiz: qo'shish, tahrirlash, o'chirish, qidirish va CSV'ga eksport.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p><b>Umumiy rasm:</b> kontaktlar <code>kontaktlar.json</code> faylida lug'atlar ro'yxati bo'lib saqlanadi: <code>[{"ism": "Ali", "tel": "+998901112233"}, ...]</code>. Har funksiya avval faylni yuklaydi, o'zgarish bo'lsa — qayta saqlaydi. Fayl nomi <code>FAYL</code> o'zgaruvchisida turadi.</p>
+<ol>
+<li><b>yukla().</b> <code>FAYL</code> dagi ro'yxatni qaytaradi. Fayl yo'q bo'lsa — <code>[]</code>.</li>
+<li><b>saqla(kontaktlar).</b> Ro'yxatni <code>FAYL</code> ga yozadi: <code>ensure_ascii=False</code>, <code>indent=2</code>.</li>
+<li><b>qosh(ism, tel).</b> Shu ismli kontakt bo'lsa (katta-kichik harf farqlanmaydi) — <code>False</code>. Aks holda <code>{"ism": ism, "tel": tel}</code> ni qo'shib saqlaydi va <code>True</code> qaytaradi.</li>
+<li><b>tahrirla(ism, yangi_tel).</b> Kontakt topilsa (harfsiz), telefonini almashtirib saqlaydi va <code>True</code>. Topilmasa — <code>False</code>.</li>
+<li><b>ochir(ism).</b> Kontakt topilsa (harfsiz), o'chirib saqlaydi va <code>True</code>. Topilmasa — <code>False</code>.</li>
+<li><b>qidir(soz).</b> Ismida (harfsiz) yoki telefonida <code>soz</code> uchragan kontaktlar ro'yxatini (lug'atlar, fayldagi tartibda) qaytaradi.</li>
+<li><b>eksport(csv_fayl).</b> Kontaktlarni ism bo'yicha alifbo tartibida CSV faylga yozadi: sarlavha <code>ism,tel</code>, <code>newline=""</code> bilan. Yozilgan kontaktlar sonini qaytaradi.</li>
+<li><b>Hammasini ulang.</b> <code>if __name__ == "__main__":</code> ichida bir nechta kontakt qo'shib, tahrirlab, qidirib, eksport qilib ko'ring. Faylni qayta yuklaganda o'zgarishlar saqlanib qolishini tekshiring.</li>
+</ol>
+<div class="res"><b>✅ Natijada shular bo'ladi:</b><ul><li><code>kontaktlar.json</code> — o'zbekcha harflar o'zi bilan yozilgan, chiroyli JSON</li><li>7 ta funksiya: <code>yukla</code>, <code>saqla</code>, <code>qosh</code>, <code>tahrirla</code>, <code>ochir</code>, <code>qidir</code>, <code>eksport</code></li><li>Takroriy ism qo'shilmaydi, qidiruv katta-kichik harfga qaramaydi</li><li>CSV eksport: <code>ism,tel</code> sarlavhasi va alifbo tartibi</li></ul></div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import csv
+import json
+
+FAYL = &quot;kontaktlar.json&quot;
+
+
+def yukla():
+    pass
+
+
+def saqla(kontaktlar):
+    pass
+
+
+def qosh(ism, tel):
+    pass
+
+
+def tahrirla(ism, yangi_tel):
+    pass
+
+
+def ochir(ism):
+    pass
+
+
+def qidir(soz):
+    pass
+
+
+def eksport(csv_fayl):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(qosh(&quot;Ali&quot;, &quot;+998901112233&quot;))
+    print(qosh(&quot;Gʻayrat&quot;, &quot;+998935556677&quot;))
+    print(qidir(&quot;ali&quot;))
+    print(eksport(&quot;kontaktlar.csv&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> CSV va JSON bilan ishlashdagi xatolarning ko'pi uchta narsadan: <b>tur</b> (hamma narsa satr), <b>sarlavha</b> qatori va fayl <b>ochish parametrlari</b>.</div>
+<div class="warn"><span class="lbl">⚠️ CSV qiymatini songa o'tkazmaslik</span><code>qator["ball"] + 5</code> → <code>TypeError</code>, <code>qator["a"] + qator["b"]</code> → <code>"54"</code>. CSV'dan kelgan hamma narsa satr. Tuzatish: <code>int(qator["ball"])</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Sarlavha ma'lumot bo'lib sanaladi</span><code>len(list(csv.reader(f)))</code> sarlavhani ham sanaydi, <code>int("baho")</code> esa <code>ValueError</code> beradi. Tuzatish: <code>next(oqiydi)</code> yoki <code>csv.DictReader</code>.</div>
+<div class="warn"><span class="lbl">⚠️ newline="" unutilgan</span><code>open("a.csv", "w")</code> bilan yozilgan CSV Windows'da har qatordan keyin bo'sh qator bilan chiqadi. Tuzatish: <code>open("a.csv", "w", encoding="utf-8", newline="")</code>.</div>
+<div class="warn"><span class="lbl">⚠️ dump va dumps adashtirish</span><code>f.write(json.dump(d))</code> yoki <code>json.dumps(d, f)</code> — xato. Faylga: <code>json.dump(d, f)</code>. Satrga: <code>matn = json.dumps(d)</code>.</div>
+<div class="warn"><span class="lbl">⚠️ O'zbekcha harflar kodga aylanadi</span><code>json.dump(d, f)</code> faylda <code>\u02bb</code> kabi kodlar yozadi. Tuzatish: <code>json.dump(d, f, ensure_ascii=False, indent=2)</code> va fayl <code>encoding="utf-8"</code> bilan ochilsin.</div>
+<div class="warn"><span class="lbl">⚠️ JSON'da bitta tirnoq</span><code>json.loads("{'ism': 'Ali'}")</code> → <code>JSONDecodeError</code>. JSON'da faqat qo'shtirnoq: <code>'{"ism": "Ali"}'</code>. Lug'atni <code>str(d)</code> bilan emas, <code>json.dumps(d)</code> bilan matnga aylantiring.</div>
+<div class="warn"><span class="lbl">⚠️ Fayl yo'qligi va bo'sh fayl</span>Birinchi ishga tushishda <code>json.load</code> <code>FileNotFoundError</code> beradi, bo'sh faylda esa <code>JSONDecodeError</code>. Tuzatish: <code>yukla()</code> ichida <code>try/except</code> bilan boshlang'ich qiymat (<code>[]</code> yoki <code>{}</code>) qaytaring.</div>
+<div class="real"><b>Maslahat:</b> yangi faylni o'qishdan oldin uning birinchi 2–3 qatorini <code>print</code> qilib ko'ring. Ustun nomlari, ajratuvchi va qiymat turlarini ko'rib, keyin kod yozing.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🌟 Bonus: ob-havo arxivi.</b> <code>obhavo.json</code> faylida kunlar ro'yxati bor: <code>[{"sana": "2026-10-01", "shahar": "Xiva", "harorat": 18}, ...]</code>. Har shahar uchun o'rtacha, eng past va eng yuqori haroratni hisoblab, <code>obhavo_hisobot.csv</code> ga <code>shahar,ortacha,min,max</code> ustunlari bilan yozing. Shaharlar o'rtacha harorat bo'yicha kamayish tartibida bo'lsin.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Sinf jurnali.</b> VS Code'da <code>jurnal.csv</code> yarating (<code>ism,matematika,fizika,informatika</code>, kamida 6 o'quvchi). Har o'quvchining o'rtacha bahosini hisoblab, <code>natija.csv</code> ga <code>ism,ortacha</code> ko'rinishida yozing.</li>
+<li><b>Excel bilan sinash.</b> <code>natija.csv</code> ni Excel yoki Google Sheets'da oching. Ustunlar to'g'ri ajratilganini va bo'sh qatorlar yo'qligini tekshiring.</li>
+<li><b>Xarajatlar JSON'da.</b> <code>yukla()</code> / <code>saqla()</code> usuli bilan har kungi xarajatni (<code>{"sana": ..., "summa": ..., "nima": ...}</code>) <code>xarajatlar.json</code> ga qo'shadigan dastur yozing. Dasturni 3 marta ishga tushirib, yozuvlar saqlanib qolishini tekshiring.</li>
+<li><b>Konvertor.</b> <code>xarajatlar.json</code> ni <code>xarajatlar.csv</code> ga o'giradigan funksiya yozing (<code>DictWriter</code> bilan) va teskarisini ham.</li>
+<li><b>O'zbekcha harflar.</b> Bitta lug'atni <code>ensure_ascii=False</code> bilan va usiz saqlang. Ikkala faylni ochib, farqni daftarga yozing.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="B"><b>1. csv.reader har qatorni qanday ko&#x27;rinishda beradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Lug&#x27;at: {&quot;ism&quot;: &quot;Ali&quot;}</button></li><li><button class="opt" type="button" data-l="B">B) Satrlar ro&#x27;yxati: [&quot;Ali&quot;, &quot;87&quot;]</button></li><li><button class="opt" type="button" data-l="C">C) Bitta satr: &quot;Ali,87&quot;</button></li><li><button class="opt" type="button" data-l="D">D) Tuple: (&quot;Ali&quot;, 87)</button></li></ul><span class="q-ex" hidden>csv.reader har qatorni satrlar ro&#x27;yxatiga aylantiradi. Lug&#x27;at ko&#x27;rinishi esa DictReader&#x27;da bo&#x27;ladi.</span></div><div class="q" data-ok="D"><b>2. CSV faylni yozish uchun ochishda nega newline=&quot;&quot; yoziladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Fayl tezroq ochilishi uchun</button></li><li><button class="opt" type="button" data-l="B">B) O&#x27;zbekcha harflar buzilmasligi uchun</button></li><li><button class="opt" type="button" data-l="C">C) Sarlavha avtomatik yozilishi uchun</button></li><li><button class="opt" type="button" data-l="D">D) Qator oxirlarini csv o&#x27;zi boshqarishi va bo&#x27;sh qatorlar chiqmasligi uchun</button></li></ul><span class="q-ex" hidden>csv moduli qator oxirini o&#x27;zi yozadi. newline=&quot;&quot; bo&#x27;lmasa, Windows&#x27;da har qatordan keyin bo&#x27;sh qator paydo bo&#x27;ladi.</span></div><div class="q" data-ok="A"><b>3. qator = {&quot;ism&quot;: &quot;Ali&quot;, &quot;ball&quot;: &quot;87&quot;}. qator[&quot;ball&quot;] + qator[&quot;ball&quot;] nima beradi?</b><ul><li><button class="opt" type="button" data-l="A">A) &quot;8787&quot;</button></li><li><button class="opt" type="button" data-l="B">B) 174</button></li><li><button class="opt" type="button" data-l="C">C) TypeError</button></li><li><button class="opt" type="button" data-l="D">D) 87</button></li></ul><span class="q-ex" hidden>CSV&#x27;dan kelgan qiymat satr. Satrlarni + bilan qo&#x27;shish ularni yopishtiradi: &quot;8787&quot;.</span></div><div class="q" data-ok="C"><b>4. Qaysi funksiya Python obyektini to&#x27;g&#x27;ridan-to&#x27;g&#x27;ri faylga JSON qilib yozadi?</b><ul><li><button class="opt" type="button" data-l="A">A) json.dumps(obj)</button></li><li><button class="opt" type="button" data-l="B">B) json.loads(f)</button></li><li><button class="opt" type="button" data-l="C">C) json.dump(obj, f)</button></li><li><button class="opt" type="button" data-l="D">D) json.load(obj, f)</button></li></ul><span class="q-ex" hidden>dump(obj, f) — faylga yozadi. dumps — satr qaytaradi, load/loads — o&#x27;qiydi.</span></div><div class="q" data-ok="A"><b>5. print(json.dumps({&quot;faol&quot;: True, &quot;tel&quot;: None})) nima chiqaradi?</b><ul><li><button class="opt" type="button" data-l="A">A) {&quot;faol&quot;: true, &quot;tel&quot;: null}</button></li><li><button class="opt" type="button" data-l="B">B) {&#x27;faol&#x27;: True, &#x27;tel&#x27;: None}</button></li><li><button class="opt" type="button" data-l="C">C) {&quot;faol&quot;: True, &quot;tel&quot;: None}</button></li><li><button class="opt" type="button" data-l="D">D) {&quot;faol&quot;: &quot;true&quot;, &quot;tel&quot;: &quot;&quot;}</button></li></ul><span class="q-ex" hidden>JSON&#x27;da True → true, None → null, satrlar va kalitlar qo&#x27;shtirnoqda yoziladi.</span></div><div class="q" data-ok="D"><b>6. json.dump(d, f, ensure_ascii=False) da ensure_ascii=False nima qiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Faylni chiroyli suradi</button></li><li><button class="opt" type="button" data-l="B">B) Faqat ASCII belgilarni qoldiradi</button></li><li><button class="opt" type="button" data-l="C">C) Xatolarni yashiradi</button></li><li><button class="opt" type="button" data-l="D">D) ʻ, kirill kabi belgilarni \u kodisiz, o&#x27;zi bilan yozadi</button></li></ul><span class="q-ex" hidden>Odatda ASCII bo&#x27;lmagan belgilar \u02bb kabi kod bilan yoziladi. ensure_ascii=False ularni o&#x27;z holicha saqlaydi.</span></div><div class="q" data-ok="B"><b>7. d = json.loads(&#x27;{&quot;yosh&quot;: 15}&#x27;). type(d[&quot;yosh&quot;]) qaysi?</b><ul><li><button class="opt" type="button" data-l="A">A) str</button></li><li><button class="opt" type="button" data-l="B">B) int</button></li><li><button class="opt" type="button" data-l="C">C) float</button></li><li><button class="opt" type="button" data-l="D">D) dict</button></li></ul><span class="q-ex" hidden>JSON sonlarni son sifatida saqlaydi, shuning uchun loads dan keyin d[&quot;yosh&quot;] — int. CSV&#x27;dan farqli o&#x27;laroq turi yo&#x27;qolmaydi.</span></div><div class="q" data-ok="C"><b>8. csv.DictWriter bilan yozishda sarlavha qatorini qaysi metod yozadi?</b><ul><li><button class="opt" type="button" data-l="A">A) writerow()</button></li><li><button class="opt" type="button" data-l="B">B) header()</button></li><li><button class="opt" type="button" data-l="C">C) writeheader()</button></li><li><button class="opt" type="button" data-l="D">D) fieldnames()</button></li></ul><span class="q-ex" hidden>writeheader() fieldnames&#x27;dagi ustun nomlarini birinchi qator qilib yozadi.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">CSV (Comma-Separated Values)</td><td>vergul bilan ajratilgan qiymatlar — jadvalni matn faylda saqlash formati</td></tr><tr><td class="en">JSON (JavaScript Object Notation)</td><td>lug&#x27;at va ro&#x27;yxatlarni matn ko&#x27;rinishida saqlash formati</td></tr><tr><td class="en">header</td><td>sarlavha qatori — ustun nomlari</td></tr><tr><td class="en">row</td><td>qator — jadvalning bitta yozuvi</td></tr><tr><td class="en">column / field</td><td>ustun / maydon</td></tr><tr><td class="en">reader</td><td>o&#x27;quvchi — fayldan qatorlarni o&#x27;qiydigan obyekt</td></tr><tr><td class="en">writer</td><td>yozuvchi — faylga qator yozadigan obyekt</td></tr><tr><td class="en">fieldnames</td><td>DictWriter uchun ustun nomlari ro&#x27;yxati</td></tr><tr><td class="en">delimiter</td><td>ajratuvchi belgi (odatda vergul)</td></tr><tr><td class="en">serialize (dumps/dump)</td><td>obyektni matnga (yoki faylga) aylantirish</td></tr><tr><td class="en">deserialize (loads/load)</td><td>matndan (yoki fayldan) obyektni tiklash</td></tr><tr><td class="en">indent</td><td>surish — JSON&#x27;ni chiroyli, o&#x27;qiladigan ko&#x27;rinishda yozish</td></tr><tr><td class="en">ASCII</td><td>ingliz harflari, raqamlar va belgilarning asosiy to&#x27;plami</td></tr><tr><td class="en">ensure_ascii</td><td>faqat ASCII belgilar yozilsinmi degan JSON parametri</td></tr><tr><td class="en">export / import</td><td>ma&#x27;lumotni boshqa formatga chiqarish / boshqa formatdan olish</td></tr><tr><td class="en">JSONDecodeError</td><td>matn to&#x27;g&#x27;ri JSON bo&#x27;lmaganda chiqadigan xato</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-19.html"><small>← Oldingi dars</small><span>Fayllar va pathlib</span></a><a class="lnav next" href="dars-21.html"><small>Keyingi dars →</small><span>Sana-vaqt va muntazam ifodalar (regex)</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>20-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 20, "total": 32, "title": "CSV va JSON"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

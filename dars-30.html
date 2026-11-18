@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>30-dars: Tashqi dunyo bilan aloqa: requests va API — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>30-dars</b><span>Tashqi dunyo bilan aloqa: requests va API</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">30-DARS • API va HTTP</span><h1 class="title">Tashqi dunyo bilan aloqa: requests va API</h1><p class="desc">Ob-havo ilovasi, valyuta kurslari, onlayn do'kon — ularning hammasi ma'lumotni <b>serverdan</b> oladi. Dastur serverga <b>so'rov</b> yuboradi, server <b>javob</b> qaytaradi — odatda JSON ko'rinishida. Bu darsda <code>requests</code> kutubxonasi bilan xuddi shunday qilamiz. <b>Muhim:</b> brauzerda haqiqiy internetga chiqib bo'lmaydi, shuning uchun darsda <b>o'quv API</b> (<code>https://api.xorazm-market.uz</code>) ishlaydi. Kod esa haqiqiy <code>requests</code> kodi bilan bir xil yoziladi — kompyuteringizda faqat manzilni almashtirasiz.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 GET/POST, holat kodlari, JSON, params, timeout, kesh, qayta urinish</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>HTTP asoslari</b> — so'rov, javob, GET va POST, holat kodlari (200, 404, 500).</div></div><div class="g"><span class="dot">2</span><div><b>requests</b> — <code>requests.get()</code>, <code>.json()</code>, <code>.status_code</code>, <code>raise_for_status()</code>.</div></div><div class="g"><span class="dot">3</span><div><b>Parametrlar</b> — <code>params=</code> bilan qidirish, <code>json=</code> bilan yuborish.</div></div><div class="g"><span class="dot">4</span><div><b>Xatolarga chidamlilik</b> — <code>timeout</code>, <code>try/except</code>, qayta urinish.</div></div><div class="g"><span class="dot">5</span><div><b>Xavfsizlik</b> — API kalitini kod ichida emas, muhit o'zgaruvchisida saqlash.</div></div><div class="g"><span class="dot">6</span><div><b>Kesh</b> — bir xil so'rovni takror yubormaslik.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>r = requests.get(URL, timeout=5)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>r.raise_for_status()</span><span class="nb"><span class="sw" style="background:var(--js)"></span>data = r.json()</span><span class="nb"><span class="sw" style="background:var(--js)"></span>requests.get(URL, params={&quot;kategoriya&quot;: &quot;maktab&quot;})</span><span class="nb"><span class="sw" style="background:var(--js)"></span>requests.post(URL, json={&quot;mahsulot_id&quot;: 1, &quot;soni&quot;: 2})</span><span class="nb"><span class="sw" style="background:var(--js)"></span>except requests.exceptions.Timeout:</span><span class="nb"><span class="sw" style="background:var(--js)"></span>os.environ.get(&quot;API_KALIT&quot;)</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="a1" data-group="Nazariya" data-ico="🌐" data-title="So&#x27;rov, javob va holat kodlari">
+<h2><span class="mark"></span>So&#x27;rov, javob va holat kodlari</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> HTTP — so'rov-javob qoidasi. Siz <b>manzil (URL)</b> va <b>usul (GET/POST)</b> bilan so'rov yuborasiz, server <b>holat kodi</b> va <b>ma'lumot</b> qaytaradi.</div>
+<div class="warn"><span class="lbl">ℹ️ O'quv API</span>Bu yerda <code>https://api.xorazm-market.uz</code> — kursimiz ichidagi <b>o'quv serveri</b>, haqiqiy internet emas. Undagi mahsulotlar, ob-havo va kurslar tayyorlab qo'yilgan. Boshqa saytga so'rov yuborsangiz <code>ConnectionError</code> chiqadi. Haqiqiy kompyuteringizda <code>requests</code> aynan shunday ishlaydi.</div>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+r = requests.get(BASE + &quot;/mahsulotlar/1&quot;, timeout=5)
+print(r.status_code)
+print(r.json())
+print(r.json()[&quot;nom&quot;], r.json()[&quot;narx&quot;])</textarea></div><div class="out" hidden></div></div>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Kod</th><th>Ma'nosi</th></tr>
+<tr><td><code>200</code></td><td>OK — hammasi yaxshi</td></tr>
+<tr><td><code>201</code></td><td>Created — yangi narsa yaratildi</td></tr>
+<tr><td><code>400</code></td><td>Bad Request — so'rov noto'g'ri</td></tr>
+<tr><td><code>404</code></td><td>Not Found — topilmadi</td></tr>
+<tr><td><code>500</code></td><td>Server xatosi</td></tr></table></div>
+<h3>🔹 Holatni tekshirish</h3>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+r = requests.get(BASE + &quot;/mahsulotlar/99&quot;, timeout=5)
+print(r.status_code, r.ok)
+print(r.json())
+try:
+    r.raise_for_status()
+except requests.HTTPError as xato:
+    print(&quot;Xato:&quot;, xato)</textarea></div><div class="out" hidden></div></div>
+<div class="note">🔬 <code>raise_for_status()</code> — holat 400 va undan katta bo'lsa <code>HTTPError</code> ko'taradi. Bu "xatoni jim o'tkazib yubormaslik"ning eng sodda yo'li.</div>
+</div>
+</section>
+<section class="sec off" data-key="a2" data-group="Nazariya" data-ico="🔎" data-title="params va POST">
+<h2><span class="mark"></span>params va POST</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>GET</code> — ma'lumot olish, <code>params=</code> bilan filtr beriladi. <code>POST</code> — yangi narsa yuborish, ma'lumot <code>json=</code> da ketadi.</div>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+r = requests.get(BASE + &quot;/mahsulotlar&quot;, params={&quot;kategoriya&quot;: &quot;maktab&quot;, &quot;limit&quot;: 2}, timeout=5)
+d = r.json()
+print(d[&quot;soni&quot;], [x[&quot;nom&quot;] for x in d[&quot;natija&quot;]])</textarea></div><div class="out" hidden></div></div>
+<p><code>params</code> manzilga <code>?kategoriya=maktab&amp;limit=2</code> ko'rinishida qo'shiladi. Uni qo'lda yig'ish shart emas.</p>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+r = requests.post(BASE + &quot;/buyurtmalar&quot;, json={&quot;mahsulot_id&quot;: 1, &quot;soni&quot;: 3}, timeout=5)
+print(r.status_code, r.json())
+
+r = requests.post(BASE + &quot;/buyurtmalar&quot;, json={&quot;mahsulot_id&quot;: 4, &quot;soni&quot;: 1}, timeout=5)
+print(r.status_code, r.json())</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Javobni tekshirmasdan json()</span>Xato javobning ham JSON si bor, lekin kutgan kalitlaringiz bo'lmaydi: <code>r.json()["narx"]</code> 404 da <code>KeyError</code> beradi. Avval <code>r.status_code</code> yoki <code>raise_for_status()</code>.</div>
+</div>
+</section>
+<section class="sec off" data-key="a3" data-group="Nazariya" data-ico="🛡️" data-title="Xatolar, timeout, qayta urinish">
+<h2><span class="mark"></span>Xatolar, timeout, qayta urinish</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Tarmoq ishonchsiz: server javob bermasligi, uzilishi, xato qaytarishi mumkin. Har so'rovga <b>timeout</b> bering va xatolarni ushlang.</div>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+def yukla(yol):
+    try:
+        r = requests.get(BASE + yol, timeout=1)
+        r.raise_for_status()
+        return r.json()
+    except requests.exceptions.Timeout:
+        return &quot;timeout&quot;
+    except requests.exceptions.HTTPError as x:
+        return &quot;http xato: &quot; + str(x.response.status_code)
+    except requests.exceptions.ConnectionError:
+        return &quot;ulanish yo&#x27;q&quot;
+
+print(yukla(&quot;/valyuta&quot;))
+print(yukla(&quot;/sekin&quot;))
+print(yukla(&quot;/xato500&quot;))
+print(yukla(&quot;/yoq&quot;))</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Qayta urinish</h3>
+<p>Vaqtinchalik xatolarda (timeout, 500) so'rovni 2–3 marta takrorlash mumkin. Har urinish orasida kutish qo'shiladi (haqiqiy kodda <code>time.sleep</code>):</p>
+<pre class="static"><code class="language-python">for urinish in range(1, 4):
+    try:
+        r = requests.get(URL, timeout=2)
+        r.raise_for_status()
+        break                       # muvaffaqiyat
+    except requests.RequestException:
+        if urinish == 3:
+            raise                   # oxirgi urinish ham o&#x27;xshamadi
+        time.sleep(urinish)         # 1, 2 soniya kutish</code></pre>
+<h3>🔹 Kesh va API kaliti</h3>
+<ul><li><b>Kesh:</b> bir xil so'rov natijasini lug'atda saqlang — takror so'rov kerak emas (tezroq, arzonroq).</li><li><b>API kaliti</b> — parol kabi. Uni kodga yozmang (kod GitHub ga chiqib ketishi mumkin). <code>os.environ.get("API_KALIT")</code> orqali oling.</li></ul>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="GET so&#x27;rov va JSON javob" data-task="t01">
+<div class="card step" data-task="t01" data-title="GET so&#x27;rov va JSON javob" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>GET so&#x27;rov va JSON javob <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada mahsulot ma'lumoti serverdan olinadi. Siz xuddi shunday funksiya yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+r = requests.get(BASE + &quot;/mahsulotlar/2&quot;, timeout=5)
+print(r.status_code)
+d = r.json()
+print(d)
+print(d[&quot;nom&quot;], &quot;-&quot;, d[&quot;narx&quot;], &quot;so&#x27;m&quot;)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring.</li><li><code>mahsulot_nomi(id)</code> funksiyasini yozing: <code>/mahsulotlar/&lt;id&gt;</code> ga GET so'rov yuborib, mahsulot <b>nomini</b> qaytarsin.</li><li>Faqat id lari 1–6 dagi mahsulotlar bilan ishlaydi deb hisoblang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>mahsulot_nomi(1)</code> → <code>Non</code>, <code>mahsulot_nomi(3)</code> → <code>Daftar</code></div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def mahsulot_nomi(id):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(mahsulot_nomi(1))
+    print(mahsulot_nomi(3))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="Holat kodini tekshirish" data-task="t02">
+<div class="card step" data-task="t02" data-title="Holat kodini tekshirish" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>Holat kodini tekshirish <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada holat kodlari ko'rsatilgan. Siz mahsulot bor-yo'qligini tekshirasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+for yol in [&quot;/mahsulotlar/1&quot;, &quot;/mahsulotlar/99&quot;, &quot;/mahsulotlar/abc&quot;]:
+    r = requests.get(BASE + yol, timeout=5)
+    print(yol, &quot;-&gt;&quot;, r.status_code, r.reason)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring: 200, 404 va 400 kodlarini ko'ring.</li><li><code>mavjudmi(id)</code> funksiyasini yozing: mahsulot bor bo'lsa <code>True</code> (holat 200), aks holda <code>False</code> (404, 400 va boshqa).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>mavjudmi(2)</code> → <code>True</code>, <code>mavjudmi(99)</code> → <code>False</code></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def mavjudmi(id):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(mavjudmi(2))
+    print(mavjudmi(99))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="response.json() tuzilmasidan qiymat olish" data-task="t03">
+<div class="card step" data-task="t03" data-title="response.json() tuzilmasidan qiymat olish" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>response.json() tuzilmasidan qiymat olish <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">JSON javobning tuzilishini o'qing va natijani ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li><code>soni</code> va <code>natija</code> kalitlari bor lug'at qaytadi.</li><li><code>natija</code> — mahsulot lug'atlari ro'yxati.</li><li>Dastur chiqaradigan 4 qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+r = requests.get(BASE + &quot;/mahsulotlar?limit=3&quot;, timeout=5)
+print(r.status_code)
+d = r.json()
+print(d[&quot;soni&quot;])
+print(d[&quot;natija&quot;][1][&quot;nom&quot;])
+print([x[&quot;narx&quot;] for x in d[&quot;natija&quot;]])
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="Ob-havo API: shahar harorati" data-task="t04">
+<div class="card step" data-task="t04" data-title="Ob-havo API: shahar harorati" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>Ob-havo API: shahar harorati <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Ob-havo manzili: <code>/ob-havo/&lt;shahar&gt;</code>. Javobda <code>shahar</code>, <code>harorat</code>, <code>holat</code> bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>harorat(shahar)</code> funksiyasini yozing: shaharning haroratini (son) qaytarsin.</li><li>Shahar topilmasa (404) — <code>None</code>.</li><li>Mavjud shaharlar: urganch, xiva, toshkent, samarqand.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>harorat('urganch')</code> → <code>21</code>, <code>harorat('london')</code> → <code>None</code></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def harorat(shahar):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(harorat(&quot;urganch&quot;))
+    print(harorat(&quot;london&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="Valyuta API: USD → so&#x27;m" data-task="t05">
+<div class="card step" data-task="t05" data-title="Valyuta API: USD → so&#x27;m" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>Valyuta API: USD → so&#x27;m <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Valyuta manzili: <code>/valyuta</code>. Javob: <code>{"USD": ..., "EUR": ..., "RUB": ...}</code> (1 birlik necha so'm).</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>somga(summa, valyuta="USD")</code> funksiyasini yozing: <code>summa</code> ni so'mga aylantirsin.</li><li>Noma'lum valyutada (masalan, <code>"XYZ"</code>) <code>None</code> qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>somga(10)</code> → <code>126500.0</code>, <code>somga(2, "EUR")</code> → <code>27600.0</code></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def somga(summa, valyuta=&quot;USD&quot;):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(somga(10))
+    print(somga(2, &quot;EUR&quot;))
+    print(somga(5, &quot;XYZ&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="params= bilan qidiruv" data-task="t06">
+<div class="card step" data-task="t06" data-title="params= bilan qidiruv" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>params= bilan qidiruv <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Manzilga <code>?kategoriya=...</code> ni qo'lda yozmaymiz — <code>params=</code> ishlatamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>nomlar(kategoriya)</code> funksiyasini yozing: <code>/mahsulotlar</code> ga <code>params={"kategoriya": ...}</code> bilan so'rov yuborib, mahsulotlar <b>nomlari ro'yxati</b>ni qaytarsin.</li><li>Manzilni <code>?</code> bilan yig'masligingiz kerak.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>nomlar('maktab')</code> → <code>['Daftar', 'Ruchka', 'Sumka']</code></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def nomlar(kategoriya):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(nomlar(&quot;maktab&quot;))
+    print(nomlar(&quot;oziq-ovqat&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="Holat tekshirilmasdan json() chaqirilgan" data-task="t07">
+<div class="card step" data-task="t07" data-title="Holat tekshirilmasdan json() chaqirilgan" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>Holat tekshirilmasdan json() chaqirilgan <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Funksiya mavjud mahsulotlarda ishlaydi, mavjud bo'lmaganida esa yiqiladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va <code>KeyError</code> ni ko'ring.</li><li>Sababni toping: server 404 da <code>narx</code> kaliti bo'lmagan javob qaytaradi.</li><li>Tuzating: topilmasa <code>None</code> qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>4000</code> va <code>None</code></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def narx(id):
+    r = requests.get(BASE + &quot;/mahsulotlar/&quot; + str(id), timeout=5)
+    return r.json()[&quot;narx&quot;]
+
+
+if __name__ == &quot;__main__&quot;:
+    print(narx(1))
+    print(narx(99))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="POST bilan buyurtma yaratish" data-task="t08">
+<div class="card step" data-task="t08" data-title="POST bilan buyurtma yaratish" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>POST bilan buyurtma yaratish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc"><code>POST /buyurtmalar</code> ga <code>{"mahsulot_id": ..., "soni": ...}</code> yuboriladi. Muvaffaqiyatli bo'lsa 201 va <code>{"id", "jami", "holat"}</code> qaytadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>buyur(mahsulot_id, soni)</code> funksiyasini yozing: <code>json=</code> bilan POST yuborsin.</li><li>Buyurtma yaratilsa (201) — <b>jami summani</b> qaytarsin.</li><li>Boshqa holda (400 — omborda yo'q, 404 — mahsulot yo'q) — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>buyur(1, 2)</code> → <code>8000</code>, <code>buyur(4, 1)</code> → <code>None</code> (ruchka qolmagan)</div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def buyur(mahsulot_id, soni):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(buyur(1, 2))
+    print(buyur(4, 1))
+    print(buyur(99, 1))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="Bir nechta so&#x27;rovdan barcha yozuvlarni yig&#x27;ish" data-task="t09">
+<div class="card step" data-task="t09" data-title="Bir nechta so&#x27;rovdan barcha yozuvlarni yig&#x27;ish" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>Bir nechta so&#x27;rovdan barcha yozuvlarni yig&#x27;ish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Server bitta so'rovda kategoriya bo'yicha beradi. Hamma mahsulotni olish uchun har kategoriyaga so'rov yuboramiz va natijalarni birlashtiramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>KATEGORIYALAR = ["oziq-ovqat", "maktab"]</code> tayyor.</li><li><code>hamma_mahsulot()</code> funksiyasini yozing: har kategoriya uchun <code>params=</code> bilan so'rov yuborib, mahsulotlarni (lug'atlarni) bitta ro'yxatga yig'sin.</li><li>Ro'yxat <code>id</code> bo'yicha tartiblangan bo'lsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[1, 2, 3, 4, 5, 6]</code> (id lar) va <code>6</code> ta mahsulot</div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+KATEGORIYALAR = [&quot;oziq-ovqat&quot;, &quot;maktab&quot;]
+
+
+def hamma_mahsulot():
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    royxat = hamma_mahsulot()
+    print([x[&quot;id&quot;] for x in royxat])
+    print(len(royxat))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="timeout, 404 va 500 xatolarini ushlash" data-task="t10">
+<div class="card step" data-task="t10" data-title="timeout, 404 va 500 xatolarini ushlash" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>timeout, 404 va 500 xatolarini ushlash <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ishonchli dastur server xatolarida yiqilmasligi kerak. O'quv serverida ataylab sekin (<code>/sekin</code>) va buzuq (<code>/xato500</code>) manzillar bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>yukla(url)</code> funksiyasini yozing: <code>timeout=1</code> bilan GET yuborsin.</li><li>Natija: <code>(True, javob_json)</code> yoki <code>(False, sabab)</code>.</li><li>Sabablar: <code>"timeout"</code> (javob kelmadi), <code>"topilmadi"</code> (404), <code>"server"</code> (500 va undan yuqori), <code>"ulanish"</code> (server topilmadi).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>yukla(BASE + "/sekin")</code> → <code>(False, 'timeout')</code></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def yukla(url):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    for yol in [&quot;/valyuta&quot;, &quot;/sekin&quot;, &quot;/xato500&quot;, &quot;/mahsulotlar/99&quot;]:
+        print(yol, yukla(BASE + yol))
+    print(yukla(&quot;https://boshqa.uz/x&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="API ma&#x27;lumotini CSV&#x27;ga saqlash" data-task="t11">
+<div class="card step" data-task="t11" data-title="API ma&#x27;lumotini CSV&#x27;ga saqlash" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>API ma&#x27;lumotini CSV&#x27;ga saqlash <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Serverdan olingan ma'lumotni faylga yozish — hisobotlarning odatiy ishi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>saqla(fayl)</code> funksiyasini yozing: hamma mahsulotni (<code>/mahsulotlar</code>) olib, CSV faylga yozsin.</li><li>Sarlavha: <code>id,nom,narx</code>; keyin har mahsulot uchun bir qator.</li><li>Yozilgan mahsulotlar sonini qaytarsin.</li><li><code>csv.writer</code> ishlating; faylni <code>newline=""</code> va <code>encoding="utf-8"</code> bilan oching.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>6</code> va faylning birinchi qatori <code>id,nom,narx</code></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+import csv
+
+
+def saqla(fayl):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(saqla(&quot;mahsulotlar.csv&quot;))
+    with open(&quot;mahsulotlar.csv&quot;, encoding=&quot;utf-8&quot;) as f:
+        print(f.readline().strip())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="So&#x27;rov parametrlari bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="So&#x27;rov parametrlari bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>So&#x27;rov parametrlari bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">So'rovdagi bo'sh joylarni (<code>___</code>) to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Hamma <code>___</code> ni to'ldiring.</li><li>Funksiya kategoriya bo'yicha birinchi <code>n</code> ta mahsulot nomini qaytarsin: manzil <code>/mahsulotlar</code>, usul GET, filtr <code>params</code> orqali, <code>timeout</code> 5.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>birinchi('oziq-ovqat', 2)</code> → <code>['Non', 'Sut']</code></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def birinchi(kategoriya, n):
+    url = BASE + &quot;/___&quot;
+    r = requests.___(url, ___={&quot;kategoriya&quot;: kategoriya, &quot;limit&quot;: ___}, timeout=___)
+    return [x[&quot;nom&quot;] for x in r.json()[&quot;natija&quot;]]
+
+
+if __name__ == &quot;__main__&quot;:
+    print(birinchi(&quot;oziq-ovqat&quot;, 2))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="API kaliti kod ichida — muhit o&#x27;zgaruvchisiga" data-task="t13">
+<div class="card step" data-task="t13" data-title="API kaliti kod ichida — muhit o&#x27;zgaruvchisiga" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>API kaliti kod ichida — muhit o&#x27;zgaruvchisiga <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">API kaliti parol kabi maxfiy. Bu kodda u ochiq yozilgan — kodni GitHub ga yuklasangiz, hamma ko'radi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kaliti <code>KALIT</code> o'zgaruvchisida ochiq turibdi.</li><li>Uni <code>os.environ.get("API_KALIT")</code> orqali oling.</li><li>Kalit o'rnatilmagan bo'lsa <code>sarlavhalar()</code> <code>RuntimeError("API_KALIT kerak")</code> ko'tarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>API_KALIT=abc</code> bo'lganda <code>{'Authorization': 'Bearer abc'}</code></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import os
+
+KALIT = &quot;sk-12345-maxfiy&quot;
+
+
+def sarlavhalar():
+    return {&quot;Authorization&quot;: &quot;Bearer &quot; + KALIT}
+
+
+if __name__ == &quot;__main__&quot;:
+    os.environ[&quot;API_KALIT&quot;] = &quot;abc&quot;
+    print(sarlavhalar())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="Ichma-ich JSON javobdan natija" data-task="t14">
+<div class="card step" data-task="t14" data-title="Ichma-ich JSON javobdan natija" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>Ichma-ich JSON javobdan natija <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ichma-ich JSON ustida hisob-kitob natijasini ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing: <code>kategoriya=maktab</code> bo'yicha mahsulotlar keladi.</li><li>Har chiqish nimani hisoblashini aniqlang.</li><li>Dastur chiqaradigan 4 qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+d = requests.get(BASE + &quot;/mahsulotlar&quot;, params={&quot;kategoriya&quot;: &quot;maktab&quot;}, timeout=5).json()
+print(d[&quot;soni&quot;])
+print([x[&quot;nom&quot;] for x in d[&quot;natija&quot;] if x[&quot;qoldiq&quot;] == 0])
+print(sum(x[&quot;narx&quot;] * x[&quot;qoldiq&quot;] for x in d[&quot;natija&quot;]))
+print(max(d[&quot;natija&quot;], key=lambda x: x[&quot;narx&quot;])[&quot;nom&quot;])
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Kesh: bir xil so&#x27;rov qayta yuborilmasin" data-task="t15">
+<div class="card step" data-task="t15" data-title="Kesh: bir xil so&#x27;rov qayta yuborilmasin" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Kesh: bir xil so&#x27;rov qayta yuborilmasin <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bir xil mahsulotni 100 marta so'rash serverga ortiqcha yuk. Natijani eslab qolamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>KESH = {}</code> tayyor.</li><li><code>narx_kesh(id)</code> funksiyasini yozing: narxni qaytarsin. Bir xil <code>id</code> uchun <b>ikkinchi marta</b> serverga so'rov yubormasdan <code>KESH</code> dan olsin.</li><li>Mahsulot topilmasa — <code>None</code> (kesh qilinmaydi).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>narx_kesh(1)</code> ni 3 marta chaqirsangiz, serverga <b>1 ta</b> so'rov ketadi.</div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+KESH = {}
+
+
+def narx_kesh(id):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(narx_kesh(1), narx_kesh(1), narx_kesh(1), narx_kesh(2), narx_kesh(99))
+    print(&quot;So&#x27;rovlar soni:&quot;, len(requests._state[&quot;calls&quot;]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="Ikki API&#x27;ni birlashtirish: mahsulotlar va kurs" data-task="t16">
+<div class="card step" data-task="t16" data-title="Ikki API&#x27;ni birlashtirish: mahsulotlar va kurs" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>Ikki API&#x27;ni birlashtirish: mahsulotlar va kurs <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Ko'pincha bitta natija uchun bir nechta manbadan ma'lumot olinadi: mahsulotlar narxi so'mda, kurs alohida manzilda.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>dollarda()</code> funksiyasini yozing: <code>/mahsulotlar</code> va <code>/valyuta</code> ga so'rov yuborsin.</li><li>Har mahsulot uchun <code>(nom, narx_dollarda)</code> qaytarsin; narx <code>narx / USD_kursi</code>, 2 xonagacha yaxlitlansin.</li><li>Tartib serverdagi tartibda.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> birinchi element <code>('Non', 0.32)</code>, oxirgisi <code>('Sumka', 14.23)</code>; jami 6 ta</div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def dollarda():
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    for nom, narx in dollarda():
+        print(nom, narx)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="Qayta urinish: 3 martagacha, kutish bilan" data-task="t17">
+<div class="card step" data-task="t17" data-title="Qayta urinish: 3 martagacha, kutish bilan" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>Qayta urinish: 3 martagacha, kutish bilan <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Vaqtinchalik xatolarda (timeout, 500) so'rovni qayta yuborish dasturni chidamli qiladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>ishonchli(url, urinish=3, kut=pauza)</code> funksiyasini yozing. <code>timeout=1</code> bilan GET yuborsin.</li><li>Timeout, ulanish xatosi yoki 500+ holat bo'lsa — qayta urinsin, jami <code>urinish</code> martagacha.</li><li>Urinishlar orasida <code>kut(i)</code> ni chaqiring (<code>i</code> = 1, 2, ...; oxirgi urinishdan keyin kutilmaydi). Haqiqiy kodda <code>kut</code> = <code>time.sleep</code>; bu yerda <code>pauza</code> hech narsa qilmaydi.</li><li>Muvaffaqiyatda JSON qaytarsin; hamma urinish o'xshamasa — <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>/valyuta</code> → JSON (1 urinish); <code>/xato500</code> → <code>None</code> (3 urinish)</div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def pauza(soniya):
+    pass
+
+
+def ishonchli(url, urinish=3, kut=pauza):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(ishonchli(BASE + &quot;/valyuta&quot;))
+    print(ishonchli(BASE + &quot;/xato500&quot;))
+    print(&quot;So&#x27;rovlar:&quot;, len(requests._state[&quot;calls&quot;]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Ikki xato: noto&#x27;g&#x27;ri URL va kalit nomi" data-task="t18">
+<div class="card step" data-task="t18" data-title="Ikki xato: noto&#x27;g&#x27;ri URL va kalit nomi" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Ikki xato: noto&#x27;g&#x27;ri URL va kalit nomi <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Funksiya eng qimmat mahsulot nomini topishi kerak. Ikki xato birin-ketin chiqadi: tuzatganingizdan keyin ikkinchisi ko'rinadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va birinchi xatoni ko'ring.</li><li>Tuzating, yana ishga tushiring — ikkinchi xato chiqadi.</li><li>Ikkalasini tuzating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Sumka</code></div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def eng_qimmat():
+    r = requests.get(BASE + &quot;/mahsulot&quot;, timeout=5)
+    royxat = r.json()[&quot;natija&quot;]
+    return max(royxat, key=lambda x: x[&quot;price&quot;])[&quot;nom&quot;]
+
+
+if __name__ == &quot;__main__&quot;:
+    print(eng_qimmat())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="Takrorlanuvchi so&#x27;rov kodini ApiMijoz sinfiga" data-task="t19">
+<div class="card step" data-task="t19" data-title="Takrorlanuvchi so&#x27;rov kodini ApiMijoz sinfiga" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>Takrorlanuvchi so&#x27;rov kodini ApiMijoz sinfiga <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Uchta funksiyada <code>BASE</code>, <code>timeout</code> va <code>raise_for_status</code> takrorlanyapti. Uni bitta sinfga yig'ing.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>ApiMijoz</code> sinfini yozing: <code>__init__(self, baza, timeout=5)</code>.</li><li><code>get(self, yol, **params)</code> — <code>baza + yol</code> ga GET (parametrlar <code>params=</code> ga), <code>raise_for_status()</code> chaqiradi va JSON qaytaradi.</li><li><code>mahsulot(self, id)</code> va <code>valyuta(self)</code> — <code>get</code> orqali ishlaydi.</li><li>Dastur oxirida <code>ApiMijoz</code> orqali natijani chiqaring (eski funksiyalar qolishi mumkin).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>m.mahsulot(1)['nom']</code> → <code>Non</code>, <code>m.valyuta()['USD']</code> → <code>12650.0</code></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+
+
+def mahsulot(id):
+    r = requests.get(BASE + &quot;/mahsulotlar/&quot; + str(id), timeout=5)
+    r.raise_for_status()
+    return r.json()
+
+
+def valyuta():
+    r = requests.get(BASE + &quot;/valyuta&quot;, timeout=5)
+    r.raise_for_status()
+    return r.json()
+
+
+def mahsulotlar(kategoriya):
+    r = requests.get(BASE + &quot;/mahsulotlar&quot;, params={&quot;kategoriya&quot;: kategoriya}, timeout=5)
+    r.raise_for_status()
+    return r.json()[&quot;natija&quot;]
+
+
+# ApiMijoz sinfini shu yerda yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    print(mahsulot(1)[&quot;nom&quot;], valyuta()[&quot;USD&quot;])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Valyuta kuzatuvchisi" data-task="t20">
+<div class="card step" data-task="t20" data-title="Valyuta kuzatuvchisi" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Valyuta kuzatuvchisi <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Valyuta kursi o'zgarsa, ogohlantiradigan dastur: avvalgi kursni faylda saqlaymiz, yangisini olamiz, farqni foizda hisoblaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>kuzat(fayl="kurs.json")</code> funksiyasini yozing. U <code>/valyuta</code> dan kurslarni oladi (<code>requests.get(...)</code> orqali, <code>timeout</code> bilan).</li><li>Fayl bor bo'lsa, undagi avvalgi <code>USD</code> bilan solishtiring: <code>o'zgarish = (yangi - eski) / eski * 100</code>, 2 xonagacha yaxlitlangan. Fayl yo'q bo'lsa — <code>None</code>.</li><li>Natija: <code>{"USD": yangi_kurs, "ozgarish": foiz_yoki_None, "ogohlantirish": True/False}</code>. O'zgarish moduli <b>1% dan kam bo'lmasa</b> — <code>True</code>.</li><li>Muvaffaqiyatli bo'lsa fayl yangi kurslar (to'liq JSON) bilan qayta yoziladi.</li><li>Server javob bermasa (har qanday <code>requests</code> xatosi, yoki 400+ holat) — <code>None</code> qaytaring va <b>faylga tegmang</b>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> avvalgi USD=12000 bo'lsa → <code>{'USD': 12650.0, 'ozgarish': 5.42, 'ogohlantirish': True}</code></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+import json
+import os
+
+
+def kuzat(fayl=&quot;kurs.json&quot;):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    with open(&quot;kurs.json&quot;, &quot;w&quot;) as f:
+        json.dump({&quot;USD&quot;: 12000.0}, f)
+    print(kuzat())
+    print(kuzat())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Konsol dashboard" data-task="mini">
+<div class="card step" data-task="mini" data-title="Konsol dashboard" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Konsol dashboard <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Ob-havo va valyuta kurslarini bitta ekranda ko'rsatuvchi dastur: xatolarga chidamli va kesh bilan.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p>Umumiy rasm: 4 funksiya, biri ikkinchisiga tayanadi. Serverdan javob kelmasa dastur yiqilmaydi, o'sha qator uchun "ma'lumot yo'q" yozadi.</p><ol><li><b>oldi(url).</b> <code>timeout=2</code> bilan GET; <code>raise_for_status()</code>; muvaffaqiyatli JSON ni <code>KESH[url]</code> da saqlaydi (keyingi safar so'rov yubormaydi). Har qanday <code>requests</code> xatosida <code>None</code> (xato keshlanmaydi).</li><li><b>ob_havo(shahar).</b> <code>oldi(BASE + "/ob-havo/" + shahar)</code> dan foydalanadi. Topilsa <code>"Urganch: 21°, quyoshli"</code>, topilmasa <code>"London: ma'lumot yo'q"</code> (nom <code>shahar.capitalize()</code>).</li><li><b>kurslar().</b> <code>oldi(BASE + "/valyuta")</code> natijasini qaytaradi.</li><li><b>dashboard(shaharlar).</b> Har shahar uchun <code>ob_havo</code> qatori, keyin har valyuta uchun <code>"USD: 12650.0 so'm"</code>. Kurslar olinmasa bitta qator: <code>"Kurslar: ma'lumot yo'q"</code>. Hammasini <code>"\n"</code> bilan birlashtirib qaytaring.</li></ol><div class="res"><b>✅ Natija:</b> <code>dashboard(["urganch", "london"])</code> → 5 qator: Urganch, London (yo'q), USD, EUR, RUB</div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import requests
+
+BASE = &quot;https://api.xorazm-market.uz&quot;
+KESH = {}
+
+
+def oldi(url):
+    pass
+
+
+def ob_havo(shahar):
+    pass
+
+
+def kurslar():
+    pass
+
+
+def dashboard(shaharlar):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(dashboard([&quot;urganch&quot;, &quot;london&quot;]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> Tarmoq bilan ishlaganda "ishlayapti" yetarli emas: server sekin, ishlamay qolgan yoki kutilmagan javob qaytargan hollar uchun ham tayyor bo'lish kerak.</div>
+<div class="warn"><span class="lbl">⚠️ Holatni tekshirmay json()</span>404 javobning JSON i boshqa tuzilmada. Avval <code>status_code</code> yoki <code>raise_for_status()</code>.</div>
+<div class="warn"><span class="lbl">⚠️ timeout yo'q</span><code>timeout</code> bermasangiz, server javob bermaganda dastur cheksiz kutishi mumkin. Har so'rovga <code>timeout=...</code> bering.</div>
+<div class="warn"><span class="lbl">⚠️ API kalitini kodga yozish</span>Kod GitHub ga chiqsa, kalit ham chiqadi. <code>os.environ</code> yoki <code>.env</code> faylidan oling (u <code>.gitignore</code> da bo'lsin).</div>
+<div class="warn"><span class="lbl">⚠️ Manzilni qo'lda yig'ish</span><code>url + "?kategoriya=" + kat</code> maxsus belgilarda buziladi. <code>params={...}</code> ishlating.</div>
+<div class="warn"><span class="lbl">⚠️ Hamma xatoni bitta except bilan yutish</span><code>except: pass</code> xatoni yashiradi. <code>Timeout</code>, <code>ConnectionError</code>, <code>HTTPError</code> ni alohida ushlab, foydalanuvchiga aniq sabab ayting.</div>
+<div class="warn"><span class="lbl">⚠️ Hammasini qayta so'rash</span>O'zgarmaydigan ma'lumotni har safar so'ramang — keshlang. Aks holda dastur sekin, server yuklangan, ba'zan so'rov limiti tugaydi.</div>
+<div class="warn"><span class="lbl">⚠️ O'quv API va haqiqiy internet</span>Bu darsda faqat <code>https://api.xorazm-market.uz</code> ishlaydi. Haqiqiy API (masalan, ob-havo xizmati) bilan ishlaganda ularning hujjatlarini o'qing: manzillar, kalitlar va so'rov limiti farq qiladi.</div>
+<div class="real"><b>Maslahat:</b> Yangi API bilan tanishganda avval <code>print(r.status_code)</code> va <code>print(r.json())</code> qiling — javobning haqiqiy shaklini ko'rib, keyin kod yozing.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎁 Bonus: Session.</b> Haqiqiy <code>requests</code> da bir xil serverga ko'p so'rov yuborsangiz, <code>s = requests.Session()</code> yarating va <code>s.get(...)</code> ishlating: ulanish qayta ishlatiladi (tezroq), umumiy sarlavhalar (<code>s.headers.update({...})</code>) bir marta o'rnatiladi. 19-topshiriqdagi <code>ApiMijoz</code> ni shunga moslab yozib ko'ring.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Mahsulotlar jadvali.</b> Hamma mahsulotni olib, narx bo'yicha tartiblab chiroyli jadval ko'rinishida chiqaring (23-dars <code>f"{nom:&lt;10}{narx:&gt;8}"</code> formatlari).</li>
+<li><b>Buyurtma dasturi.</b> Foydalanuvchidan mahsulot id va sonini so'rab, buyurtma yuboring. Xatolarni (omborda yo'q, mahsulot topilmadi) tushunarli matn bilan ko'rsating.</li>
+<li><b>Kesh vaqti.</b> 15-topshiriqdagi keshga "muddati" qo'shing: 60 soniyadan eski natija qayta so'ralsin (<code>time.time()</code>).</li>
+<li><b>Kurs tarixi.</b> 20-topshiriqni kengaytiring: har chaqiruvda kursni <code>tarix.csv</code> ga sana bilan qo'shib borsin.</li>
+<li><b>Haqiqiy kompyuterda.</b> Python ni kompyuteringizga o'rnatib (32-dars), <code>pip install requests</code> qiling va ochiq API (masalan, davlatlar yoki ob-havo ma'lumotlari) bilan shu darsdagi kodni sinab ko'ring.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="B"><b>1. HTTP holat kodi 404 nimani bildiradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Server xatosi</button></li><li><button class="opt" type="button" data-l="B">B) Topilmadi</button></li><li><button class="opt" type="button" data-l="C">C) Muvaffaqiyat</button></li><li><button class="opt" type="button" data-l="D">D) Ruxsat yo&#x27;q</button></li></ul><span class="q-ex" hidden>404 — Not Found: so&#x27;ralgan narsa (manzil yoki yozuv) topilmadi.</span></div><div class="q" data-ok="A"><b>2. Serverga yangi ma&#x27;lumot yuborish uchun odatda qaysi usul ishlatiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) POST</button></li><li><button class="opt" type="button" data-l="B">B) GET</button></li><li><button class="opt" type="button" data-l="C">C) SHOW</button></li><li><button class="opt" type="button" data-l="D">D) READ</button></li></ul><span class="q-ex" hidden>GET ma&#x27;lumot oladi, POST esa yangi narsa yaratish uchun ma&#x27;lumot yuboradi.</span></div><div class="q" data-ok="A"><b>3. requests.get(url, params={&quot;a&quot;: 1}) nima qiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Manzilga ?a=1 qo&#x27;shadi</button></li><li><button class="opt" type="button" data-l="B">B) Ma&#x27;lumotni faylga yozadi</button></li><li><button class="opt" type="button" data-l="C">C) Javobni o&#x27;chiradi</button></li><li><button class="opt" type="button" data-l="D">D) Xato beradi</button></li></ul><span class="q-ex" hidden>params so&#x27;rov parametrlarini manzil oxiriga ?kalit=qiymat ko&#x27;rinishida qo&#x27;shadi.</span></div><div class="q" data-ok="C"><b>4. raise_for_status() nima qiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Javobni saqlaydi</button></li><li><button class="opt" type="button" data-l="B">B) Qayta urinadi</button></li><li><button class="opt" type="button" data-l="C">C) Holat 400+ bo&#x27;lsa HTTPError ko&#x27;taradi</button></li><li><button class="opt" type="button" data-l="D">D) JSON ni o&#x27;qiydi</button></li></ul><span class="q-ex" hidden>Xato holatlarida (4xx, 5xx) istisno ko&#x27;taradi — xatoni jim o&#x27;tkazib yubormaslik uchun.</span></div><div class="q" data-ok="B"><b>5. timeout=1 nima uchun kerak?</b><ul><li><button class="opt" type="button" data-l="A">A) Javobni tezlashtirish</button></li><li><button class="opt" type="button" data-l="B">B) Server 1 soniyada javob bermasa Timeout xatosini olish</button></li><li><button class="opt" type="button" data-l="C">C) So&#x27;rovni 1 marta yuborish</button></li><li><button class="opt" type="button" data-l="D">D) Javobni keshlash</button></li></ul><span class="q-ex" hidden>timeout dasturni cheksiz kutishdan saqlaydi.</span></div><div class="q" data-ok="D"><b>6. API kalitini qayerda saqlash to&#x27;g&#x27;ri?</b><ul><li><button class="opt" type="button" data-l="A">A) Kodda o&#x27;zgaruvchi sifatida</button></li><li><button class="opt" type="button" data-l="B">B) Izohda</button></li><li><button class="opt" type="button" data-l="C">C) Dastur nomida</button></li><li><button class="opt" type="button" data-l="D">D) Muhit o&#x27;zgaruvchisida</button></li></ul><span class="q-ex" hidden>Maxfiy kalit kodda bo&#x27;lmasligi kerak; os.environ orqali olinadi.</span></div><div class="q" data-ok="A"><b>7. Bir xil so&#x27;rovni qayta yubormaslik uchun natijani lug&#x27;atda saqlash nima deyiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Kesh</button></li><li><button class="opt" type="button" data-l="B">B) Qayta urinish</button></li><li><button class="opt" type="button" data-l="C">C) Parametr</button></li><li><button class="opt" type="button" data-l="D">D) JSON</button></li></ul><span class="q-ex" hidden>Kesh — avval olingan natijani saqlab, takror so&#x27;rovsiz qayta ishlatish.</span></div><div class="q" data-ok="C"><b>8. Bu kursda requests.get(&quot;https://google.com&quot;) nima beradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Sahifa matnini</button></li><li><button class="opt" type="button" data-l="B">B) 404</button></li><li><button class="opt" type="button" data-l="C">C) ConnectionError — faqat o&#x27;quv API ishlaydi</button></li><li><button class="opt" type="button" data-l="D">D) Hech narsa</button></li></ul><span class="q-ex" hidden>Brauzerdagi o&#x27;quv muhitida faqat api.xorazm-market.uz ishlaydi; boshqa manzillarda ConnectionError.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">HTTP</td><td>internetda so&#x27;rov-javob qoidasi</td></tr><tr><td class="en">API</td><td>dasturlar bir-biri bilan gaplashadigan interfeys</td></tr><tr><td class="en">URL</td><td>serverdagi narsaning manzili</td></tr><tr><td class="en">GET</td><td>ma&#x27;lumot olish usuli</td></tr><tr><td class="en">POST</td><td>ma&#x27;lumot yuborish/yaratish usuli</td></tr><tr><td class="en">holat kodi</td><td>javob natijasini bildiruvchi raqam (200, 404, 500)</td></tr><tr><td class="en">JSON</td><td>ma&#x27;lumot almashish matn formati</td></tr><tr><td class="en">params</td><td>so&#x27;rovga qo&#x27;shiladigan filtr parametrlari</td></tr><tr><td class="en">timeout</td><td>javobni kutishning maksimal vaqti</td></tr><tr><td class="en">raise_for_status</td><td>xato holatida istisno ko&#x27;taruvchi metod</td></tr><tr><td class="en">API kaliti</td><td>xizmatdan foydalanish uchun maxfiy kod</td></tr><tr><td class="en">muhit o&#x27;zgaruvchisi</td><td>dastur tashqarisida saqlanadigan sozlama</td></tr><tr><td class="en">kesh</td><td>avval olingan natijani saqlash</td></tr><tr><td class="en">qayta urinish (retry)</td><td>xato bo&#x27;lsa so&#x27;rovni yana yuborish</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-29.html"><small>← Oldingi dars</small><span>Ma&#x27;lumotlar bazasi: sqlite3</span></a><a class="lnav next" href="dars-31.html"><small>Keyingi dars →</small><span>«Xorazm Market» 1-qism: model, baza, buyurtmalar</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>30-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 30, "total": 32, "title": "Tashqi dunyo bilan aloqa: requests va API"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

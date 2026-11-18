@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7-dars: Loyiha: konsol o&#x27;yinlari — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>7-dars</b><span>Loyiha: konsol o&#x27;yinlari</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">7-DARS • Asoslar</span><h1 class="title">Loyiha: konsol o&#x27;yinlari</h1><p class="desc">Bugun dars emas, <b>o'yin</b>! Zar, tanga, «Son top», «Tosh-qaychi-qog'oz», viktorina va hatto «Millioner» — hammasini o'zingiz yozasiz. Buning uchun <code>random</code> moduli, <code>while True</code> bilan o'yin sikli, menyu va ball hisobini o'rganasiz. Dars oxirida bir nechta o'yinli <b>«O'yinlar markazi»</b> tayyor bo'ladi.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 random: randint, choice, seed; while True + break; menyu; hisob yuritish</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>random moduli</b> — <code>import random</code>, <code>random.randint(a, b)</code> bilan tasodifiy son, <code>random.choice(...)</code> bilan tasodifiy tanlov.</div></div><div class="g"><span class="dot">2</span><div><b>seed — takrorlanadigan tasodif</b> — <code>random.seed(n)</code> nima qiladi va nega tekshiruvda natija oldindan ma'lum bo'ladi.</div></div><div class="g"><span class="dot">3</span><div><b>O'yin sikli</b> — <code>while True</code> + <code>break</code>: o'yin tugash sharti bajarilguncha aylanadi; urinishlar sonini cheklash.</div></div><div class="g"><span class="dot">4</span><div><b>Menyu</b> — foydalanuvchi raqam tanlaydi, dastur kerakli ishni bajaradi, <code>0</code> — chiqish.</div></div><div class="g"><span class="dot">5</span><div><b>Hisob yuritish</b> — ball, g'alaba va raundlarni sanash, oxirida g'olibni e'lon qilish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>import random</span><span class="nb"><span class="sw" style="background:var(--js)"></span>random.randint(1, 6)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>random.choice([&quot;tosh&quot;, &quot;qaychi&quot;, &quot;qog&#x27;oz&quot;])</span><span class="nb"><span class="sw" style="background:var(--js)"></span>random.seed(42)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>while True: ... break</span><span class="nb"><span class="sw" style="background:var(--js)"></span>urinish += 1</span><span class="nb"><span class="sw" style="background:var(--js)"></span>if tanlov == &quot;0&quot;: break</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="n1" data-group="Nazariya" data-ico="🎲" data-title="random moduli: tasodifiy son va tanlov">
+<h2><span class="mark"></span>random moduli: tasodifiy son va tanlov</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>random</code> moduli kompyuterga «zar tashlash» imkonini beradi: tasodifiy son yoki ro'yxatdan tasodifiy variant oladi.</div>
+<h3>🔹 Modul nima?</h3>
+<p><b>Modul</b> (module) — tayyor asboblar qutisi. 3-darsda <code>math</code> modulini ko'rgansiz. <code>random</code> ham shunday: uni ishlatishdan oldin dastur boshida <code>import random</code> deb yozasiz.</p>
+<h3>🔹 randint(a, b) — tasodifiy butun son</h3>
+<p><code>random.randint(1, 6)</code> 1 dan 6 gacha bo'lgan tasodifiy butun sonni qaytaradi. Diqqat: <b>ikkala chegara ham kiradi</b>, ya'ni 6 ham chiqishi mumkin.</p>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+zar = random.randint(1, 6)
+print(&quot;Zar:&quot;, zar)
+print(&quot;Yana bir zar:&quot;, random.randint(1, 6))
+print(&quot;1 dan 100 gacha:&quot;, random.randint(1, 100))</textarea></div><div class="out" hidden></div></div>
+<p>Bir necha marta ▶ bosing: har safar boshqa sonlar chiqadi.</p>
+<h3>🔹 choice(...) — variantlardan birini tanlash</h3>
+<p><code>random.choice(...)</code> berilgan variantlardan bittasini tasodifan tanlaydi. Variantlarni kvadrat qavs ichida, vergul bilan yozamiz: <code>["tosh", "qaychi", "qog'oz"]</code>. Bu <b>ro'yxat</b> (list) deyiladi, uni 8-darsda batafsil o'rganamiz. Hozircha «variantlar to'plami» deb tushunsangiz yetarli.</p>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+taom = random.choice([&quot;osh&quot;, &quot;lag&#x27;mon&quot;, &quot;manti&quot;, &quot;shashlik&quot;])
+print(&quot;Bugun tushlikka:&quot;, taom)
+harf = random.choice(&quot;ABCD&quot;)
+print(&quot;Testdagi javob:&quot;, harf)</textarea></div><div class="out" hidden></div></div>
+<p>Ikkinchi misolga qarang: <code>choice</code> satrdan ham bitta harfni tanlay oladi.</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Funksiya</th><th>Nima qaytaradi</th><th>Misol natija</th></tr>
+<tr><td><code>random.randint(1, 6)</code></td><td>1 dan 6 gacha butun son (6 ham kiradi)</td><td><code>4</code></td></tr>
+<tr><td><code>random.choice(["a", "b"])</code></td><td>variantlardan bittasi</td><td><code>b</code></td></tr>
+<tr><td><code>random.randrange(1, 6)</code></td><td>1 dan 5 gacha (6 kirmaydi, <code>range</code> kabi)</td><td><code>3</code></td></tr>
+<tr><td><code>random.random()</code></td><td>0 va 1 orasidagi kasr son</td><td><code>0.7213...</code></td></tr></table></div>
+<div class="warn"><span class="lbl">⚠️ randint va range farqi</span><code>range(1, 6)</code> da 6 yo'q, <code>random.randint(1, 6)</code> da esa 6 bor. Zar uchun <code>randint(1, 6)</code> yozing, <code>randint(1, 7)</code> emas.</div>
+<div class="try-box"><span class="lbl">🧪 O'zingiz sinab ko'ring</span>Birinchi oynada tanga tashlang: <code>random.choice(["gerb", "raqam"])</code> natijasini chiqaring.</div>
+</div>
+</section>
+<section class="sec off" data-key="n2" data-group="Nazariya" data-ico="🌱" data-title="seed — takrorlanadigan tasodif">
+<h2><span class="mark"></span>seed — takrorlanadigan tasodif</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Kompyuter tasodifi aslida formula bilan hisoblanadi. <code>random.seed(n)</code> shu formulaning boshlang'ich nuqtasini qo'yadi: bir xil seed — bir xil sonlar ketma-ketligi.</div>
+<h3>🔹 Tasodif qanday hisoblanadi?</h3>
+<p>Kompyuter haqiqiy zar tashlamaydi. U murakkab formula bilan bir sondan keyingisini hisoblaydi. Shuning uchun bunday sonlar <b>psevdo-tasodifiy</b> (pseudo-random — «soxta tasodifiy») deyiladi. Formulaning boshlang'ich soni — <b>seed</b> (urug').</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+random.seed(5)
+print(random.randint(1, 100), random.randint(1, 100), random.randint(1, 100))
+random.seed(5)
+print(random.randint(1, 100), random.randint(1, 100), random.randint(1, 100))</textarea></div><div class="out" hidden></div></div>
+<p>Ikkala qator bir xil chiqadi! <code>seed(5)</code> ketma-ketlikni boshidan boshlab berdi. Bir necha marta ▶ bossangiz ham natija o'zgarmaydi.</p>
+<h3>🔹 Nega bu foydali?</h3>
+<ul>
+<li>O'yinni sinash: har safar bir xil «tasodif» bo'lsa, xatoni qayta ko'rish oson.</li>
+<li>Minecraft kabi o'yinlarda dunyo seed'dan yasaladi: do'stingizga seed'ni aytsangiz, u ham xuddi shu dunyoni oladi.</li>
+</ul>
+<h3>🔹 Bu kursda tekshiruv qanday ishlaydi?</h3>
+<p>✔ Tekshirish tugmasini bosganingizda, har bir sinov oldidan <code>random.seed(...)</code> qo'yiladi. Demak, tekshiruvchi sizning zaringiz qaysi son berishini <b>oldindan biladi</b>. Shuning uchun:</p>
+<ol>
+<li><code>randint</code> va <code>choice</code> ni shartda aytilgan <b>chegaralar va variantlar</b> bilan yozing (variantlar tartibi ham muhim).</li>
+<li>Tasodifiy sonlarni shartda aytilgan <b>tartibda</b> oling: masalan, avval <code>a</code>, keyin <code>b</code>.</li>
+<li>Ortiqcha <code>randint</code> chaqirmang: u ketma-ketlikni surib yuboradi.</li>
+</ol>
+<div class="warn"><span class="lbl">⚠️ O'zingiz seed yozmang</span>Topshiriqlarda kodingizga <code>random.seed(...)</code> qo'shmang. Aks holda tekshiruvchi qo'ygan seed buziladi va natija mos kelmaydi.</div>
+<div class="note">▶ <b>Ishga tushir</b> tugmasi esa har safar boshqa seed oladi, shuning uchun o'zingiz o'ynaganda natija har xil bo'ladi.</div>
+</div>
+</section>
+<section class="sec off" data-key="n3" data-group="Nazariya" data-ico="🔁" data-title="O&#x27;yin sikli: while True va break">
+<h2><span class="mark"></span>O&#x27;yin sikli: while True va break</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Deyarli har bir o'yin — sikl: so'raydi, tekshiradi, javob beradi va yana boshidan. <code>while True</code> cheksiz aylanadi, <code>break</code> esa o'yin tugaganda sikldan chiqaradi.</div>
+<h3>🔹 O'yin siklining tuzilishi</h3>
+<pre class="static"><code class="language-python">import random
+
+sir = random.randint(1, 100)   # 1) tayyorgarlik
+urinish = 0
+while True:                    # 2) o&#x27;yin sikli
+    taxmin = int(input())      # 3) o&#x27;yinchidan so&#x27;rash
+    urinish += 1               # 4) hisobni yangilash
+    if taxmin == sir:          # 5) tugash sharti
+        print(&quot;Topdingiz!&quot;)
+        break                  # 6) sikldan chiqish
+    print(&quot;Yana urinib ko&#x27;ring&quot;)</code></pre>
+<p><code>while True</code> degani «shart har doim rost». Bunday sikl o'zi to'xtamaydi. Uni faqat <code>break</code> to'xtatadi.</p>
+<h3>🔹 «Son top» o'yini</h3>
+<p>Kompyuter son o'ylaydi. Siz topishga urinasiz, u esa yordam beradi: «Kattaroq» yoki «Kichikroq». Ishga tushiring va o'ynab ko'ring.</p>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+sir = random.randint(1, 20)
+urinish = 0
+print(&quot;Men 1 dan 20 gacha son o&#x27;yladim.&quot;)
+while True:
+    taxmin = int(input())
+    urinish += 1
+    if taxmin &lt; sir:
+        print(&quot;Kattaroq&quot;)
+    elif taxmin &gt; sir:
+        print(&quot;Kichikroq&quot;)
+    else:
+        print(&quot;Topdingiz!&quot;, urinish, &quot;ta urinishda.&quot;)
+        break</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Urinishlar sonini cheklash</h3>
+<p>O'yin qiziqroq bo'lishi uchun urinishlarni cheklaymiz. Ikki yo'l bor: <code>while urinish &lt; 5:</code> sharti yoki <code>for</code> sikli. Sikl tugaganda «topildimi?» degan savolga javob kerak bo'ladi. Buning uchun <code>topildi = False</code> bayroq (flag) o'zgaruvchisini ishlatamiz.</p>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+sir = random.randint(1, 10)
+topildi = False
+for urinish in range(3):
+    taxmin = int(input())
+    if taxmin == sir:
+        print(&quot;Topdingiz!&quot;)
+        topildi = True
+        break
+if not topildi:
+    print(&quot;Urinishlar tugadi. Son&quot;, sir, &quot;edi.&quot;)</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ break esdan chiqsa</span><code>while True</code> ichida <code>break</code> bo'lmasa yoki unga hech qachon yetib bormasa, dastur cheksiz aylanadi. Kurs muhiti uni 5 soniyadan keyin to'xtatadi.</div>
+<div class="real"><b>Eslatma:</b> <code>input("Taxmin: ")</code> kabi savol matnini yozishingiz mumkin — tekshiruv faqat <code>print</code> natijasiga qaraydi.</div>
+</div>
+</section>
+<section class="sec off" data-key="n4" data-group="Nazariya" data-ico="📋" data-title="Menyu: foydalanuvchi tanlaydi">
+<h2><span class="mark"></span>Menyu: foydalanuvchi tanlaydi</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Menyu — bu ham <code>while True</code> sikli: variantlarni chiqaradi, tanlovni so'raydi, <code>if/elif</code> bilan kerakli ishni bajaradi. <code>0</code> tanlansa — <code>break</code>.</div>
+<h3>🔹 Bankomat kabi</h3>
+<p>Bankomat ekranida «1 — balans, 2 — pul yechish, 0 — chiqish» yozuvi bo'ladi. Bir amalni bajargach, u yana menyuga qaytadi. Siz «chiqish» ni bosmaguningizcha shunday davom etadi.</p>
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+while True:
+    print(&quot;1 - Zar tashlash&quot;)
+    print(&quot;0 - Chiqish&quot;)
+    tanlov = input()
+    if tanlov == &quot;1&quot;:
+        print(&quot;Zar:&quot;, random.randint(1, 6))
+    elif tanlov == &quot;0&quot;:
+        print(&quot;Xayr!&quot;)
+        break
+    else:
+        print(&quot;Bunday tanlov yo&#x27;q&quot;)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Nega "1" qo'shtirnoqda?</h3>
+<p><code>input()</code> doim <b>satr</b> qaytaradi. Shuning uchun tanlovni satr bilan solishtiramiz: <code>tanlov == "1"</code>. Bu qulay: o'yinchi tasodifan harf kiritsa ham dastur xato bermaydi, faqat «Bunday tanlov yo'q» deydi.</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Yozuv</th><th>Kiritilgan qiymat <code>1</code></th><th>Kiritilgan qiymat <code>a</code></th></tr>
+<tr><td><code>tanlov == "1"</code></td><td>rost</td><td>yolg'on — «Bunday tanlov yo'q»</td></tr>
+<tr><td><code>int(tanlov) == 1</code></td><td>rost</td><td><code>ValueError</code> — dastur to'xtaydi</td></tr></table></div>
+<div class="warn"><span class="lbl">⚠️ Satr va son</span><code>tanlov == 1</code> (qo'shtirnoqsiz) hech qachon rost bo'lmaydi, chunki <code>"1"</code> satri <code>1</code> soniga teng emas.</div>
+</div>
+</section>
+<section class="sec off" data-key="n5" data-group="Nazariya" data-ico="🏆" data-title="Hisob yuritish: ball, raund, g&#x27;olib">
+<h2><span class="mark"></span>Hisob yuritish: ball, raund, g&#x27;olib</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Hisob — sikldan <b>oldin</b> <code>0</code> qilib qo'yilgan o'zgaruvchi. Sikl ichida u <code>+=</code> bilan oshadi, sikldan keyin esa g'olib e'lon qilinadi.</div>
+<h3>🔹 Hisob o'zgaruvchisi qayerda turadi?</h3>
+<p>Futbol tablosini o'ylang: o'yin boshida <code>0:0</code>, har gol bo'lganda bittaga oshadi. Agar tablo har daqiqada nolga tushirilsa, hisob hech qachon to'g'ri bo'lmaydi. Kodda ham shunday: <code>siz = 0</code> siklning <b>ichida</b> emas, <b>oldida</b> yoziladi.</p>
+<h3>🔹 Tosh-qaychi-qog'oz qoidalari</h3>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Siz</th><th>Kompyuter</th><th>Natija</th></tr>
+<tr><td>tosh</td><td>qaychi</td><td>siz yutasiz (tosh qaychini sindiradi)</td></tr>
+<tr><td>qaychi</td><td>qog'oz</td><td>siz yutasiz (qaychi qog'ozni qirqadi)</td></tr>
+<tr><td>qog'oz</td><td>tosh</td><td>siz yutasiz (qog'oz toshni o'raydi)</td></tr>
+<tr><td>bir xil</td><td>bir xil</td><td>durang</td></tr>
+<tr><td colspan="2">qolgan hamma holat</td><td>kompyuter yutadi</td></tr></table></div>
+<p>Uchta «siz yutasiz» holatini bitta shartga <code>or</code> bilan yig'ish mumkin. Har bir holat ichida esa <code>and</code> turadi.</p>
+<h3>🔹 Zar dueli: 3 raund va hisob</h3>
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+siz = 0
+komp = 0
+for raund in range(1, 4):
+    a = random.randint(1, 6)
+    b = random.randint(1, 6)
+    print(f&quot;{raund}-raund: siz {a}, kompyuter {b}&quot;)
+    if a &gt; b:
+        siz += 1
+    elif b &gt; a:
+        komp += 1
+print(f&quot;Hisob: {siz}:{komp}&quot;)
+if siz &gt; komp:
+    print(&quot;Siz yutdingiz!&quot;)
+elif komp &gt; siz:
+    print(&quot;Kompyuter yutdi!&quot;)
+else:
+    print(&quot;Durang!&quot;)</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ =+ emas, +=</span><code>ball =+ 3</code> xato bermaydi, lekin u <code>ball = +3</code> degani: ball har safar 3 ga <b>teng</b> bo'lib qoladi. To'g'risi: <code>ball += 3</code>.</div>
+<div class="real"><b>Real loyihada:</b> o'yin dasturchilari ham xuddi shunday ishlaydi: o'yin sikli, hisob o'zgaruvchilari va g'alaba sharti. Katta o'yinlarda bu sikl soniyasiga 60 marta aylanadi.</div>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="Zar tashlash" data-task="t01">
+<div class="card step" data-task="t01" data-title="Zar tashlash" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>Zar tashlash <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada 1 dan 100 gacha tasodifiy son olinadi. Siz xuddi shunday qilib zar tashlaysiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e8" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+son = random.randint(1, 100)
+print(&quot;Bugungi omadli son:&quot;, son)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan bir necha marta ishga tushiring: son har safar o'zgaradi.</li><li>Pastdagi oynada <code>zar</code> o'zgaruvchisiga <code>random.randint(1, 6)</code> natijasini yozing.</li><li><code>print("Zar:", zar)</code> bilan chiqaring.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Zar: 4</code> kabi (son 1 dan 6 gacha, har safar har xil).</div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+# zar tashlang
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="Tasodifiy salomlashuv" data-task="t02">
+<div class="card step" data-task="t02" data-title="Tasodifiy salomlashuv" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>Tasodifiy salomlashuv <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc"><code>random.choice</code> bilan har safar boshqacha salomlashadigan dastur yozamiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e9" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+rang = random.choice([&quot;qizil&quot;, &quot;yashil&quot;, &quot;ko&#x27;k&quot;])
+print(&quot;Bugungi rang:&quot;, rang)
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ishga tushiring: rang tasodifan tanlanadi.</li><li>Pastda avval <code>ism = input()</code> bilan ismni oling.</li><li><code>salom</code> o'zgaruvchisiga <code>random.choice(["Salom", "Assalomu alaykum", "Xayrli kun"])</code> natijasini yozing (variantlar aynan shu tartibda).</li><li>f-satr bilan chiqaring: salom, vergul, bo'shliq, ism va <code>!</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>Ali</code> bo'lsa, masalan <code>Assalomu alaykum, Ali!</code></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+ism = input()
+# salomni tasodifan tanlang va chiqaring
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="seed(1) dan keyingi sonlar" data-task="t03">
+<div class="card step" data-task="t03" data-title="seed(1) dan keyingi sonlar" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>seed(1) dan keyingi sonlar <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">seed bir xil bo'lsa, «tasodifiy» sonlar ham bir xil bo'ladi. Shuni tekshiramiz.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Ma'lumot: <code>random.seed(1)</code> dan keyin <code>random.randint(1, 10)</code> ketma-ket uch marta chaqirilsa, <code>3</code>, <code>10</code> va <code>2</code> chiqadi.</li><li>Kodni o'qing: ikkinchi marta ham <code>seed(1)</code> qo'yilgan.</li><li>Dastur nima chiqarishini yozing (2 qator).</li></ol></div>
+<pre class="static pred"><code class="language-python">import random
+
+random.seed(1)
+print(random.randint(1, 10), random.randint(1, 10), random.randint(1, 10))
+random.seed(1)
+print(random.randint(1, 10), random.randint(1, 10))
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="Ikki zar yig&#x27;indisi" data-task="t04">
+<div class="card step" data-task="t04" data-title="Ikki zar yig&#x27;indisi" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>Ikki zar yig&#x27;indisi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Stol o'yinlarida ko'pincha ikkita zar tashlanadi. Ikkala zarni va ularning yig'indisini chiqaramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>import random</code> yozing.</li><li>Avval <code>zar1</code>, keyin <code>zar2</code> ga <code>random.randint(1, 6)</code> qiymatini bering (aynan shu tartibda).</li><li>Uch qator chiqaring: <code>1-zar: ...</code>, <code>2-zar: ...</code>, <code>Yig'indi: ...</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1-zar: 2
+2-zar: 5
+Yig&#x27;indi: 7</pre></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py"># ikki zar tashlang
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="Tanga n marta: gerblar soni" data-task="t05">
+<div class="card step" data-task="t05" data-title="Tanga n marta: gerblar soni" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>Tanga n marta: gerblar soni <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Tangani ko'p marta tashlasak, gerb va raqam taxminan teng chiqadimi? Sanab ko'ramiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>n = int(input())</code> — necha marta tashlash.</li><li><code>for</code> sikli bilan <code>n</code> marta tanga tashlang: <code>random.choice(["gerb", "raqam"])</code>.</li><li>Ikkita hisoblagich yuriting: <code>gerb</code> va <code>raqam</code>.</li><li>Oxirida ikki qator chiqaring: <code>Gerb: ...</code> va <code>Raqam: ...</code>.</li><li><code>n</code> = 0 bo'lsa, ikkalasi ham 0.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>10</code> bo'lsa, masalan:<pre class="console">» 10
+Gerb: 5
+Raqam: 5</pre></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+n = int(input())
+# n marta tanga tashlang va sanang
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Son topish: bitta urinish" data-task="t06">
+<div class="card step" data-task="t06" data-title="Son topish: bitta urinish" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Son topish: bitta urinish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Kompyuter 1 dan 10 gacha son o'ylaydi. Sizda faqat bitta urinish bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>sir = random.randint(1, 10)</code> — kompyuter o'ylagan son.</li><li><code>taxmin = int(input())</code> — o'yinchining taxmini (<code>input()</code> qavsi bo'sh).</li><li>Teng bo'lsa: <code>Topdingiz!</code></li><li>Aks holda: <code>Afsus, son 3 edi.</code> (3 o'rniga sirli son).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> sirli son 3 bo'lib, kirish <code>5</code> bo'lsa: <code>Afsus, son 3 edi.</code>; kirish <code>3</code> bo'lsa: <code>Topdingiz!</code></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+# sirli son va taxmin
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="Zar bashoratchisi ishlamayapti" data-task="t07">
+<div class="card step" data-task="t07" data-title="Zar bashoratchisi ishlamayapti" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>Zar bashoratchisi ishlamayapti <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">O'yinchi zar qaysi son chiqishini aytadi, keyin zar tashlanadi. Lekin dastur noto'g'ri ishlayapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Dastur o'yinchidan son oladi (1 dan 6 gacha).</li><li>Keyin zar tashlanadi: zar <b>1 dan 6 gacha</b> son beradi.</li><li><code>Zar: ...</code> chiqadi, so'ng taxmin to'g'ri bo'lsa <code>Topdingiz!</code>, aks holda <code>Topolmadingiz.</code></li><li>Kodni bir necha marta sinab ko'ring va xatolarni tuzating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>2</code>, zar ham 2 bo'lsa:<ul><li><code>Zar: 2</code></li><li><code>Topdingiz!</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+taxmin = input()
+zar = random.randint(1, 7)
+print(&quot;Zar:&quot;, zar)
+if taxmin == zar:
+    print(&quot;Topdingiz!&quot;)
+else:
+    print(&quot;Topolmadingiz.&quot;)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="Son top: kattaroq yoki kichikroq" data-task="t08">
+<div class="card step" data-task="t08" data-title="Son top: kattaroq yoki kichikroq" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>Son top: kattaroq yoki kichikroq <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Klassik o'yin: kompyuter 1 dan 100 gacha son o'ylaydi, siz topguningizcha taxmin qilasiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>sir = random.randint(1, 100)</code>, <code>urinish = 0</code>.</li><li><code>while True</code> sikli: <code>taxmin = int(input())</code> va urinishni 1 ga oshiring.</li><li>Taxmin sirli sondan kichik bo'lsa — <code>Kattaroq</code>, katta bo'lsa — <code>Kichikroq</code> chiqaring.</li><li>Topilsa: <code>Topdingiz! 4 ta urinishda.</code> (4 o'rniga urinishlar soni) va <code>break</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> sirli son 18 bo'lsa:<pre class="console">» 50
+Kichikroq
+» 25
+Kichikroq
+» 12
+Kattaroq
+» 18
+Topdingiz! 4 ta urinishda.</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+sir = random.randint(1, 100)
+urinish = 0
+# o&#x27;yin sikli
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="Son top: 7 urinish chegarasi" data-task="t09">
+<div class="card step" data-task="t09" data-title="Son top: 7 urinish chegarasi" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>Son top: 7 urinish chegarasi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Endi o'yinchida faqat 7 ta urinish bor. Topolmasa, kompyuter sonni aytadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Oldingi topshiriqdagi o'yinni oling (xabarlar o'sha-o'sha).</li><li>Urinishlar <b>ko'pi bilan 7 ta</b> bo'lsin: 7-urinishdan keyin dastur boshqa <code>input()</code> so'ramasin.</li><li>Son topilsa: <code>Topdingiz! N ta urinishda.</code></li><li>7 urinishda topilmasa: <code>Urinishlar tugadi. Son 42 edi.</code> (42 o'rniga sirli son).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> sirli son 42, 7 ta noto'g'ri taxmin:<pre class="console">» 10
+Kattaroq
+» 20
+Kattaroq
+» 30
+Kattaroq
+» 40
+Kattaroq
+» 50
+Kichikroq
+» 45
+Kichikroq
+» 41
+Kattaroq
+Urinishlar tugadi. Son 42 edi.</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+sir = random.randint(1, 100)
+# ko&#x27;pi bilan 7 urinish
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="Tosh-qaychi-qog&#x27;oz: bitta raund" data-task="t10">
+<div class="card step" data-task="t10" data-title="Tosh-qaychi-qog&#x27;oz: bitta raund" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>Tosh-qaychi-qog&#x27;oz: bitta raund <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Kompyuter bilan bitta raund o'ynaymiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>oyinchi = input()</code> — o'yinchi tanlovi: <code>tosh</code>, <code>qaychi</code> yoki <code>qog'oz</code> (faqat shu so'zlardan biri kiritiladi).</li><li><code>kompyuter = random.choice(["tosh", "qaychi", "qog'oz"])</code> (variantlar aynan shu tartibda).</li><li><code>Kompyuter: ...</code> qatorini chiqaring.</li><li>Natija: bir xil bo'lsa <code>Durang!</code>, o'yinchi yutsa <code>Siz yutdingiz!</code>, aks holda <code>Kompyuter yutdi!</code> (qoidalar nazariyadagi jadvalda).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>qog'oz</code>, kompyuter tosh tanlasa:<ul><li><code>Kompyuter: tosh</code></li><li><code>Siz yutdingiz!</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+# bitta raund
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="Tosh-qaychi-qog&#x27;oz: 3 raund va hisob" data-task="t11">
+<div class="card step" data-task="t11" data-title="Tosh-qaychi-qog&#x27;oz: 3 raund va hisob" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>Tosh-qaychi-qog&#x27;oz: 3 raund va hisob <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Endi 3 raund o'ynaymiz va hisobni yuritamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Sikldan oldin <code>siz = 0</code>, <code>komp = 0</code>.</li><li><code>for raund in range(1, 4)</code>: har raundda o'yinchi tanlovini oling, kompyuter <code>random.choice(["tosh", "qaychi", "qog'oz"])</code> bilan tanlaydi.</li><li>Raund boshida chiqaring: <code>1-raund. Kompyuter: tosh</code>.</li><li>Keyin oldingi topshiriqdagi kabi <code>Durang!</code> / <code>Siz yutdingiz!</code> / <code>Kompyuter yutdi!</code> va g'olibning hisobini 1 ga oshiring.</li><li>Oxirida: <code>Hisob: 2:1</code> (siz:kompyuter) va <code>G'olib: siz</code>, <code>G'olib: kompyuter</code> yoki <code>Durang o'yin</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">» qog&#x27;oz
+1-raund. Kompyuter: tosh
+Siz yutdingiz!
+» qaychi
+2-raund. Kompyuter: qog&#x27;oz
+Siz yutdingiz!
+» qaychi
+3-raund. Kompyuter: tosh
+Kompyuter yutdi!
+Hisob: 2:1
+G&#x27;olib: siz</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+siz = 0
+komp = 0
+# 3 raund
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="G&#x27;olibni aniqlash shartlari" data-task="t12">
+<div class="card step" data-task="t12" data-title="G&#x27;olibni aniqlash shartlari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>G&#x27;olibni aniqlash shartlari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Tosh-qaychi-qog'oz shartlarini bo'sh joylarga yozamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Har bir <code>___</code> ni to'g'ri qiymat yoki kalit so'z bilan almashtiring.</li><li>Birinchi shart — durang, keyingi uchtasi — o'yinchi yutadigan holatlar.</li><li>Oxirgi <code>___</code> — qolgan hamma holat uchun.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> kirish <code>qaychi</code>, kompyuter qog'oz tanlasa:<ul><li><code>Kompyuter: qog'oz</code></li><li><code>Siz yutdingiz!</code></li></ul></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+oyinchi = input()
+kompyuter = random.choice([&quot;tosh&quot;, &quot;qaychi&quot;, &quot;qog&#x27;oz&quot;])
+print(&quot;Kompyuter:&quot;, kompyuter)
+if oyinchi == ___:
+    print(&quot;Durang!&quot;)
+elif oyinchi == &quot;tosh&quot; and kompyuter == ___:
+    print(&quot;Siz yutdingiz!&quot;)
+elif oyinchi == &quot;qaychi&quot; and kompyuter == ___:
+    print(&quot;Siz yutdingiz!&quot;)
+elif oyinchi == ___ and kompyuter == &quot;tosh&quot;:
+    print(&quot;Siz yutdingiz!&quot;)
+___:
+    print(&quot;Kompyuter yutdi!&quot;)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="Hisob noto&#x27;g&#x27;ri yangilanadi" data-task="t13">
+<div class="card step" data-task="t13" data-title="Hisob noto&#x27;g&#x27;ri yangilanadi" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>Hisob noto&#x27;g&#x27;ri yangilanadi <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">«Omadli zar» o'yini: 5 marta zar tashlanadi va ball yig'iladi. Lekin ball noto'g'ri chiqyapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Qoidalar: zar 6 bo'lsa — <b>+3 ball</b>, 2 yoki 4 bo'lsa — <b>+1 ball</b>, toq son — 0 ball.</li><li>Har tashlashdan keyin chiqadi: <code>1-tashlash: 2, ball: 1</code>.</li><li>Oxirida: <code>Jami ball: ...</code></li><li>Dasturni ishga tushirib, ball qoidaga mos o'zgarayotganini kuzating va xatoni tuzating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1-tashlash: 2, ball: 1
+2-tashlash: 3, ball: 1
+3-tashlash: 1, ball: 1
+4-tashlash: 6, ball: 4
+5-tashlash: 4, ball: 5
+Jami ball: 5</pre></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+ball = 0
+for i in range(1, 6):
+    zar = random.randint(1, 6)
+    if zar == 6:
+        ball =+ 3
+    elif zar % 2 == 0:
+        ball += 1
+    print(f&quot;{i}-tashlash: {zar}, ball: {ball}&quot;)
+print(&quot;Jami ball:&quot;, ball)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="O&#x27;yin sikli izini bashorat qiling" data-task="t14">
+<div class="card step" data-task="t14" data-title="O&#x27;yin sikli izini bashorat qiling" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>O&#x27;yin sikli izini bashorat qiling <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Son topish siklini qadamma-qadam bajaring.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Sirli son <code>37</code>.</li><li><code>input()</code> ga ketma-ket <code>50</code>, <code>20</code>, <code>40</code>, <code>37</code>, <code>10</code> kiritiladi.</li><li><code>continue</code> va <code>break</code> qayerda ishlashini kuzating.</li><li>Dastur chiqargan hamma qatorlarni yozing (kiritilgan qiymatlar ekranga chiqmaydi).</li></ol></div>
+<pre class="static pred"><code class="language-python">sir = 37
+urinish = 0
+while True:
+    taxmin = int(input())
+    urinish += 1
+    if taxmin == sir:
+        print(&quot;Topdingiz!&quot;)
+        break
+    if taxmin &lt; sir:
+        print(taxmin, &quot;- kattaroq&quot;)
+        continue
+    print(taxmin, &quot;- kichikroq&quot;)
+print(&quot;Urinishlar:&quot;, urinish)
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Matematik viktorina: 5 savol" data-task="t15">
+<div class="card step" data-task="t15" data-title="Matematik viktorina: 5 savol" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Matematik viktorina: 5 savol <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ko'paytirish jadvalini tekshiradigan viktorina. Har to'g'ri javob — 1 ball.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>ball = 0</code>. <code>for i in range(1, 6)</code> — 5 ta savol.</li><li>Har savolda avval <code>a</code>, keyin <code>b</code>: <code>random.randint(2, 9)</code>.</li><li>Savolni chiqaring: <code>1-savol: 3 x 7 = ?</code></li><li><code>javob = int(input())</code>. To'g'ri bo'lsa <code>To'g'ri!</code> va ball +1, aks holda <code>Noto'g'ri. Javob: 21</code>.</li><li>Oxirida: <code>Natija: 4/5</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1-savol: 2 x 3 = ?
+» 6
+To&#x27;g&#x27;ri!
+2-savol: 3 x 7 = ?
+» 0
+Noto&#x27;g&#x27;ri. Javob: 21
+3-savol: 4 x 6 = ?
+» 24
+To&#x27;g&#x27;ri!
+4-savol: 6 x 5 = ?
+» 30
+To&#x27;g&#x27;ri!
+5-savol: 2 x 4 = ?
+» 8
+To&#x27;g&#x27;ri!
+Natija: 4/5</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+ball = 0
+# 5 ta savol
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="«So&#x27;zni top»: yashirin harflar" data-task="t16">
+<div class="card step" data-task="t16" data-title="«So&#x27;zni top»: yashirin harflar" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>«So&#x27;zni top»: yashirin harflar <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kompyuter so'z o'ylaydi, harflar <code>_</code> bilan yashirilgan. Siz harf aytasiz, to'g'ri harflar ochiladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>soz = random.choice(["kitob", "maktab", "daftar", "qalam", "ruchka"])</code>.</li><li><code>topilgan = ""</code> — aytilgan harflar shu satrga qo'shib boriladi. <code>urinish = 0</code>.</li><li><code>while True</code> ichida <b>avval</b> ekran satrini yasang (<code>for h in soz:</code>): so'zning har bir harfi <code>topilgan</code> ichida bo'lsa harfning o'zi, aks holda <code>_</code>. Uni chiqaring.</li><li>Ekranda <code>_</code> qolmagan bo'lsa — <code>break</code>.</li><li>Aks holda <code>harf = input()</code>, urinish +1, harfni <code>topilgan</code> ga qo'shing (so'zda bo'lmasa ham urinish sanaladi).</li><li>Sikldan keyin: <code>Topdingiz! So'z: kitob. Urinishlar: 5</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">______
+» o
+______
+» a
+_a__a_
+» m
+ma__a_
+» k
+mak_a_
+» t
+makta_
+» b
+maktab
+Topdingiz! So&#x27;z: maktab. Urinishlar: 6</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+soz = random.choice([&quot;kitob&quot;, &quot;maktab&quot;, &quot;daftar&quot;, &quot;qalam&quot;, &quot;ruchka&quot;])
+topilgan = &quot;&quot;
+urinish = 0
+# o&#x27;yin sikli
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="Menyu: o&#x27;yin tanlash va chiqish" data-task="t17">
+<div class="card step" data-task="t17" data-title="Menyu: o&#x27;yin tanlash va chiqish" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>Menyu: o&#x27;yin tanlash va chiqish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kichik o'yin menyusi: zar, tanga va chiqish.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>while True</code> ichida har safar 3 qatorli menyu chiqaring: <code>1 - Zar tashlash</code>, <code>2 - Tanga tashlash</code>, <code>0 - Chiqish</code>.</li><li><code>tanlov = input()</code>.</li><li><code>1</code> — <code>Zar: ...</code> (<code>random.randint(1, 6)</code>).</li><li><code>2</code> — <code>Tanga: ...</code> (<code>random.choice(["gerb", "raqam"])</code>).</li><li><code>0</code> — <code>Xayr!</code> va sikldan chiqish.</li><li>Boshqa har qanday kirish — <code>Bunday tanlov yo'q</code> (dastur xato bermasin).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1 - Zar tashlash
+2 - Tanga tashlash
+0 - Chiqish
+» 1
+Zar: 2
+1 - Zar tashlash
+2 - Tanga tashlash
+0 - Chiqish
+» 5
+Bunday tanlov yo&#x27;q
+1 - Zar tashlash
+2 - Tanga tashlash
+0 - Chiqish
+» 0
+Xayr!</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+# menyu sikli
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Zar dueli: ikkita xato" data-task="t18">
+<div class="card step" data-task="t18" data-title="Zar dueli: ikkita xato" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Zar dueli: ikkita xato <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">5 raundli zar dueli. Kim kattaroq son tashlasa, o'sha 1 ochko oladi. Kimdir 3 ochkoga yetsa, o'yin muddatidan oldin tugaydi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Har raundda avval o'yinchi, keyin kompyuter zari: <code>1-raund: siz 2, kompyuter 5</code>. Teng bo'lsa hech kim ochko olmaydi.</li><li>Kimdir 3 ochkoga yetsa: <code>Kimdir 3 ochkoga yetdi!</code> va o'yin to'xtaydi.</li><li>Oxirida: <code>Hisob: 3:1</code> (siz:kompyuter).</li><li>Hozir o'yin 1 raunddan keyin tugab qolyapti va hisob noto'g'ri. Ikkala xatoni toping.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1-raund: siz 2, kompyuter 5
+2-raund: siz 1, kompyuter 3
+3-raund: siz 1, kompyuter 4
+Kimdir 3 ochkoga yetdi!
+Hisob: 0:3</pre></div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+for raund in range(1, 6):
+    siz = 0
+    komp = 0
+    a = random.randint(1, 6)
+    b = random.randint(1, 6)
+    print(f&quot;{raund}-raund: siz {a}, kompyuter {b}&quot;)
+    if a &gt; b:
+        siz += 1
+    elif b &gt; a:
+        komp += 1
+    if siz == 3 or komp == 3:
+        print(&quot;Kimdir 3 ochkoga yetdi!&quot;)
+    break
+print(f&quot;Hisob: {siz}:{komp}&quot;)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="Takroriy kodni bitta siklga yig&#x27;ing" data-task="t19">
+<div class="card step" data-task="t19" data-title="Takroriy kodni bitta siklga yig&#x27;ing" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>Takroriy kodni bitta siklga yig&#x27;ing <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Zar 5 marta tashlanadi, lekin kod 5 marta nusxa ko'chirilgan. Uni qisqa qilamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Takrorlanayotgan 3 qatorni toping.</li><li>Ularni <code>for</code> sikliga joylang: tashlash raqami sikl o'zgaruvchisidan olinsin.</li><li>Kodda <code>randint</code> faqat <b>bir marta</b> yozilsin, kod 8 qatordan oshmasin.</li><li>Natija avvalgidek qolsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><pre class="console">1-tashlash: 2
+2-tashlash: 5
+3-tashlash: 1
+4-tashlash: 3
+5-tashlash: 1
+Jami: 12</pre></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+jami = 0
+zar = random.randint(1, 6)
+print(&quot;1-tashlash:&quot;, zar)
+jami += zar
+zar = random.randint(1, 6)
+print(&quot;2-tashlash:&quot;, zar)
+jami += zar
+zar = random.randint(1, 6)
+print(&quot;3-tashlash:&quot;, zar)
+jami += zar
+zar = random.randint(1, 6)
+print(&quot;4-tashlash:&quot;, zar)
+jami += zar
+zar = random.randint(1, 6)
+print(&quot;5-tashlash:&quot;, zar)
+jami += zar
+print(&quot;Jami:&quot;, jami)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="«Millioner»: 5 savol, pul darajalari" data-task="t20">
+<div class="card step" data-task="t20" data-title="«Millioner»: 5 savol, pul darajalari" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>«Millioner»: 5 savol, pul darajalari <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Teleshou kabi o'yin: har savol qimmatroq. Xato qilsangiz — hammasini yo'qotasiz, xohlasangiz — to'xtab, pulni olib ketasiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>5 ta savol, pul darajalari: 1 — <code>50000</code>, 2 — <code>100000</code>, 3 — <code>250000</code>, 4 — <code>500000</code>, 5 — <code>1000000</code> so'm.</li><li>Har savolda avval <code>a</code>, keyin <code>b</code>: <code>random.randint(10, 99)</code>. Savol: <code>1-savol (50000 so'm): 23 + 45 = ?</code></li><li><code>javob = input()</code>. Avval tekshiring: <code>stop</code> bo'lsa — <code>Siz to'xtadingiz.</code> va o'yin tugaydi (yutuq saqlanadi).</li><li>To'g'ri javob: yutuq shu savol puliga teng bo'ladi, <code>To'g'ri! Yutuq: 50000 so'm</code>.</li><li>Noto'g'ri javob: <code>Noto'g'ri! Javob: 68.</code>, yutuq <code>0</code> bo'ladi va o'yin tugaydi.</li><li>Oxirida doim: <code>Yakuniy yutuq: ... so'm</code>. Yutuq 1000000 bo'lsa, yana: <code>Tabriklaymiz, siz millionersiz!</code></li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> 2 ta to'g'ri javobdan keyin to'xtash:<pre class="console">1-savol (50000 so&#x27;m): 17 + 21 = ?
+» 38
+To&#x27;g&#x27;ri! Yutuq: 50000 so&#x27;m
+2-savol (100000 so&#x27;m): 20 + 56 = ?
+» 76
+To&#x27;g&#x27;ri! Yutuq: 100000 so&#x27;m
+3-savol (250000 so&#x27;m): 31 + 95 = ?
+» stop
+Siz to&#x27;xtadingiz.
+Yakuniy yutuq: 100000 so&#x27;m</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+yutuq = 0
+# 5 ta savol
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="O&#x27;yinlar markazi" data-task="mini">
+<div class="card step" data-task="mini" data-title="O&#x27;yinlar markazi" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>O&#x27;yinlar markazi <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bugungi o'yinlarni bitta dasturga yig'amiz: menyudan o'yin tanlanadi, hamma o'yinlar uchun umumiy ball yuritiladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p><b>Umumiy rasm:</b> dastur menyu chiqaradi. O'yinchi 3 ta o'yindan birini tanlaydi, yutsa ball oladi. <code>0</code> tanlanganda umumiy ball e'lon qilinadi. Har qadamdan keyin ▶ bosib sinab boring.</p>
+<ol>
+<li><b>Tayyorgarlik va menyu.</b> <code>import random</code>, <code>ball = 0</code>. <code>while True</code> ichida bitta qator chiqaring: <code>Menyu: 1 - son topish, 2 - tosh-qaychi-qog'oz, 3 - viktorina, 0 - chiqish</code>, so'ng <code>tanlov = input()</code>.</li>
+<li><b>Chiqish.</b> <code>0</code> tanlansa: <code>Umumiy ball: 15</code> (15 o'rniga ball), keyin <code>Xayr!</code> va <code>break</code>.</li>
+<li><b>Noto'g'ri tanlov.</b> Boshqa kirish uchun: <code>Bunday o'yin yo'q</code>.</li>
+<li><b>Son topish (1).</b> <code>sir = random.randint(1, 10)</code>, ko'pi bilan <b>3 urinish</b>: <code>Kattaroq</code> / <code>Kichikroq</code>. Topilsa: <code>Topdingiz! +10 ball</code> (ball +10). Topilmasa: <code>Son 7 edi.</code></li>
+<li><b>Tosh-qaychi-qog'oz (2).</b> O'yinchi tanlovi <code>input()</code>, kompyuter <code>random.choice(["tosh", "qaychi", "qog'oz"])</code>. <code>Kompyuter: ...</code>, so'ng <code>Durang!</code>, <code>Yutdingiz! +5 ball</code> (ball +5) yoki <code>Yutqazdingiz!</code>.</li>
+<li><b>Viktorina (3).</b> 3 ta savol: avval <code>a</code>, keyin <code>b</code> — <code>random.randint(2, 9)</code>. Savol: <code>3 x 7 = ?</code>. To'g'ri: <code>To'g'ri! +2 ball</code> (ball +2), noto'g'ri: <code>Noto'g'ri. Javob: 21</code>.</li>
+<li><b>Hammasini sinang.</b> Uchala o'yinni ketma-ket o'ynab, chiqing. Umumiy ball to'g'ri yig'ilganini tekshiring.</li>
+</ol>
+<pre class="console">Menyu: 1 - son topish, 2 - tosh-qaychi-qog&#x27;oz, 3 - viktorina, 0 - chiqish
+» 2
+» qog&#x27;oz
+Kompyuter: tosh
+Yutdingiz! +5 ball
+Menyu: 1 - son topish, 2 - tosh-qaychi-qog&#x27;oz, 3 - viktorina, 0 - chiqish
+» 2
+» qaychi
+Kompyuter: qog&#x27;oz
+Yutdingiz! +5 ball
+Menyu: 1 - son topish, 2 - tosh-qaychi-qog&#x27;oz, 3 - viktorina, 0 - chiqish
+» 0
+Umumiy ball: 10
+Xayr!</pre><p><b>»</b> belgili qatorlar — siz kiritgan qiymatlar. Ular dastur chiqishiga kirmaydi.</p>
+<div class="res"><b>✅ Natijada shular bo'ladi:</b><ul><li>Har safar qayta chiqadigan menyu va <code>0</code> bilan chiqish</li><li>3 urinishli «Son top» (+10 ball)</li><li>Tosh-qaychi-qog'oz (+5 ball)</li><li>3 savolli viktorina (har to'g'ri javob +2 ball)</li><li>Noto'g'ri tanlovda xabar, oxirida umumiy ball</li></ul></div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import random
+
+ball = 0
+# 1) menyu sikli
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> O'yin dasturlaridagi xatolar ko'pincha xato xabarini bermaydi: dastur ishlaydi, lekin o'yin «adolatsiz» bo'lib qoladi. Shuning uchun har o'yinni bir necha marta o'ynab sinang.</div>
+<div class="warn"><span class="lbl">⚠️ import unutilgan</span><code>zar = random.randint(1, 6)</code> — dastur boshida <code>import random</code> bo'lmasa, <code>NameError: name 'random' is not defined</code>.</div>
+<div class="warn"><span class="lbl">⚠️ randint chegarasi</span><code>random.randint(1, 7)</code> zarda 7 ham chiqaradi. <code>randint</code> da ikkala chegara kiradi: zar uchun <code>randint(1, 6)</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Satr va son solishtirildi</span><code>taxmin = input()</code> va <code>if taxmin == sir:</code> — <code>"5" == 5</code> doim yolg'on. Son kerak bo'lsa <code>int(input())</code>; menyu tanlovida esa <code>tanlov == "1"</code>.</div>
+<div class="warn"><span class="lbl">⚠️ break yo'q — cheksiz sikl</span><code>while True:</code> ichida son topilganda <code>break</code> bo'lmasa, o'yin hech qachon tugamaydi. <code>break</code> to'g'ri <code>if</code> ichida, to'g'ri chekinish bilan turishi kerak.</div>
+<div class="warn"><span class="lbl">⚠️ Hisob sikl ichida nolga tushadi</span><code>for ...:</code> ichida <code>ball = 0</code> — har aylanishda ball yo'qoladi. Hisob o'zgaruvchisini sikldan <b>oldin</b> yozing.</div>
+<div class="warn"><span class="lbl">⚠️ =+ va +=</span><code>ball =+ 1</code> — bu <code>ball = +1</code>, ya'ni ball doim 1. To'g'risi: <code>ball += 1</code>.</div>
+<div class="warn"><span class="lbl">⚠️ choice ga variantlar alohida berildi</span><code>random.choice("tosh", "qaychi")</code> — <code>TypeError</code>. Variantlar kvadrat qavs ichida bitta ro'yxat bo'lishi kerak: <code>random.choice(["tosh", "qaychi"])</code>.</div>
+<div class="warn"><span class="lbl">⚠️ "stop" ni int() ga berish</span><code>int(input())</code> dan keyin <code>if javob == "stop"</code> tekshirilsa, <code>stop</code> kiritilganda <code>ValueError</code> chiqadi. Avval satrni tekshiring, keyin songa o'tkazing.</div>
+<div class="real"><b>Maslahat:</b> o'yinni sinashda <code>random.seed(1)</code> ni vaqtincha qo'yib ko'ring: har safar bir xil «tasodif» chiqadi va xatoni qayta-qayta ko'rish oson bo'ladi. Topshiriqni tekshirishdan oldin uni o'chirib qo'ying.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎰 Omad g'ildiragi.</b> 3 ta «baraban» bor, har biri <code>random.choice(["🍒", "🍋", "⭐", "7"])</code> beradi. O'yinchida 100 ta tanga bor, har aylantirish 10 tanga turadi. Uchala belgi bir xil bo'lsa +100, ikkitasi bir xil bo'lsa +20 tanga. O'yinchi <code>stop</code> yozguncha yoki tangasi tugaguncha o'yin davom etsin. Oxirida qolgan tangalar sonini chiqaring.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Zar statistikasi.</b> Zarni 600 marta tashlang (<code>for</code> + <code>randint</code>). 6 ta hisoblagich bilan har son necha marta tushganini sanang va chiqaring. Har son taxminan 100 marta chiqdimi?</li>
+<li><b>Son top, teskari.</b> Endi siz son o'ylaysiz, kompyuter topadi. U o'rtadagi sonni aytadi (1–100 oralig'ida 50), siz <code>k</code> (kattaroq), <code>m</code> (kichikroq) yoki <code>t</code> (topding) deb javob berasiz. Chegaralarni o'zgartirib, kompyuter ko'pi bilan 7 urinishda topsin.</li>
+<li><b>Tosh-qaychi-qog'oz: 3 g'alabagacha.</b> O'yin raundlar soni bilan emas, kimdir 3 marta yutguncha davom etsin (<code>while True</code> + <code>break</code>).</li>
+<li><b>Parol generatori.</b> <code>random.choice</code> bilan harflar va raqamlardan iborat satrdan 8 ta belgi tanlab, tasodifiy parol yasang.</li>
+<li><b>O'z o'yiningiz.</b> Do'stingiz bilan o'ynash uchun kichik konsol o'yini o'ylab toping (masalan, «Kim tezroq 50 ga yetadi»). Menyu va ball bo'lsin. Kodingizga izohlar yozing.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="A"><b>1. random.randint(1, 6) qaysi qiymatlarni qaytarishi mumkin?</b><ul><li><button class="opt" type="button" data-l="A">A) 1 dan 6 gacha, 6 ham kiradi</button></li><li><button class="opt" type="button" data-l="B">B) 1 dan 5 gacha, 6 kirmaydi</button></li><li><button class="opt" type="button" data-l="C">C) 0 dan 6 gacha</button></li><li><button class="opt" type="button" data-l="D">D) 0 dan 5 gacha</button></li></ul><span class="q-ex" hidden>randint da ikkala chegara ham kiradi. range dan farqi shunda.</span></div><div class="q" data-ok="B"><b>2. random.choice([&quot;tosh&quot;, &quot;qaychi&quot;, &quot;qog&#x27;oz&quot;]) nima qaytaradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Uchala so&#x27;zni birga</button></li><li><button class="opt" type="button" data-l="B">B) Variantlardan bittasini</button></li><li><button class="opt" type="button" data-l="C">C) Tasodifiy sonni</button></li><li><button class="opt" type="button" data-l="D">D) Variantlar sonini: 3</button></li></ul><span class="q-ex" hidden>choice berilgan variantlardan tasodifan bittasini tanlab qaytaradi.</span></div><div class="q" data-ok="C"><b>3. random.seed(7) dan keyin dasturni ikki marta ishga tushirsak, randint natijalari qanday bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Har safar boshqacha</button></li><li><button class="opt" type="button" data-l="B">B) Doim 7</button></li><li><button class="opt" type="button" data-l="C">C) Ikkala safar ham bir xil</button></li><li><button class="opt" type="button" data-l="D">D) Xato beradi</button></li></ul><span class="q-ex" hidden>Bir xil seed bir xil sonlar ketma-ketligini beradi. Tekshiruv shundan foydalanadi.</span></div><div class="q" data-ok="D"><b>4. while True: sikli qachon to&#x27;xtaydi?</b><ul><li><button class="opt" type="button" data-l="A">A) 10 marta aylangandan keyin</button></li><li><button class="opt" type="button" data-l="B">B) Shart yolg&#x27;on bo&#x27;lganda</button></li><li><button class="opt" type="button" data-l="C">C) Hech qachon, unga to&#x27;xtatib bo&#x27;lmaydi</button></li><li><button class="opt" type="button" data-l="D">D) Ichida break bajarilganda</button></li></ul><span class="q-ex" hidden>True doim rost, shuning uchun sikl o&#x27;zi to&#x27;xtamaydi. Uni break to&#x27;xtatadi.</span></div><div class="q" data-ok="B"><b>5. taxmin = input() va sir = 5 bo&#x27;lsa, 5 kiritilganda taxmin == sir nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) True</button></li><li><button class="opt" type="button" data-l="B">B) False</button></li><li><button class="opt" type="button" data-l="C">C) 5</button></li><li><button class="opt" type="button" data-l="D">D) Xato beradi</button></li></ul><span class="q-ex" hidden>input() satr qaytaradi: &quot;5&quot; satri 5 soniga teng emas. int(input()) kerak.</span></div><div class="q" data-ok="C"><b>6. ball = 4 bo&#x27;lsa, ball =+ 2 dan keyin ball nechaga teng?</b><ul><li><button class="opt" type="button" data-l="A">A) 6</button></li><li><button class="opt" type="button" data-l="B">B) 4</button></li><li><button class="opt" type="button" data-l="C">C) 2</button></li><li><button class="opt" type="button" data-l="D">D) Xato beradi</button></li></ul><span class="q-ex" hidden>=+ 2 bu = +2 degani: ball 2 ga teng bo&#x27;lib qoladi. Qo&#x27;shish uchun += kerak.</span></div><div class="q" data-ok="A"><b>7. Hisob o&#x27;zgaruvchisi (masalan, ball = 0) qayerda yozilishi kerak?</b><ul><li><button class="opt" type="button" data-l="A">A) Sikldan oldin</button></li><li><button class="opt" type="button" data-l="B">B) Sikl ichida, boshida</button></li><li><button class="opt" type="button" data-l="C">C) Sikl ichida, oxirida</button></li><li><button class="opt" type="button" data-l="D">D) Sikldan keyin</button></li></ul><span class="q-ex" hidden>Sikl ichida yozilsa, har aylanishda hisob nolga tushadi. Uni bir marta, sikldan oldin yozamiz.</span></div><div class="q" data-ok="D"><b>8. Menyuda tanlov = input() bo&#x27;lsa, qaysi shart to&#x27;g&#x27;ri va harf kiritilganda ham xato bermaydi?</b><ul><li><button class="opt" type="button" data-l="A">A) if tanlov == 1:</button></li><li><button class="opt" type="button" data-l="B">B) if int(tanlov) == 1:</button></li><li><button class="opt" type="button" data-l="C">C) if tanlov = &quot;1&quot;:</button></li><li><button class="opt" type="button" data-l="D">D) if tanlov == &quot;1&quot;:</button></li></ul><span class="q-ex" hidden>input() satr qaytaradi, shuning uchun satr bilan solishtiramiz. int(tanlov) esa harf kiritilsa ValueError beradi.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">random</td><td>tasodifiy; tasodifiy son va tanlov beradigan modul</td></tr><tr><td class="en">module</td><td>modul — tayyor funksiyalar to&#x27;plami (import bilan ulanadi)</td></tr><tr><td class="en">import</td><td>modulni dasturga ulash</td></tr><tr><td class="en">randint</td><td>random integer — tasodifiy butun son</td></tr><tr><td class="en">choice</td><td>tanlov — variantlardan bittasini tasodifan olish</td></tr><tr><td class="en">seed</td><td>urug&#x27; — tasodifiy sonlar ketma-ketligining boshlang&#x27;ich nuqtasi</td></tr><tr><td class="en">pseudo-random</td><td>psevdo-tasodifiy — formula bilan hisoblangan «tasodif»</td></tr><tr><td class="en">game loop</td><td>o&#x27;yin sikli — o&#x27;yin tugaguncha aylanadigan sikl</td></tr><tr><td class="en">infinite loop</td><td>cheksiz sikl — o&#x27;zi to&#x27;xtamaydigan sikl</td></tr><tr><td class="en">break</td><td>sikldan darhol chiqish</td></tr><tr><td class="en">menu</td><td>menyu — foydalanuvchi tanlaydigan variantlar ro&#x27;yxati</td></tr><tr><td class="en">score</td><td>hisob, ball</td></tr><tr><td class="en">round</td><td>raund — o&#x27;yinning bir bosqichi</td></tr><tr><td class="en">attempt</td><td>urinish</td></tr><tr><td class="en">guess</td><td>taxmin</td></tr><tr><td class="en">flag</td><td>bayroq — holatni eslab qoladigan True/False o&#x27;zgaruvchi</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-06.html"><small>← Oldingi dars</small><span>Sikllar</span></a><a class="lnav next" href="dars-08.html"><small>Keyingi dars →</small><span>Ro&#x27;yxatlar (list)</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>7-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 7, "total": 32, "title": "Loyiha: konsol o'yinlari"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

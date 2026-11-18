@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>29-dars: Ma&#x27;lumotlar bazasi: sqlite3 — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>29-dars</b><span>Ma&#x27;lumotlar bazasi: sqlite3</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">29-DARS • Ma&#x27;lumotlar bazasi</span><h1 class="title">Ma&#x27;lumotlar bazasi: sqlite3</h1><p class="desc">Ro'yxat va lug'at dastur o'chganda yo'qoladi. Fayl bilan ishlash qulay, lekin 100 000 ta yozuvdan kerakli bittasini tez topish uchun u sekin. <b>Ma'lumotlar bazasi</b> shu uchun yaratilgan. Python bilan birga keladigan <code>sqlite3</code> orqali jadvallar yaratamiz va <b>SQL</b> tilida savollar beramiz: "15 yoshdan kattalar kimlar?", "qaysi sinfning o'rtacha bahosi eng yuqori?"</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 sqlite3, SELECT/INSERT/UPDATE/DELETE, ? parametrlar, GROUP BY, JOIN</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>Jadval va yozuv</b> — <code>CREATE TABLE</code> va <code>INSERT</code> bilan ma'lumot saqlash.</div></div><div class="g"><span class="dot">2</span><div><b>So'rovlar</b> — <code>SELECT … WHERE … ORDER BY</code> bilan kerakli yozuvlarni olish.</div></div><div class="g"><span class="dot">3</span><div><b>O'zgartirish</b> — <code>UPDATE</code> va <code>DELETE</code> ni shart bilan ishlatish.</div></div><div class="g"><span class="dot">4</span><div><b>Xavfsizlik</b> — <code>?</code> parametrlari va SQL-injection'dan saqlanish.</div></div><div class="g"><span class="dot">5</span><div><b>Hisobotlar</b> — <code>COUNT</code>, <code>AVG</code>, <code>GROUP BY</code>.</div></div><div class="g"><span class="dot">6</span><div><b>JOIN</b> — ikki jadvalni bog'lab birlashtirish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>con = sqlite3.connect(&quot;:memory:&quot;)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>con.execute(&quot;CREATE TABLE t (id INTEGER PRIMARY KEY, ism TEXT)&quot;)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>con.execute(&quot;INSERT INTO t (ism) VALUES (?)&quot;, (&quot;Ali&quot;,))</span><span class="nb"><span class="sw" style="background:var(--js)"></span>con.execute(&quot;SELECT ism FROM t WHERE id &gt; ?&quot;, (1,)).fetchall()</span><span class="nb"><span class="sw" style="background:var(--js)"></span>SELECT sinf, AVG(baho) FROM oquvchilar GROUP BY sinf</span><span class="nb"><span class="sw" style="background:var(--js)"></span>SELECT o.ism, s.nom FROM oquvchilar o JOIN sinflar s ON o.sinf_id = s.id</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="s1" data-group="Nazariya" data-ico="🗄️" data-title="Jadval, INSERT va SELECT">
+<h2><span class="mark"></span>Jadval, INSERT va SELECT</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Ma'lumotlar bazasi — jadvallar to'plami. Jadval — ustunlar (maydonlar) va qatorlar (yozuvlar). <code>sqlite3</code> da baza bitta fayl yoki xotirada (<code>":memory:"</code>) bo'ladi.</div>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE mevalar (id INTEGER PRIMARY KEY, nom TEXT, narx INTEGER)&quot;)
+con.execute(&quot;INSERT INTO mevalar (nom, narx) VALUES (?, ?)&quot;, (&quot;Olma&quot;, 8000))
+con.executemany(&quot;INSERT INTO mevalar (nom, narx) VALUES (?, ?)&quot;, [(&quot;Anor&quot;, 15000), (&quot;Uzum&quot;, 12000)])
+
+for qator in con.execute(&quot;SELECT id, nom, narx FROM mevalar&quot;):
+    print(qator)</textarea></div><div class="out" hidden></div></div>
+<p><code>execute</code> — bitta buyruq, <code>executemany</code> — ko'p qatorni birdaniga. <code>SELECT</code> natijasini sikl bilan yoki <code>fetchall()</code> (hammasi ro'yxat), <code>fetchone()</code> (bitta qator) bilan olasiz. Har qator — tuple.</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>SQL</th><th>Vazifasi</th></tr>
+<tr><td><code>CREATE TABLE</code></td><td>jadval yaratish</td></tr>
+<tr><td><code>INSERT INTO … VALUES</code></td><td>yozuv qo'shish</td></tr>
+<tr><td><code>SELECT … FROM</code></td><td>o'qish</td></tr>
+<tr><td><code>UPDATE … SET … WHERE</code></td><td>o'zgartirish</td></tr>
+<tr><td><code>DELETE FROM … WHERE</code></td><td>o'chirish</td></tr></table></div>
+<div class="note">ℹ️ Bu darslikda SQL kalit so'zlarini KATTA harfda yozamiz — faqat o'qish qulayligi uchun. SQL katta-kichik harfni ajratmaydi.</div>
+</div>
+</section>
+<section class="sec off" data-key="s2" data-group="Nazariya" data-ico="🔍" data-title="WHERE, ORDER BY, UPDATE, DELETE">
+<h2><span class="mark"></span>WHERE, ORDER BY, UPDATE, DELETE</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> <code>WHERE</code> — qaysi qatorlar kerakligini tanlaydi. <code>ORDER BY</code> — tartiblaydi. <code>UPDATE</code> va <code>DELETE</code> ni <b>doim WHERE bilan</b> yozing, aks holda hamma qator o'zgaradi yoki o'chadi!</div>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE mevalar (nom TEXT, narx INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO mevalar VALUES (?, ?)&quot;, [(&quot;Olma&quot;, 8000), (&quot;Anor&quot;, 15000), (&quot;Uzum&quot;, 12000), (&quot;Behi&quot;, 9000)])
+
+print(con.execute(&quot;SELECT nom FROM mevalar WHERE narx &gt; ? ORDER BY narx DESC&quot;, (8500,)).fetchall())
+
+con.execute(&quot;UPDATE mevalar SET narx = ? WHERE nom = ?&quot;, (10000, &quot;Olma&quot;))
+print(con.execute(&quot;SELECT * FROM mevalar WHERE nom = &#x27;Olma&#x27;&quot;).fetchone())
+
+n = con.execute(&quot;DELETE FROM mevalar WHERE narx &lt; ?&quot;, (10000,)).rowcount
+print(&quot;O&#x27;chirildi:&quot;, n)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 Muhim: ? parametrlari</h3>
+<p>Qiymatni so'rovga <b>hech qachon f-string bilan qo'shmang</b>. <code>?</code> qo'ying va qiymatlarni alohida tuple'da bering. Bu <b>SQL-injection</b> hujumidan saqlaydi: foydalanuvchi ism o'rniga <code>x' OR '1'='1</code> yozsa, f-string bilan hamma yozuv chiqib ketadi.</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE u (ism TEXT, parol TEXT)&quot;)
+con.execute(&quot;INSERT INTO u VALUES (&#x27;admin&#x27;, &#x27;sir123&#x27;)&quot;)
+
+kirish = &quot;x&#x27; OR &#x27;1&#x27;=&#x27;1&quot;
+xavfli = con.execute(f&quot;SELECT * FROM u WHERE ism = &#x27;{kirish}&#x27;&quot;).fetchall()
+xavfsiz = con.execute(&quot;SELECT * FROM u WHERE ism = ?&quot;, (kirish,)).fetchall()
+print(&quot;f-string:&quot;, xavfli)
+print(&quot;? bilan:&quot;, xavfsiz)</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Bitta qiymat — (x,)</span>Bitta parametr ham tuple bo'lishi kerak: <code>(ism,)</code>. <code>(ism)</code> faqat qavs, tuple emas — matn har bir harfi alohida parametr bo'lib ketadi.</div>
+</div>
+</section>
+<section class="sec off" data-key="s3" data-group="Nazariya" data-ico="📊" data-title="COUNT, AVG, GROUP BY">
+<h2><span class="mark"></span>COUNT, AVG, GROUP BY</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Agregat funksiyalar (<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>) ko'p qatordan bitta natija chiqaradi. <code>GROUP BY</code> — guruhlarga bo'lib har guruh uchun alohida hisoblaydi.</div>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE t (ism TEXT, sinf TEXT, baho INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO t VALUES (?, ?, ?)&quot;, [(&quot;Ali&quot;, &quot;9-A&quot;, 5), (&quot;Vali&quot;, &quot;9-A&quot;, 3), (&quot;Sami&quot;, &quot;9-B&quot;, 4), (&quot;Dilya&quot;, &quot;9-B&quot;, 5), (&quot;Nodir&quot;, &quot;9-B&quot;, 3)])
+
+print(con.execute(&quot;SELECT COUNT(*), AVG(baho), MAX(baho) FROM t&quot;).fetchone())
+for qator in con.execute(&quot;SELECT sinf, COUNT(*), AVG(baho) FROM t GROUP BY sinf ORDER BY sinf&quot;):
+    print(qator)</textarea></div><div class="out" hidden></div></div>
+<div class="note">🔬 <code>GROUP BY</code> bilan <code>SELECT</code> da faqat guruh ustuni va agregat funksiyalar bo'lishi kerak.</div>
+</div>
+</section>
+<section class="sec off" data-key="s4" data-group="Nazariya" data-ico="🔗" data-title="JOIN va commit">
+<h2><span class="mark"></span>JOIN va commit</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Ma'lumot bir jadvalda takrorlanmasin: sinflar alohida jadvalda, o'quvchi esa <code>sinf_id</code> bilan unga ulanadi. <code>JOIN … ON</code> ularni so'rov paytida birlashtiradi.</div>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE sinflar (id INTEGER PRIMARY KEY, nom TEXT, oqituvchi TEXT)&quot;)
+con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf_id INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO sinflar VALUES (?, ?, ?)&quot;, [(1, &quot;9-A&quot;, &quot;Karimov&quot;), (2, &quot;9-B&quot;, &quot;Sodiqova&quot;)])
+con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf_id) VALUES (?, ?)&quot;, [(&quot;Ali&quot;, 1), (&quot;Vali&quot;, 2), (&quot;Sami&quot;, 2)])
+
+q = &quot;SELECT o.ism, s.nom, s.oqituvchi FROM oquvchilar o JOIN sinflar s ON o.sinf_id = s.id ORDER BY o.ism&quot;
+for qator in con.execute(q):
+    print(qator)</textarea></div><div class="out" hidden></div></div>
+<h3>🔹 commit — o'zgarishni faylga saqlash</h3>
+<p>Fayl bazasida <code>INSERT/UPDATE/DELETE</code> dan keyin <b>commit()</b> chaqirmasangiz o'zgarish saqlanmaydi:</p>
+<pre class="static"><code class="language-python">con = sqlite3.connect(&quot;maktab.db&quot;)
+con.execute(&quot;INSERT INTO oquvchilar (ism) VALUES (?)&quot;, (&quot;Ali&quot;,))
+con.commit()      # shu bo&#x27;lmasa, yozuv yo&#x27;qoladi
+con.close()</code></pre>
+<p><code>with con:</code> ishlatsangiz, blok oxirida commit avtomatik bo'ladi (xato bo'lsa — bekor qilinadi).</p>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="Jadval yaratish va yozuv qo&#x27;shish" data-task="t01">
+<div class="card step" data-task="t01" data-title="Jadval yaratish va yozuv qo&#x27;shish" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>Jadval yaratish va yozuv qo&#x27;shish <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada jadval yaratilgan va yozuvlar qo'shilgan. Siz xuddi shunday o'z jadvalingizni yaratasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE mevalar (id INTEGER PRIMARY KEY, nom TEXT, narx INTEGER)&quot;)
+con.execute(&quot;INSERT INTO mevalar (nom, narx) VALUES (?, ?)&quot;, (&quot;Olma&quot;, 8000))
+con.executemany(&quot;INSERT INTO mevalar (nom, narx) VALUES (?, ?)&quot;, [(&quot;Anor&quot;, 15000), (&quot;Uzum&quot;, 12000)])
+print(con.execute(&quot;SELECT nom, narx FROM mevalar&quot;).fetchall())
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring.</li><li><code>yarat(con)</code> funksiyasini yozing: <code>kitoblar</code> jadvali (<code>id INTEGER PRIMARY KEY</code>, <code>nom TEXT</code>, <code>sahifa INTEGER</code>) yarating.</li><li>Unga 3 ta kitob qo'shing: ("Otganlar", 400), ("Mehrobdan chayon", 350), ("Sariq devni minib", 300).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('Otganlar', 400), ('Mehrobdan chayon', 350), ('Sariq devni minib', 300)]</code></div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def yarat(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    yarat(con)
+    print(con.execute(&quot;SELECT nom, sahifa FROM kitoblar&quot;).fetchall())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="SELECT bilan o&#x27;qish" data-task="t02">
+<div class="card step" data-task="t02" data-title="SELECT bilan o&#x27;qish" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>SELECT bilan o&#x27;qish <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada bazadan qatorlar o'qiladi. Siz o'qish funksiyalarini yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE t (nom TEXT, narx INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO t VALUES (?, ?)&quot;, [(&quot;Non&quot;, 3000), (&quot;Sut&quot;, 9000)])
+
+print(con.execute(&quot;SELECT nom, narx FROM t ORDER BY nom&quot;).fetchall())
+print(con.execute(&quot;SELECT narx FROM t WHERE nom = ?&quot;, (&quot;Sut&quot;,)).fetchone())
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring.</li><li><code>hammasi(con)</code> — hamma o'quvchining <code>(ism, baho)</code> tuple'lari ro'yxati, ism bo'yicha tartiblangan.</li><li><code>bittasi(con, ism)</code> — bitta o'quvchining bahosi (son); topilmasa <code>None</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>hammasi(con)[0]</code> → <code>('Ali', 5)</code>, <code>bittasi(con, 'Sami')</code> → <code>3</code></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def hammasi(con):
+    pass
+
+
+def bittasi(con, ism):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = baza()
+    print(hammasi(con))
+    print(bittasi(con, &quot;Sami&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="WHERE li so&#x27;rov natijasi" data-task="t03">
+<div class="card step" data-task="t03" data-title="WHERE li so&#x27;rov natijasi" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>WHERE li so&#x27;rov natijasi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">SQL so'rovlarining natijasini oldindan ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Jadvalda 5 ta mashina bor.</li><li>Har so'rov nimani chiqarishini o'ylang.</li><li>Dastur chiqaradigan 4 qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE m (nom TEXT, yil INTEGER, narx INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO m VALUES (?, ?, ?)&quot;, [
+    (&quot;Nexia&quot;, 2012, 7000), (&quot;Cobalt&quot;, 2020, 12000), (&quot;Spark&quot;, 2018, 9000),
+    (&quot;Gentra&quot;, 2015, 8000), (&quot;Damas&quot;, 2010, 4000),
+])
+
+print(con.execute(&quot;SELECT nom FROM m WHERE yil &gt; 2014 ORDER BY nom&quot;).fetchall())
+print(con.execute(&quot;SELECT COUNT(*) FROM m WHERE narx &lt; 9000&quot;).fetchone())
+print(con.execute(&quot;SELECT nom FROM m ORDER BY narx DESC LIMIT 2&quot;).fetchall())
+print(con.execute(&quot;SELECT nom, narx FROM m WHERE yil = 2018&quot;).fetchone())
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="oquvchilar jadvali va 5 ta yozuv" data-task="t04">
+<div class="card step" data-task="t04" data-title="oquvchilar jadvali va 5 ta yozuv" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>oquvchilar jadvali va 5 ta yozuv <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">O'zingiz noldan jadval yaratib, yozuvlar qo'shasiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>tayyorla()</code> funksiyasini yozing: xotirada baza ochsin va <code>oquvchilar</code> jadvalini yaratsin: <code>id INTEGER PRIMARY KEY</code>, <code>ism TEXT</code>, <code>yosh INTEGER</code>, <code>baho INTEGER</code>.</li><li>5 ta o'quvchi qo'shing: Ali 15 yosh 5 baho, Vali 16 4, Sami 14 3, Dilya 16 5, Nodir 17 2.</li><li>Funksiya ulanishni (<code>con</code>) qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>5 ta o'quvchi: ['Ali', 'Vali', 'Sami', 'Dilya', 'Nodir']</code></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def tayyorla():
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = tayyorla()
+    ismlar = [r[0] for r in con.execute(&quot;SELECT ism FROM oquvchilar ORDER BY id&quot;)]
+    print(len(ismlar), &quot;ta o&#x27;quvchi:&quot;, ismlar)
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="15 yoshdan kattalar, ism bo&#x27;yicha saralangan" data-task="t05">
+<div class="card step" data-task="t05" data-title="15 yoshdan kattalar, ism bo&#x27;yicha saralangan" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>15 yoshdan kattalar, ism bo&#x27;yicha saralangan <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Shart bo'yicha tanlash va saralash.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Tayyor <code>baza()</code> dan foydalaning (6 o'quvchi).</li><li><code>katta(con, yosh)</code> funksiyasini yozing: yoshi <code>yosh</code> dan <b>katta</b> o'quvchilarning ismlari ro'yxati (<code>list[str]</code>), alifbo tartibida.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>katta(con, 15)</code> → <code>['Dilya', 'Nodir', 'Vali']</code></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def katta(con, yosh):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(katta(baza(), 15))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Bahoni yangilash (UPDATE)" data-task="t06">
+<div class="card step" data-task="t06" data-title="Bahoni yangilash (UPDATE)" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Bahoni yangilash (UPDATE) <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Mavjud yozuvni o'zgartirish.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>baho_yangila(con, ism, yangi)</code> funksiyasini yozing: shu ismli o'quvchining bahosini <code>yangi</code> ga o'zgartirsin.</li><li>Nechta qator o'zgargani (<code>rowcount</code>) qaytarilsin.</li><li>Faqat shu o'quvchi o'zgarsin — <b>WHERE ni unutmang</b>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>baho_yangila(con, 'Sami', 4)</code> → <code>1</code>; <code>baho_yangila(con, 'Yo'q', 5)</code> → <code>0</code></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def baho_yangila(con, ism, yangi):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = baza()
+    print(baho_yangila(con, &quot;Sami&quot;, 4))
+    print(con.execute(&quot;SELECT baho FROM oquvchilar WHERE ism = &#x27;Sami&#x27;&quot;).fetchone())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="f-string bilan SQL: injection xavfi" data-task="t07">
+<div class="card step" data-task="t07" data-title="f-string bilan SQL: injection xavfi" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>f-string bilan SQL: injection xavfi <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Bu funksiya normal ismlar bilan ishlaydi, lekin zararli kiritishda hamma ma'lumotni chiqarib yuboradi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring: oddiy qidiruv ishlaydi, zararli kiritish esa hamma o'quvchini qaytaradi.</li><li>Xatoni toping va <code>?</code> parametri bilan tuzating.</li><li>Kutilgan natija: zararli kiritishda bo'sh ro'yxat.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('Ali', 5)]</code> va <code>[]</code></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def qidir(con, ism):
+    q = f&quot;SELECT ism, baho FROM oquvchilar WHERE ism = &#x27;{ism}&#x27;&quot;
+    return con.execute(q).fetchall()
+
+
+if __name__ == &quot;__main__&quot;:
+    con = baza()
+    print(qidir(con, &quot;Ali&quot;))
+    print(qidir(con, &quot;x&#x27; OR &#x27;1&#x27;=&#x27;1&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="Shart bilan o&#x27;chirish" data-task="t08">
+<div class="card step" data-task="t08" data-title="Shart bilan o&#x27;chirish" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>Shart bilan o&#x27;chirish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Yozuvlarni shart bo'yicha o'chirish.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>past_baholini_och(con, chegara)</code> funksiyasini yozing: bahosi <code>chegara</code> dan <b>past</b> bo'lgan o'quvchilarni o'chirsin.</li><li>O'chirilgan qatorlar sonini qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>past_baholini_och(con, 3)</code> → <code>1</code> (faqat Nodir, bahosi 2); keyin <code>5</code> ta o'quvchi qoladi</div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def past_baholini_och(con, chegara):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = baza()
+    print(past_baholini_och(con, 3))
+    print(con.execute(&quot;SELECT COUNT(*) FROM oquvchilar&quot;).fetchone()[0])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="COUNT, AVG, MAX" data-task="t09">
+<div class="card step" data-task="t09" data-title="COUNT, AVG, MAX" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>COUNT, AVG, MAX <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Bitta so'rovda bir nechta statistika.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>statistika(con)</code> funksiyasini yozing: <code>(soni, o'rtacha, eng_katta)</code> tuple'ini qaytarsin.</li><li><code>soni</code> — o'quvchilar soni, <code>o'rtacha</code> — baholar o'rtachasi (2 xona yaxlitlangan), <code>eng_katta</code> — eng yuqori baho.</li><li>Hammasini <b>bitta SQL so'rovda</b> oling.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>(6, 3.83, 5)</code></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def statistika(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(statistika(baza()))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="Sinf bo&#x27;yicha o&#x27;rtacha baho (GROUP BY)" data-task="t10">
+<div class="card step" data-task="t10" data-title="Sinf bo&#x27;yicha o&#x27;rtacha baho (GROUP BY)" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>Sinf bo&#x27;yicha o&#x27;rtacha baho (GROUP BY) <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Guruhlab hisoblash.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>sinf_ortacha(con)</code> funksiyasini yozing: har sinf uchun <code>(sinf, o'rtacha_baho)</code> tuple'lari ro'yxati.</li><li>O'rtacha 2 xonagacha yaxlitlansin; ro'yxat sinf nomi bo'yicha tartiblangan bo'lsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('10-A', 3.0), ('9-A', 4.5), ('9-B', 4.0)]</code></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def sinf_ortacha(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(sinf_ortacha(baza()))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="Ikki jadval va JOIN: o&#x27;quvchi va sinf" data-task="t11">
+<div class="card step" data-task="t11" data-title="Ikki jadval va JOIN: o&#x27;quvchi va sinf" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>Ikki jadval va JOIN: o&#x27;quvchi va sinf <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ikki jadval ma'lumotini birlashtirish.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Tayyor <code>baza2()</code> da <code>sinflar</code> (<code>id, nom, oqituvchi</code>) va <code>oquvchilar</code> (<code>id, ism, sinf_id</code>) jadvallari bor.</li><li><code>ustoz_royxati(con)</code> funksiyasini yozing: har o'quvchi uchun <code>(ism, sinf_nomi, oqituvchi)</code> tuple'i, ism bo'yicha tartiblangan.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('Ali', '9-A', 'Karimov'), ('Sami', '9-B', 'Sodiqova'), ('Vali', '9-B', 'Sodiqova')]</code></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def baza2():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE sinflar (id INTEGER PRIMARY KEY, nom TEXT, oqituvchi TEXT)&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf_id INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO sinflar VALUES (?, ?, ?)&quot;, [(1, &quot;9-A&quot;, &quot;Karimov&quot;), (2, &quot;9-B&quot;, &quot;Sodiqova&quot;)])
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf_id) VALUES (?, ?)&quot;, [(&quot;Ali&quot;, 1), (&quot;Vali&quot;, 2), (&quot;Sami&quot;, 2)])
+    return con
+
+
+def ustoz_royxati(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(ustoz_royxati(baza2()))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="SQL so&#x27;rov bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="SQL so&#x27;rov bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>SQL so&#x27;rov bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">SQL so'rovidagi bo'sh joylarni (<code>___</code>) to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Hamma <code>___</code> ni to'ldiring.</li><li>So'rov: bahosi <code>minb</code> dan <b>kam bo'lmagan</b> o'quvchilarning <code>(ism, baho)</code> juftliklari, baho bo'yicha <b>kamayish</b> tartibida (teng bo'lsa — ism bo'yicha), faqat birinchi <code>n</code> tasi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('Ali', 5), ('Dilya', 5), ('Vali', 4)]</code></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def eng_yaxshilar(con, minb, n):
+    q = &quot;___ ism, baho ___ oquvchilar ___ baho &gt;= ? ORDER BY baho ___, ism ___ ?&quot;
+    return con.execute(q, (minb, n)).fetchall()
+
+
+if __name__ == &quot;__main__&quot;:
+    print(eng_yaxshilar(baza(), 4, 3))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="Bitta parametr: (x) emas, (x,)" data-task="t13">
+<div class="card step" data-task="t13" data-title="Bitta parametr: (x) emas, (x,)" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>Bitta parametr: (x) emas, (x,) <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Funksiya "Incorrect number of bindings" xatosi bilan yiqilyapti.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xato xabarini o'qing.</li><li>Sababni toping va tuzating.</li><li>Kutilgan natija: topilgan o'quvchilar ro'yxati.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[(1, 'Ali', '9-A', 15, 5)]</code></div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def topish(con, ism):
+    return con.execute(&quot;SELECT * FROM oquvchilar WHERE ism = ?&quot;, (ism)).fetchall()
+
+
+if __name__ == &quot;__main__&quot;:
+    print(topish(baza(), &quot;Ali&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="GROUP BY natijasi" data-task="t14">
+<div class="card step" data-task="t14" data-title="GROUP BY natijasi" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>GROUP BY natijasi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Guruhlash so'rovlarining natijasini oldindan ayting.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Savdo jadvali: shahar va summa.</li><li>Har so'rov har shahar uchun nima hisoblashini o'ylang.</li><li>Dastur chiqaradigan 3 qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">import sqlite3
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE s (shahar TEXT, summa INTEGER)&quot;)
+con.executemany(&quot;INSERT INTO s VALUES (?, ?)&quot;, [
+    (&quot;Xiva&quot;, 100), (&quot;Urganch&quot;, 50), (&quot;Xiva&quot;, 200), (&quot;Nukus&quot;, 70), (&quot;Urganch&quot;, 150), (&quot;Xiva&quot;, 30),
+])
+
+print(con.execute(&quot;SELECT shahar, SUM(summa) FROM s GROUP BY shahar ORDER BY shahar&quot;).fetchall())
+print(con.execute(&quot;SELECT shahar, COUNT(*) FROM s GROUP BY shahar HAVING COUNT(*) &gt; 1 ORDER BY shahar&quot;).fetchall())
+print(con.execute(&quot;SELECT shahar FROM s GROUP BY shahar ORDER BY SUM(summa) DESC LIMIT 1&quot;).fetchone())
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="CRUD funksiyalari moduli" data-task="t15">
+<div class="card step" data-task="t15" data-title="CRUD funksiyalari moduli" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>CRUD funksiyalari moduli <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Ma'lumot bilan ishlashning 4 asosiy amali: Create, Read, Update, Delete.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>qosh(con, nom, narx)</code> — <code>tovarlar</code> jadvaliga qo'shadi va yangi yozuvning <code>id</code> sini qaytaradi (<code>cursor.lastrowid</code>).</li><li><code>ol(con, id)</code> — <code>(id, nom, narx)</code> tuple yoki topilmasa <code>None</code>.</li><li><code>yangila(con, id, narx)</code> — narxni o'zgartiradi; o'zgarganmi (<code>True/False</code>).</li><li><code>ochir(con, id)</code> — o'chiradi; o'chganmi (<code>True/False</code>).</li><li><code>hammasi(con)</code> — narx bo'yicha o'sish tartibida <code>[(id, nom, narx), ...]</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>i = qosh(con, 'Non', 3000)</code> → <code>1</code>; <code>ol(con, 1)</code> → <code>(1, 'Non', 3000)</code></div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def tayyor():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE tovarlar (id INTEGER PRIMARY KEY, nom TEXT, narx INTEGER)&quot;)
+    return con
+
+
+def qosh(con, nom, narx):
+    pass
+
+
+def ol(con, id):
+    pass
+
+
+def yangila(con, id, narx):
+    pass
+
+
+def ochir(con, id):
+    pass
+
+
+def hammasi(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = tayyor()
+    i = qosh(con, &quot;Non&quot;, 3000)
+    qosh(con, &quot;Sut&quot;, 9000)
+    yangila(con, i, 3500)
+    print(ol(con, i))
+    print(hammasi(con))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="CSV&#x27;dan bazaga import" data-task="t16">
+<div class="card step" data-task="t16" data-title="CSV&#x27;dan bazaga import" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>CSV&#x27;dan bazaga import <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Jadval matnini bazaga ko'chirish — ma'lumot ko'chirishning keng tarqalgan ishi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>matn</code> — CSV ko'rinishidagi satr (birinchi qator sarlavha).</li><li><code>import_csv(con, matn)</code> funksiyasini yozing: sarlavhani o'tkazib, qolgan har qatorni <code>oquvchilar</code> jadvaliga (<code>ism, sinf, yosh, baho</code>) qo'shsin.</li><li>Bo'sh qatorlarni o'tkazib yuborsin. Qo'shilgan qatorlar sonini qaytarsin.</li><li>Yosh va baho <b>son</b> sifatida saqlansin (<code>int</code>).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>3</code> ta yozuv, <code>baho</code> yig'indisi <code>13</code></div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+import csv
+import io
+
+matn = &quot;&quot;&quot;ism,sinf,yosh,baho
+Gulnora,9-A,15,5
+Jasur,9-B,16,4
+
+Madina,9-A,15,4
+&quot;&quot;&quot;
+
+
+def import_csv(con, matn):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    print(import_csv(con, matn))
+    print(con.execute(&quot;SELECT SUM(baho) FROM oquvchilar&quot;).fetchone()[0])
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="LIKE bilan qidiruv, LIMIT/OFFSET bilan sahifalash" data-task="t17">
+<div class="card step" data-task="t17" data-title="LIKE bilan qidiruv, LIMIT/OFFSET bilan sahifalash" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>LIKE bilan qidiruv, LIMIT/OFFSET bilan sahifalash <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Katta ro'yxatlarda qidiruv va sahifalash zarur.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>qidir(con, qism)</code> — ismida <code>qism</code> bo'lgan o'quvchilar ismlari, alifbo tartibida (<code>LIKE</code> va <code>%</code>).</li><li><code>sahifa(con, n, hajm)</code> — ismlar alifbo tartibida, <code>n</code>-sahifa (1 dan boshlanadi), har sahifada <code>hajm</code> ta (<code>LIMIT</code> va <code>OFFSET</code>).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>qidir(con, 'li')</code> → <code>['Ali', 'Vali']</code>; <code>sahifa(con, 2, 4)</code> → <code>['Vali', 'Zarina']</code></div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def qidir(con, qism):
+    pass
+
+
+def sahifa(con, n, hajm):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = baza()
+    print(qidir(con, &quot;li&quot;))
+    print(sahifa(con, 2, 4))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Ikki xato: commit yo&#x27;q va noto&#x27;g&#x27;ri JOIN sharti" data-task="t18">
+<div class="card step" data-task="t18" data-title="Ikki xato: commit yo&#x27;q va noto&#x27;g&#x27;ri JOIN sharti" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Ikki xato: commit yo&#x27;q va noto&#x27;g&#x27;ri JOIN sharti <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Dastur xatosiz ishlaydi, lekin natijalar noto'g'ri. Ikkita mustaqil xato bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring: ro'yxat bo'sh yoki noto'g'ri chiqadi.</li><li><b>Xato 1:</b> <code>qosh</code> yangi o'quvchini saqlamaydi (fayl bazasi!).</li><li><b>Xato 2:</b> <code>royxat</code> noto'g'ri ustunlarni bog'laydi.</li><li>Ikkalasini tuzating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[('Ali', 'Karimov'), ('Sami', 'Sodiqova'), ('Vali', 'Sodiqova')]</code></div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def tayyorla(fayl):
+    con = sqlite3.connect(fayl)
+    con.execute(&quot;CREATE TABLE sinflar (id INTEGER PRIMARY KEY, nom TEXT, oqituvchi TEXT)&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf_id INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO sinflar VALUES (?, ?, ?)&quot;, [(1, &quot;9-A&quot;, &quot;Karimov&quot;), (2, &quot;9-B&quot;, &quot;Sodiqova&quot;)])
+    con.commit()
+    con.close()
+
+
+def qosh(fayl, ism, sinf_id):
+    con = sqlite3.connect(fayl)
+    con.execute(&quot;INSERT INTO oquvchilar (ism, sinf_id) VALUES (?, ?)&quot;, (ism, sinf_id))
+    con.close()
+
+
+def royxat(fayl):
+    con = sqlite3.connect(fayl)
+    q = (&quot;SELECT o.ism, s.oqituvchi FROM oquvchilar o &quot;
+         &quot;JOIN sinflar s ON o.id = s.id ORDER BY o.ism&quot;)
+    natija = con.execute(q).fetchall()
+    con.close()
+    return natija
+
+
+if __name__ == &quot;__main__&quot;:
+    tayyorla(&quot;maktab.db&quot;)
+    qosh(&quot;maktab.db&quot;, &quot;Ali&quot;, 1)
+    qosh(&quot;maktab.db&quot;, &quot;Vali&quot;, 2)
+    qosh(&quot;maktab.db&quot;, &quot;Sami&quot;, 2)
+    print(royxat(&quot;maktab.db&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="Python siklidagi filtrni SQL WHERE ga o&#x27;tkazing" data-task="t19">
+<div class="card step" data-task="t19" data-title="Python siklidagi filtrni SQL WHERE ga o&#x27;tkazing" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>Python siklidagi filtrni SQL WHERE ga o&#x27;tkazing <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Hamma qatorni Python ga olib, keyin saralash — katta bazada sekin. Filtrni bazaning o'ziga topshiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>katta_ismlar(con, yosh)</code> hozir hamma qatorni olib, sikl bilan saralaydi.</li><li>Uni qayta yozing: <b>bitta SQL so'rov</b> (<code>WHERE</code> va <code>ORDER BY</code>), Python da <code>sorted</code> va <code>append</code> bo'lmasin.</li><li>Natija o'zgarmasin: yoshi <code>yosh</code> dan katta o'quvchilar ismlari, alifbo tartibida.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>['Dilya', 'Nodir', 'Vali']</code></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+ROWS = [
+    (&quot;Ali&quot;, &quot;9-A&quot;, 15, 5),
+    (&quot;Vali&quot;, &quot;9-A&quot;, 16, 4),
+    (&quot;Sami&quot;, &quot;9-B&quot;, 14, 3),
+    (&quot;Dilya&quot;, &quot;9-B&quot;, 16, 5),
+    (&quot;Nodir&quot;, &quot;10-A&quot;, 17, 2),
+    (&quot;Zarina&quot;, &quot;10-A&quot;, 15, 4),
+]
+
+
+def baza():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE oquvchilar (id INTEGER PRIMARY KEY, ism TEXT, sinf TEXT, yosh INTEGER, baho INTEGER)&quot;)
+    con.executemany(&quot;INSERT INTO oquvchilar (ism, sinf, yosh, baho) VALUES (?, ?, ?, ?)&quot;, ROWS)
+    return con
+
+
+def katta_ismlar(con, yosh):
+    natija = []
+    for ism, y in con.execute(&quot;SELECT ism, yosh FROM oquvchilar&quot;).fetchall():
+        if y &gt; yosh:
+            natija.append(ism)
+    return sorted(natija)
+
+
+if __name__ == &quot;__main__&quot;:
+    print(katta_ismlar(baza(), 15))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Do&#x27;kon bazasi: eng ko&#x27;p sotilgan va kunlik tushum" data-task="t20">
+<div class="card step" data-task="t20" data-title="Do&#x27;kon bazasi: eng ko&#x27;p sotilgan va kunlik tushum" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Do&#x27;kon bazasi: eng ko&#x27;p sotilgan va kunlik tushum <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Do'kon egasi ikki savol beradi: "nima eng ko'p sotildi?" va "har kuni qancha pul tushdi?"</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Tayyor <code>dokon()</code> da <code>mahsulotlar</code> (<code>id, nom, narx</code>) va <code>buyurtmalar</code> (<code>id, mahsulot_id, soni, sana</code>) jadvallari bor.</li><li><code>eng_kop(con)</code> — jami <b>soni</b> eng katta mahsulot nomi.</li><li><code>kunlik(con)</code> — har sana uchun <code>(sana, tushum)</code>, sana bo'yicha tartiblangan. Tushum = <code>soni * narx</code> yig'indisi.</li><li>Ikkalasi ham <b>JOIN</b> va <b>GROUP BY</b> bilan, bitta so'rovda.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>eng_kop</code> → <code>Non</code>; <code>kunlik</code> → <code>[('2025-03-01', 57000), ('2025-03-02', 48000)]</code></div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def dokon():
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    con.execute(&quot;CREATE TABLE mahsulotlar (id INTEGER PRIMARY KEY, nom TEXT, narx INTEGER)&quot;)
+    con.execute(&quot;CREATE TABLE buyurtmalar (id INTEGER PRIMARY KEY, mahsulot_id INTEGER, soni INTEGER, sana TEXT)&quot;)
+    con.executemany(&quot;INSERT INTO mahsulotlar VALUES (?, ?, ?)&quot;, [(1, &quot;Non&quot;, 3000), (2, &quot;Sut&quot;, 9000), (3, &quot;Tuxum&quot;, 12000)])
+    con.executemany(
+        &quot;INSERT INTO buyurtmalar (mahsulot_id, soni, sana) VALUES (?, ?, ?)&quot;,
+        [(1, 10, &quot;2025-03-01&quot;), (2, 3, &quot;2025-03-01&quot;), (3, 2, &quot;2025-03-02&quot;), (1, 5, &quot;2025-03-02&quot;), (2, 1, &quot;2025-03-02&quot;)],
+    )
+    return con
+
+
+def eng_kop(con):
+    pass
+
+
+def kunlik(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = dokon()
+    print(eng_kop(con))
+    print(kunlik(con))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Maktab bazasi" data-task="mini">
+<div class="card step" data-task="mini" data-title="Maktab bazasi" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Maktab bazasi <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">O'quvchilar, fanlar va baholar jadvallari bilan kichik hisobot tizimi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p>Umumiy rasm: 3 ta jadval va ularni boshqaruvchi 8 ta funksiya. Hamma funksiya <code>con</code> (ulanish) oladi.</p><ol><li><b>yarat(con).</b> <code>oquvchilar(id, ism)</code>, <code>fanlar(id, nom)</code>, <code>baholar(id, oquvchi_id, fan_id, baho)</code> jadvallari.</li><li><b>oquvchi_qosh(con, ism)</b> va <b>fan_qosh(con, nom)</b> — qo'shib, yangi <code>id</code> ni qaytaradi.</li><li><b>baho_qosh(con, oquvchi_id, fan_id, baho).</b></li><li><b>qidir(con, qism).</b> ismida <code>qism</code> bor o'quvchilar ismlari (alifbo tartibida).</li><li><b>ortacha_oquvchi(con).</b> <code>[(ism, o'rtacha)]</code>, o'rtacha 2 xona, <b>kamayish</b> tartibida (teng bo'lsa ism bo'yicha); bahosi yo'qlar kirmaydi.</li><li><b>fan_ortacha(con).</b> <code>[(fan_nomi, o'rtacha)]</code>, fan nomi bo'yicha tartiblangan.</li><li><b>eng_yaxshi(con).</b> o'rtachasi eng yuqori o'quvchi ismi; baho yo'q bo'lsa <code>None</code>.</li></ol><div class="res"><b>✅ Natija:</b> Ali (5 va 4) va Vali (3 va 4) bahosi bilan <code>ortacha_oquvchi</code> → <code>[('Ali', 4.5), ('Vali', 3.5)]</code>, <code>eng_yaxshi</code> → <code>Ali</code></div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">import sqlite3
+
+
+def yarat(con):
+    pass
+
+
+def oquvchi_qosh(con, ism):
+    pass
+
+
+def fan_qosh(con, nom):
+    pass
+
+
+def baho_qosh(con, oquvchi_id, fan_id, baho):
+    pass
+
+
+def qidir(con, qism):
+    pass
+
+
+def ortacha_oquvchi(con):
+    pass
+
+
+def fan_ortacha(con):
+    pass
+
+
+def eng_yaxshi(con):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    con = sqlite3.connect(&quot;:memory:&quot;)
+    yarat(con)
+    a = oquvchi_qosh(con, &quot;Ali&quot;)
+    m = fan_qosh(con, &quot;Matem&quot;)
+    baho_qosh(con, a, m, 5)
+    print(ortacha_oquvchi(con))
+    print(eng_yaxshi(con))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> Bazadagi xatolarning ko'pi tinch: dastur yiqilmaydi, faqat noto'g'ri yoki bo'sh natija beradi.</div>
+<div class="warn"><span class="lbl">⚠️ f-string bilan so'rov</span><code>f"... WHERE ism = '{ism}'"</code> — SQL-injection. Doim <code>?</code> va parametrlar tuple'i.</div>
+<div class="warn"><span class="lbl">⚠️ (x) o'rniga (x,)</span>Bitta parametr ham tuple: <code>(ism,)</code>. <code>(ism)</code> — "Incorrect number of bindings".</div>
+<div class="warn"><span class="lbl">⚠️ commit() ni unutish</span>Fayl bazasida o'zgarish <code>commit()</code> siz saqlanmaydi. <code>with con:</code> uni avtomatik qiladi.</div>
+<div class="warn"><span class="lbl">⚠️ WHERE siz UPDATE/DELETE</span><code>DELETE FROM oquvchilar</code> hamma yozuvni o'chiradi. Avval shu shartni <code>SELECT</code> bilan sinab ko'ring.</div>
+<div class="warn"><span class="lbl">⚠️ JOIN sharti noto'g'ri</span><code>ON o.id = s.id</code> o'rniga <code>ON o.sinf_id = s.id</code>. Xato bo'lsa qatorlar yo'qoladi yoki aralashadi, lekin xato xabari chiqmaydi.</div>
+<div class="warn"><span class="lbl">⚠️ GROUP BY da ortiqcha ustun</span>Guruhlanmagan, agregatsiz ustunni <code>SELECT</code> ga qo'shmang — natija tasodifiy qatordan olinadi.</div>
+<div class="warn"><span class="lbl">⚠️ Hamma narsani Python ga olib filtrlash</span>Million qatorni <code>fetchall()</code> bilan olib, <code>if</code> bilan saralash sekin. <code>WHERE</code> ni bazaga topshiring.</div>
+<div class="real"><b>Maslahat:</b> Yangi so'rovni avval kichik bazada <code>SELECT</code> bilan sinab ko'ring, keyin <code>UPDATE</code> yoki <code>DELETE</code> ga aylantiring.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎁 Bonus: row_factory.</b> <code>con.row_factory = sqlite3.Row</code> qo'ysangiz, qatorga indeks o'rniga ustun nomi bilan murojaat qilasiz: <code>qator["ism"]</code>. Natijani lug'atga aylantirish: <code>dict(qator)</code>. Shu usulda 15-topshiriqdagi <code>ol()</code> funksiyasini <code>{'id': 1, 'nom': 'Non', 'narx': 3000}</code> qaytaradigan qilib yozing.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Kutubxona bazasi.</b> <code>kitoblar</code> va <code>oqiganlar</code> jadvallari: kitob qo'shish, o'quvchiga berish, qaytarish, kechiktirilganlar ro'yxati.</li>
+<li><b>Xarajatlar hisobchisi.</b> 22-dars loyihasini fayl bazasiga ko'chiring: <code>xarajatlar(sana, toifa, summa)</code>; oylik jami va toifa bo'yicha hisobot (<code>GROUP BY</code>).</li>
+<li><b>Xavfsizlik testi.</b> t07 dagi f-string versiyasini yozing va 3 xil zararli kirish bilan sinab ko'ring. Keyin <code>?</code> bilan tuzating va farqni izohlang.</li>
+<li><b>Sahifalash.</b> 50 ta yozuvli jadvalni 10 tadan sahifalaydigan konsol dasturi yozing (n — keyingi, p — oldingi).</li>
+<li><b>Hisobot.</b> Maktab bazasi mini-loyihasiga "har fan bo'yicha eng yaxshi o'quvchi" so'rovini qo'shing.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="A"><b>1. SQL da yangi yozuv qo&#x27;shish buyrug&#x27;i qaysi?</b><ul><li><button class="opt" type="button" data-l="A">A) INSERT INTO</button></li><li><button class="opt" type="button" data-l="B">B) ADD ROW</button></li><li><button class="opt" type="button" data-l="C">C) NEW RECORD</button></li><li><button class="opt" type="button" data-l="D">D) APPEND</button></li></ul><span class="q-ex" hidden>INSERT INTO jadval (ustunlar) VALUES (qiymatlar) — yangi qator qo&#x27;shadi.</span></div><div class="q" data-ok="B"><b>2. Nega SQL so&#x27;rovga qiymatni f-string bilan qo&#x27;shish xavfli?</b><ul><li><button class="opt" type="button" data-l="A">A) Sekin ishlaydi</button></li><li><button class="opt" type="button" data-l="B">B) SQL-injection mumkin bo&#x27;ladi</button></li><li><button class="opt" type="button" data-l="C">C) Python xato beradi</button></li><li><button class="opt" type="button" data-l="D">D) Xavfi yo&#x27;q</button></li></ul><span class="q-ex" hidden>Foydalanuvchi matni so&#x27;rovning bir qismiga aylanib, uni o&#x27;zgartirib yuborishi mumkin. ? parametri qiymatni alohida uzatadi.</span></div><div class="q" data-ok="C"><b>3. Bitta parametrni to&#x27;g&#x27;ri uzatish qaysi?</b><ul><li><button class="opt" type="button" data-l="A">A) execute(q, ism)</button></li><li><button class="opt" type="button" data-l="B">B) execute(q, (ism))</button></li><li><button class="opt" type="button" data-l="C">C) execute(q, (ism,))</button></li><li><button class="opt" type="button" data-l="D">D) execute(q, [ism, ])</button></li></ul><span class="q-ex" hidden>(ism,) — bitta elementli tuple. (ism) esa faqat qavsga olingan matn. (Ro&#x27;yxat [ism] ham ishlaydi, lekin standart usul — tuple.)</span></div><div class="q" data-ok="D"><b>4. UPDATE yoki DELETE da WHERE yozilmasa nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Xato chiqadi</button></li><li><button class="opt" type="button" data-l="B">B) Hech narsa o&#x27;zgarmaydi</button></li><li><button class="opt" type="button" data-l="C">C) Faqat birinchi qator o&#x27;zgaradi</button></li><li><button class="opt" type="button" data-l="D">D) Hamma qatorga ta&#x27;sir qiladi</button></li></ul><span class="q-ex" hidden>WHERE shartsiz buyruq jadvaldagi hamma qatorni o&#x27;zgartiradi yoki o&#x27;chiradi.</span></div><div class="q" data-ok="B"><b>5. Har sinf uchun o&#x27;rtacha bahoni hisoblash uchun nima kerak?</b><ul><li><button class="opt" type="button" data-l="A">A) ORDER BY sinf</button></li><li><button class="opt" type="button" data-l="B">B) GROUP BY sinf va AVG(baho)</button></li><li><button class="opt" type="button" data-l="C">C) WHERE sinf</button></li><li><button class="opt" type="button" data-l="D">D) LIMIT 1</button></li></ul><span class="q-ex" hidden>GROUP BY qatorlarni sinf bo&#x27;yicha guruhlaydi, AVG har guruh uchun o&#x27;rtachani hisoblaydi.</span></div><div class="q" data-ok="A"><b>6. Fayl bazasida INSERT dan keyin commit() chaqirilmasa nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) O&#x27;zgarish saqlanmasligi mumkin</button></li><li><button class="opt" type="button" data-l="B">B) Baza o&#x27;chadi</button></li><li><button class="opt" type="button" data-l="C">C) Hech narsa</button></li><li><button class="opt" type="button" data-l="D">D) Python xato beradi</button></li></ul><span class="q-ex" hidden>commit() o&#x27;zgarishlarni faylga yozadi. U bo&#x27;lmasa, ulanish yopilganda o&#x27;zgarishlar bekor bo&#x27;ladi.</span></div><div class="q" data-ok="B"><b>7. JOIN ... ON nima qiladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Jadvalni o&#x27;chiradi</button></li><li><button class="opt" type="button" data-l="B">B) Ikki jadval qatorlarini shart bo&#x27;yicha bog&#x27;laydi</button></li><li><button class="opt" type="button" data-l="C">C) Natijani tartiblaydi</button></li><li><button class="opt" type="button" data-l="D">D) Yangi jadval yaratadi</button></li></ul><span class="q-ex" hidden>JOIN ON ikki jadvalni bog&#x27;lovchi ustunlar bo&#x27;yicha qatorlarni birlashtiradi (masalan o&#x27;quvchi.sinf_id = sinf.id).</span></div><div class="q" data-ok="C"><b>8. fetchone() so&#x27;rov natijasi bo&#x27;sh bo&#x27;lsa nima qaytaradi?</b><ul><li><button class="opt" type="button" data-l="A">A) []</button></li><li><button class="opt" type="button" data-l="B">B) ()</button></li><li><button class="opt" type="button" data-l="C">C) None</button></li><li><button class="opt" type="button" data-l="D">D) 0</button></li></ul><span class="q-ex" hidden>fetchone() qator topilmasa None qaytaradi. fetchall() esa bo&#x27;sh ro&#x27;yxat [].</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">ma&#x27;lumotlar bazasi</td><td>jadvallarda tartiblangan ma&#x27;lumotlar to&#x27;plami</td></tr><tr><td class="en">SQL</td><td>bazaga so&#x27;rov berish tili</td></tr><tr><td class="en">sqlite3</td><td>Python bilan birga keladigan yengil baza kutubxonasi</td></tr><tr><td class="en">jadval</td><td>ustunlar va qatorlardan iborat tuzilma</td></tr><tr><td class="en">ustun / maydon</td><td>jadvaldagi ma&#x27;lumot turi (masalan ism)</td></tr><tr><td class="en">qator / yozuv</td><td>jadvaldagi bitta element</td></tr><tr><td class="en">PRIMARY KEY</td><td>har qatorni noyob aniqlovchi ustun</td></tr><tr><td class="en">cursor</td><td>so&#x27;rov natijasini o&#x27;qish uchun obyekt</td></tr><tr><td class="en">SQL-injection</td><td>so&#x27;rovga zararli matn kiritib baza bilan o&#x27;ynash hujumi</td></tr><tr><td class="en">parametr (?)</td><td>so&#x27;rovdagi qiymat o&#x27;rni, xavfsiz uzatish uchun</td></tr><tr><td class="en">GROUP BY</td><td>qatorlarni guruhlab hisoblash</td></tr><tr><td class="en">JOIN</td><td>ikki jadvalni bog&#x27;lab birlashtirish</td></tr><tr><td class="en">commit</td><td>o&#x27;zgarishlarni bazaga doimiy yozish</td></tr><tr><td class="en">agregat funksiya</td><td>COUNT, SUM, AVG, MIN, MAX — ko&#x27;p qatordan bitta qiymat</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-28.html"><small>← Oldingi dars</small><span>Type hints va testlash</span></a><a class="lnav next" href="dars-30.html"><small>Keyingi dars →</small><span>Tashqi dunyo bilan aloqa: requests va API</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>29-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">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</script>
+<script>window.DARS_META = {"num": 29, "total": 32, "title": "Ma'lumotlar bazasi: sqlite3"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

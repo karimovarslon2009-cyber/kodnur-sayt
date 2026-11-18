@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Al Xorazmiy — dasturlash kurslari</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<script src="sinf/brend.js?v=5"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Al Xorazmiy">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<script src="sinf/pwa.js?v=6"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sinf/sinf.css">
+<link rel="stylesheet" href="assets/yangi.css">
+<link rel="prefetch" href="assets/py-asm.js" as="script">
+<link rel="prefetch" href="assets/py-wasm.js" as="script">
+<link rel="prefetch" href="assets/py-stdlib.js" as="script">
+</head>
+<body>
+<script src="sinf/yangi.js"></script>
+<script>YN.header('darslar');</script>
+
+<main class="wrap" id="app" hidden>
+  <div id="pend" class="warnmsg" hidden></div>
+
+  <section class="hero" id="cont" aria-label="Davom etish"></section>
+  <div class="strip" id="stats"></div>
+
+  <section class="part" id="kurslar">
+    <h2 class="ph">Kurslar<small id="ksoni"></small></h2>
+    <p class="muted-p" id="kintro"></p>
+    <div class="k-grid" id="kgrid"></div>
+  </section>
+
+  <div id="darslar">
+    <h2 class="ph" style="margin-bottom:22px">Python kursi darslari<small>32</small></h2>
+    <div id="parts"></div>
+  </div>
+
+  <section class="part" id="qollanma">
+    <h2 class="ph">Kurs qanday tuzilgan</h2>
+    <p class="muted-p">7 bo'lim, 32 dars: noldan boshlab funksiyalar, fayllar, OOP, ma'lumotlar bazasi, API va yakuniy do'kon loyihasigacha.</p>
+    <div class="how"><ul id="how"></ul></div>
+  </section>
+
+  <div id="foot"></div>
+</main>
+<div class="load" id="load">Yuklanmoqda…</div>
+
+<script src="sinf/config.js"></script>
+<script src="sinf/kurslar.js"></script>
+<script src="sinf/kurs-map.js"></script>
+<script src="sinf/backend.js"></script>
+<script src="sinf/common.js"></script>
+<script>
+(async function(){
+  var $=SH.$;
+  var u=await SINF.ready;
+  if(!u){ location.replace('login.html'); return; }
+  YN.wire(u);
+
+  var p={lessons:{}}, offline=false;
+  try{ p=await SINF.getMyProgress(); }catch(e){ offline=true; }
+  if(offline){
+    var w=$('#pend'); w.hidden=false;
+    w.textContent="Internet yo'q yoki server bilan aloqa uzildi — natijalar ko'rsatilmayapti. Darslar ishlayveradi, natijalar keyinroq yuboriladi.";
+  }
+  var s=SH.sum(p), pos=SH.pos(p);
+
+  /* --- Hero: qayerda to'xtadingiz --- */
+  var hero = YN.ornament();
+  if(pos.finished){
+    hero += '<div><h1>Kursni tugatdingiz</h1><p>Barcha 32 dars bajarildi. Istalgan darsni qayta ochib, takrorlashingiz mumkin.</p>'+
+      '<div class="acts"><a class="btn on-dark" href="dars-01.html">1-darsdan boshlash '+IK.svg('right',16)+'</a>'+
+      '<a class="btn ghost" href="natijalar.html">Natijalarni ko\'rish</a></div></div>';
+  } else {
+    hero += '<div><h1>'+SH.esc(SH.lesson(pos.lesson).t)+'</h1>'+
+      '<p>'+pos.lesson+'-dars · '+SH.esc(SH.taskName(pos.task))+'</p>'+
+      '<div class="acts"><a class="btn on-dark" href="dars-'+SH.two(pos.lesson)+'.html">'+(s.done?'Davom etish':'1-darsni boshlash')+' '+IK.svg('right',16)+'</a>'+
+      '<a class="btn ghost" href="natijalar.html">Natijalar</a></div></div>';
+  }
+  hero += '<div class="ring">'+YN.ring(s.pct)+'<div class="tx"><b>'+s.pct+'%</b><span>kurs bajarildi</span></div></div>';
+  $('#cont').innerHTML = hero;
+  YN.animateRing($('#cont'));
+
+  /* --- Ko'rsatkichlar (natijalar sahifasiga olib boradi) --- */
+  $('#stats').innerHTML =
+    '<a href="natijalar.html"><span class="ic">'+IK.svg('target',20)+'</span><div><b>'+s.done+' / '+SH.TOTAL+'</b><span class="l">topshiriq bajarildi</span></div></a>'+
+    '<a href="natijalar.html#darslar"><span class="ic">'+IK.svg('book',20)+'</span><div><b>'+s.lessons+' / '+SH.lesson(32).n+'</b><span class="l">dars tugatildi</span></div></a>'+
+    '<a href="natijalar.html#xatolar"><span class="ic bad">'+IK.svg('xc',20)+'</span><div><b>'+s.fails+'</b><span class="l">noto\'g\'ri urinish</span></div></a>';
+
+  /* --- Kurslar --- */
+  var K = YN.courses();
+  $('#ksoni').textContent = K.length;
+  var ready = K.filter(function(c){ return c.holat === 'tayyor'; }).map(function(c){ return c.nom; });
+  $('#kintro').textContent = "Al Xorazmiy markazining barcha yo'nalishlari. " +
+    (ready.length ? ready.join(', ') + " to'liq tayyor; qolganlarining o'quv rejasi ochilgan, darslar bosqichma-bosqich qo'shiladi."
+                  : "O'quv rejalari ochilgan, darslar bosqichma-bosqich qo'shiladi.");
+  $('#kgrid').innerHTML = K.map(function(c){
+    var tayyor = c.holat === 'tayyor';
+    return '<a class="k-card" href="kurs.html?k='+encodeURIComponent(c.id)+'" style="--c:'+(c.rang||'var(--brand)')+'">'+
+      '<span class="k-ico">'+YN.kicon(c,26)+'</span>'+
+      '<div><h3>'+SH.esc(c.nom)+'</h3><p>'+SH.esc(c.tavsif||'')+'</p></div>'+
+      '<span class="k-tags"><span class="tag">'+SH.esc(c.daraja||'')+'</span>'+
+      '<span class="tag">'+(c.darslar||0)+' dars</span>'+
+      (tayyor ? '<span class="tag ok">'+IK.svg('check',12)+' Tayyor</span>'
+              : '<span class="tag soon">'+IK.svg('hourglass',12)+' Tez kunda</span>')+
+      '</span></a>';
+  }).join('');
+
+  /* --- Python darslari --- */
+  function card(d){
+    var x=s.per[d.n], pc=Math.round(100*x.done/x.total), fin=x.done===x.total;
+    var st = fin ? 'Tugatildi' : x.done ? x.done+' / '+x.total+' topshiriq' : 'Boshlanmagan';
+    if(x.quiz) st += ' · test '+x.quiz.s+'/'+x.quiz.n;
+    return '<a class="ls'+(fin?' fin':x.done?' run':'')+'" href="dars-'+SH.two(d.n)+'.html" data-n="'+d.n+'">'+
+      '<span class="ls-num">'+(fin?IK.svg('check',18):d.n)+'</span>'+
+      '<span class="ls-body"><b>'+SH.esc(d.t)+'</b><span class="ls-bar"><i style="width:'+pc+'%"></i></span><span class="ls-st">'+st+'</span></span></a>';
+  }
+  $('#parts').innerHTML = YN.PARTS.map(function(pt){
+    var ds=window.SINF_KURS.darslar.filter(function(d){return d.n>=pt.a&&d.n<=pt.b;});
+    var done=0,tot=0; ds.forEach(function(d){var x=s.per[d.n]; done+=x.done; tot+=x.total;});
+    return '<section class="part" style="margin-bottom:34px"><h3 class="ph" style="font-size:17px">'+SH.esc(pt.t)+'<small>'+done+' / '+tot+'</small></h3>'+
+      '<p class="muted-p" style="margin-bottom:14px">'+SH.esc(pt.d)+'</p><div class="ls-grid">'+ds.map(card).join('')+'</div></section>';
+  }).join('');
+
+  /* --- Qo'llanma --- */
+  var HOW=[
+    ['layers',"Har bir dars","Maqsad, nazariya, 20 ta topshiriq (oson, o'rta, qiyin), mini-loyiha, xatolar, uyga vazifa, mini-test va lug'at."],
+    ['list',"Topshiriq turlari","Namuna, bashorat (kod nimani chiqarishini oldindan yozing), o'zing yoz, to'ldir, xatoni top, qayta yoz, real masala."],
+    ['lock',"Ketma-ket ochiladi","Topshiriqlar bir-bir ochiladi. Keyingisiga o'tish uchun oldingisini bajaring."],
+    ['checkc',"Tekshirish","«Tekshirish» tugmasi dasturni bir necha xil ma'lumot bilan sinaydi va har bir talabni alohida ko'rsatadi: kutilgan va sizda chiqqan natija yonma-yon."],
+    ['lightbulb',"Yordam va yechim","Avval «Yordam»ni o'qing va o'zingiz urinib ko'ring. To'g'ri javob 10 ta muvaffaqiyatsiz urinishdan keyin ochiladi."],
+    ['terminal',"O'rnatish shart emas","Python shu sahifaning o'zida ishlaydi. Birinchi ishga tushirishda bir necha soniya yuklanadi. Kompyuter ekrani qulayroq."],
+    ['save',"Natijalar saqlanadi","Login bilan kirgansiz: bajargan topshiriqlaringiz o'qituvchiga ko'rinadi va boshqa qurilmada ham davom ettirasiz."]
+  ];
+  $('#how').innerHTML = HOW.map(function(h){
+    return '<li><span class="hi">'+IK.svg(h[0],18)+'</span><div><b>'+h[1]+'</b><span>'+h[2]+'</span></div></li>';
+  }).join('');
+  $('#foot').innerHTML = YN.foot();
+
+  /* --- Ochilgan darslar (o'qituvchi ruxsati) --- */
+  if(u.role==='student'){
+    try{
+      var un=await SINF.listUnlocks(), och={};
+      un.forEach(function(x){ if(x.kurs==='python') och[+x.n]=1; });
+      Array.prototype.forEach.call(document.querySelectorAll('.ls'), function(a){
+        if(och[+a.getAttribute('data-n')]) a.insertAdjacentHTML('beforeend','<span class="ls-key" title="Ochilgan">'+IK.svg('unlock',16)+'</span>');
+      });
+    }catch(e){}
+  }
+  $('#load').hidden=true; $('#app').hidden=false;
+})();
+</script>
+</body>
+</html>

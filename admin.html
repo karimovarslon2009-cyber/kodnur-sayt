@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O'qituvchi paneli — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+<link rel="stylesheet" href="sinf/sinf.css">
+</head>
+<body>
+<div class="page" id="app" hidden>
+  <div class="top">
+    <div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>O'qituvchi paneli</b><span>Python — amaliy kurs</span></div></div>
+    <div class="right"><span class="pill" id="who"></span><span class="pill demo" id="demo" hidden>DEMO rejim</span><button class="btn sm" id="refresh">↻ Yangilash</button><button class="btn sm" id="theme"></button><button class="btn sm" id="pw">Parol</button><button class="btn sm" id="out">Chiqish</button></div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab" data-t="groups">Guruhlar</button>
+    <button class="tab" data-t="students">Barcha o'quvchilar</button>
+    <button class="tab" data-t="teachers">O'qituvchilar</button>
+  </div>
+  <div id="view"></div>
+  <p class="muted" id="upd" style="font-size:.8rem;margin-top:24px"></p>
+</div>
+<div id="load" style="min-height:100vh;display:grid;place-items:center;color:var(--muted);font-weight:600">Yuklanmoqda…</div>
+<script src="sinf/config.js"></script>
+<script src="sinf/kurs-map.js"></script>
+<script src="sinf/backend.js"></script>
+<script src="sinf/common.js"></script>
+<script>
+(async function () {
+  'use strict';
+  var $ = SH.$, $$ = SH.$$, esc = SH.esc, D = SINF_KURS.darslar;
+  var me = await SINF.ready;
+  if (!me) { location.replace('login.html'); return; }
+  if (me.role !== 'admin') { location.replace('index.html'); return; }
+  $('#who').textContent = '👤 ' + me.name; if (SINF.mode === 'demo') $('#demo').hidden = false;
+  SH.theme(); $('#pw').onclick = SH.pwModal;
+  $('#out').onclick = async function () { await SINF.logout(); location.href = 'login.html'; };
+
+  var G = [], U = [], P = {}, loadedAt = 0, busy = false;
+  var sortKey = 'pct', sortDir = -1, q = '';
+
+  /* ---------------- ma'lumot ---------------- */
+  async function load(quiet) {
+    if (busy) return; busy = true;
+    try {
+      var r = await Promise.all([SINF.listGroups(), SINF.listUsers(), SINF.listProgress()]);
+      G = r[0]; U = r[1]; P = {}; r[2].forEach(function (p) { P[p.uid] = p; }); loadedAt = Date.now();
+    } catch (e) { if (!quiet) alert('Ma\'lumotni olib bo\'lmadi: ' + SINF.nice(e)); }
+    busy = false; render(); updTxt();
+  }
+  async function loadProgress() {
+    if (busy) return; busy = true;
+    try { var r = await SINF.listProgress(); P = {}; r.forEach(function (p) { P[p.uid] = p; }); loadedAt = Date.now(); } catch (e) {}
+    busy = false; render(); updTxt();
+  }
+  function updTxt() { $('#upd').textContent = 'Oxirgi yangilanish: ' + new Date(loadedAt).toLocaleTimeString('uz-UZ') + ' · har daqiqada o\'zi yangilanadi'; }
+  function students(gid) { return U.filter(function (u) { return u.role === 'student' && (gid === undefined || (u.groupId || '') === gid); }); }
+  function gname(id) { var g = G.find(function (x) { return x.id === id; }); return g ? g.name : 'Guruhsiz'; }
+  function lastAt(u) { var p = P[u.uid]; return (p && p.last && p.last.at) || 0; }
+  function info(u) {
+    var p = P[u.uid] || { lessons: {} }, s = SH.sum(p), pos = SH.pos(p), la = lastAt(u);
+    return { u: u, p: p, s: s, pos: pos, la: la, pct: s.pct, name: u.name || u.login };
+  }
+  function status(x) {
+    if (x.u.active === false) return '<span class="tag n">O\'chirilgan</span>';
+    if (!x.la) return '<span class="tag r">Boshlamagan</span>';
+    var d = (Date.now() - x.la) / 864e5;
+    if (d <= 2) return '<span class="tag g">Faol</span>';
+    if (d <= 7) return '<span class="tag w">Sekin</span>';
+    return '<span class="tag r">Faol emas</span>';
+  }
+  function bar(pct) { return '<span class="mini"><span style="width:' + pct + '%"></span></span>' + pct + '%'; }
+  function avg(a) { return a.length ? Math.round(a.reduce(function (s, x) { return s + x; }, 0) / a.length) : 0; }
+
+  /* ---------------- marshrut ---------------- */
+  function route() { var h = location.hash.replace('#', ''); return h || 'groups'; }
+  window.addEventListener('hashchange', render);
+  function go(h) { if (location.hash === '#' + h) render(); else location.hash = h; }
+  function render() {
+    var r = route(), tab = r.indexOf('g/') === 0 ? 'groups' : r;
+    $$('.tab').forEach(function (b) { b.classList.toggle('on', b.dataset.t === tab); });
+    var v = $('#view');
+    if (r.indexOf('g/') === 0) v.innerHTML = groupView(decodeURIComponent(r.slice(2)));
+    else if (r === 'students') v.innerHTML = studentsView();
+    else if (r === 'teachers') v.innerHTML = teachersView();
+    else v.innerHTML = groupsView();
+    var s = $('#sq'); if (s) { s.value = q; s.oninput = function () { q = s.value; var pos = s.selectionStart; render(); var s2 = $('#sq'); s2.focus(); s2.setSelectionRange(pos, pos); }; }
+  }
+  $('#tabs').onclick = function (e) { var b = e.target.closest('.tab'); if (b) go(b.dataset.t); };
+  $('#refresh').onclick = function () { load(); };
+  setInterval(function () { if (document.visibilityState === 'visible' && !document.querySelector('.modal-bg')) loadProgress(); }, 60000);
+
+  /* ---------------- 1) guruhlar ---------------- */
+  function groupsView() {
+    var all = students().filter(function (u) { return u.active !== false; }).map(info);
+    var today = all.filter(function (x) { return x.la && SH.dayKey(x.la) === SH.dayKey(Date.now()); }).length;
+    var h = '<div class="stats">' +
+      '<div class="stat"><b>' + G.length + '</b><span>guruh</span></div>' +
+      '<div class="stat"><b>' + all.length + '</b><span>faol o\'quvchi</span></div>' +
+      '<div class="stat"><b>' + avg(all.map(function (x) { return x.pct; })) + '%</b><span>o\'rtacha progress</span></div>' +
+      '<div class="stat"><b>' + today + '</b><span>bugun ishlagan</span></div></div>';
+    h += '<div class="row sb" style="margin-bottom:14px"><h2 style="margin:0;font-size:1.2rem">Guruhlar</h2><button class="btn pri" data-a="addgroup">+ Guruh qo\'shish</button></div>';
+    var list = G.slice(); if (students('').length) list.push({ id: '', name: 'Guruhsiz o\'quvchilar' });
+    if (!list.length) return h + '<div class="card muted">Hali guruh yo\'q. «+ Guruh qo\'shish» tugmasini bosib birinchi guruhni yarating (masalan: <b>11-A</b>), so\'ng unga o\'quvchilar qo\'shing.</div>';
+    h += '<div class="grid2">' + list.map(function (g) {
+      var st = students(g.id).filter(function (u) { return u.active !== false; }).map(info);
+      var a = avg(st.map(function (x) { return x.pct; }));
+      var act = st.filter(function (x) { return x.la && Date.now() - x.la < 2 * 864e5; }).length;
+      var fails = st.reduce(function (s, x) { return s + x.s.fails; }, 0);
+      return '<div class="card gcard" data-a="opengroup" data-id="' + esc(g.id) + '"><h3>' + esc(g.name) + '</h3><div class="muted" style="font-size:.88rem">' + st.length + ' o\'quvchi · ' + act + ' tasi so\'nggi 2 kunda faol</div>' +
+        '<div class="meter"><span style="width:' + a + '%"></span></div><div class="row sb"><b>' + a + '% o\'rtacha</b><span class="muted" style="font-size:.85rem">' + fails + ' ta noto\'g\'ri urinish</span></div></div>';
+    }).join('') + '</div>';
+    return h;
+  }
+
+  /* ---------------- 2) guruh sahifasi ---------------- */
+  function sortRows(rows) {
+    var k = sortKey, d = sortDir;
+    return rows.sort(function (a, b) {
+      var x = k === 'name' ? a.name.toLowerCase() : k === 'la' ? a.la : k === 'fails' ? a.s.fails : k === 'pos' ? a.pos.lesson * 100 + (a.pos.task ? +(a.pos.task.replace(/\D/g, '') || 99) : 0) : a.pct;
+      var y = k === 'name' ? b.name.toLowerCase() : k === 'la' ? b.la : k === 'fails' ? b.s.fails : k === 'pos' ? b.pos.lesson * 100 + (b.pos.task ? +(b.pos.task.replace(/\D/g, '') || 99) : 0) : b.pct;
+      return (x < y ? -1 : x > y ? 1 : 0) * d;
+    });
+  }
+  function groupView(gid) {
+    var g = G.find(function (x) { return x.id === gid; }) || { id: '', name: 'Guruhsiz o\'quvchilar' };
+    var all = students(gid).map(info), act = all.filter(function (x) { return x.u.active !== false; });
+    var rows = sortRows(all.slice());
+    var a = avg(act.map(function (x) { return x.pct; })), today = act.filter(function (x) { return x.la && SH.dayKey(x.la) === SH.dayKey(Date.now()); }).length;
+    var behind = act.filter(function (x) { return !x.pos.finished && (!x.la || Date.now() - x.la > 3 * 864e5); });
+    var h = '<button class="crumb" data-a="home">← Barcha guruhlar</button>' +
+      '<div class="row sb" style="margin-bottom:16px"><h2 style="margin:0;font-size:1.5rem">' + esc(g.name) + '</h2><div class="row">' +
+      '<button class="btn pri" data-a="addstudent" data-g="' + esc(gid) + '">+ O\'quvchi</button><button class="btn" data-a="bulk" data-g="' + esc(gid) + '">Ro\'yxat bilan qo\'shish</button><button class="btn" data-a="csv" data-g="' + esc(gid) + '">CSV</button>' +
+      (gid ? '<button class="btn" data-a="rengroup" data-id="' + esc(gid) + '">Nomini o\'zgartirish</button><button class="btn bad" data-a="delgroup" data-id="' + esc(gid) + '">O\'chirish</button>' : '') + '</div></div>';
+    h += '<div class="stats"><div class="stat"><b>' + act.length + '</b><span>faol o\'quvchi</span></div><div class="stat"><b>' + a + '%</b><span>o\'rtacha progress</span></div><div class="stat"><b>' + today + '</b><span>bugun ishlagan</span></div><div class="stat"><b>' + behind.length + '</b><span>ortda qolgan (3+ kun)</span></div><div class="stat"><b>' + act.filter(function (x) { return x.pos.finished; }).length + '</b><span>kursni tugatgan</span></div></div>';
+    if (!all.length) return h + '<div class="card muted">Bu guruhda hali o\'quvchi yo\'q. «+ O\'quvchi» yoki «Ro\'yxat bilan qo\'shish» tugmasini bosing.</div>';
+    // jadval
+    function th(k, t) { return '<th data-sort="' + k + '">' + t + (sortKey === k ? (sortDir < 0 ? ' ↓' : ' ↑') : '') + '</th>'; }
+    h += '<div class="tbl-wrap"><table class="tb"><thead><tr>' + th('name', 'O\'quvchi') + th('pct', 'Progress') + th('pos', 'Hozir qayerda') + th('fails', 'Xato urinish') + th('la', 'Oxirgi faollik') + '<th>Holat</th></tr></thead><tbody>' +
+      rows.map(function (x) {
+        return '<tr class="clk" data-a="student" data-id="' + esc(x.u.uid) + '"><td class="nm">' + esc(x.name) + '<div class="muted" style="font-weight:500;font-size:.78rem">' + esc(x.u.login) + '</div></td><td>' + bar(x.pct) + '</td><td>' + esc(x.pos.label) + '</td><td>' + x.s.fails + '</td><td>' + esc(SH.ago(x.la)) + '</td><td>' + status(x) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    // faollik grafigi
+    h += '<div class="grid2" style="margin-top:20px"><div class="card"><h2>So\'nggi 14 kunda bajarilgan topshiriqlar</h2>' + activityChart(act) + '</div>' +
+      '<div class="card"><h2>Eng qiyin topshiriqlar</h2><div class="muted" style="font-size:.84rem;margin:-6px 0 10px">Eng ko\'p noto\'g\'ri urinish bo\'lgan topshiriqlar</div>' + hardest(act) + '</div></div>';
+    // issiqlik xaritasi
+    h += '<div class="card" style="margin-top:16px"><h2>Darslar bo\'yicha xarita</h2><div style="overflow:auto"><div class="heat" style="grid-template-columns:130px repeat(' + D.length + ',28px);min-width:' + (130 + D.length * 31) + 'px">' +
+      '<div></div>' + D.map(function (d) { return '<div class="h" style="background:none" title="' + esc(d.n + '. ' + d.t) + '">' + d.n + '</div>'; }).join('') +
+      rows.filter(function (x) { return x.u.active !== false; }).map(function (x) {
+        return '<div style="font-weight:700;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:center" title="' + esc(x.name) + '">' + esc(x.name) + '</div>' + D.map(function (d) {
+          var s = x.s.per[d.n], c = s.done === s.total ? 'a' : s.done ? 'p' : s.fails ? 'z' : '';
+          return '<div class="h ' + c + '" title="' + esc(x.name + ' — ' + d.n + '-dars: ' + s.done + '/' + s.total) + '">' + (s.done === s.total ? '✓' : s.done ? s.done : '') + '</div>';
+        }).join('');
+      }).join('') + '</div></div><div class="legend"><span><i style="background:var(--ok)"></i>dars tugatilgan</span><span><i style="background:#e9c46a"></i>jarayonda (raqam — bajarilgan topshiriq)</span><span><i style="background:var(--bad-soft)"></i>urinib ko\'rgan, bajarmagan</span></div></div>';
+    return h;
+  }
+  function activityChart(list) {
+    var days = [], map = {}, i, now = Date.now();
+    for (i = 13; i >= 0; i--) { var k = SH.dayKey(now - i * 864e5); days.push(k); map[k] = 0; }
+    list.forEach(function (x) { Object.keys(x.p.lessons || {}).forEach(function (n) { var dn = (x.p.lessons[n] || {}).done || {}; Object.keys(dn).forEach(function (t) { var k = SH.dayKey(dn[t]); if (k in map) map[k]++; }); }); });
+    var mx = Math.max.apply(null, days.map(function (k) { return map[k]; }).concat([1]));
+    return '<div style="display:flex;gap:5px;align-items:flex-end;height:140px">' + days.map(function (k) {
+      var v = map[k], hh = Math.round(120 * v / mx);
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px" title="' + k + ': ' + v + '"><span style="font-size:.7rem;font-weight:800">' + (v || '') + '</span><div style="width:100%;height:' + Math.max(3, hh) + 'px;background:' + (v ? 'var(--accent)' : 'var(--line)') + ';border-radius:5px 5px 2px 2px"></div></div>';
+    }).join('') + '</div><div class="row sb muted" style="font-size:.72rem;margin-top:6px"><span>' + days[0].slice(5) + '</span><span>bugun</span></div>';
+  }
+  function hardest(list) {
+    var agg = {};
+    list.forEach(function (x) { D.forEach(function (d) { var s = x.s.per[d.n]; Object.keys(s.failMap).forEach(function (t) { var k = d.n + '|' + t; agg[k] = agg[k] || { n: d.n, t: t, f: 0, who: 0, done: 0 }; agg[k].f += s.failMap[t] || 0; agg[k].who++; if (s.doneMap[t]) agg[k].done++; }); }); });
+    var arr = Object.keys(agg).map(function (k) { return agg[k]; }).sort(function (a, b) { return b.f - a.f; }).slice(0, 8);
+    if (!arr.length) return '<div class="muted">Hali noto\'g\'ri urinishlar yo\'q.</div>';
+    var mx = arr[0].f;
+    return '<div class="bars">' + arr.map(function (a) { return '<div class="bar"><span class="lb" title="' + esc(SH.lesson(a.n).t) + '">' + a.n + '-dars · ' + esc(SH.taskName(a.t)) + '</span><span class="tr"><span style="width:' + Math.round(100 * a.f / mx) + '%;background:var(--bad)"></span></span><span class="v">' + a.f + '</span></div>'; }).join('') + '</div>';
+  }
+
+  /* ---------------- 3) barcha o'quvchilar ---------------- */
+  function studentsView() {
+    var rows = sortRows(students().map(info)).filter(function (x) { return !q || (x.name + ' ' + x.u.login + ' ' + gname(x.u.groupId)).toLowerCase().indexOf(q.toLowerCase()) >= 0; });
+    function th(k, t) { return '<th data-sort="' + k + '">' + t + (sortKey === k ? (sortDir < 0 ? ' ↓' : ' ↑') : '') + '</th>'; }
+    return '<div class="row sb" style="margin-bottom:14px"><input class="t" id="sq" placeholder="Ism, login yoki guruh bo\'yicha qidirish…" style="max-width:360px"><div class="row"><button class="btn pri" data-a="addstudent" data-g="">+ O\'quvchi</button><button class="btn" data-a="bulk" data-g="">Ro\'yxat bilan qo\'shish</button><button class="btn" data-a="csv" data-g="*">CSV</button></div></div>' +
+      '<div class="tbl-wrap"><table class="tb"><thead><tr>' + th('name', 'O\'quvchi') + '<th>Guruh</th>' + th('pct', 'Progress') + th('pos', 'Hozir qayerda') + th('la', 'Oxirgi faollik') + '<th>Holat</th></tr></thead><tbody>' +
+      (rows.map(function (x) { return '<tr class="clk" data-a="student" data-id="' + esc(x.u.uid) + '"><td class="nm">' + esc(x.name) + '<div class="muted" style="font-weight:500;font-size:.78rem">' + esc(x.u.login) + '</div></td><td>' + esc(gname(x.u.groupId)) + '</td><td>' + bar(x.pct) + '</td><td>' + esc(x.pos.label) + '</td><td>' + esc(SH.ago(x.la)) + '</td><td>' + status(x) + '</td></tr>'; }).join('') || '<tr><td colspan="6" class="muted">O\'quvchi topilmadi.</td></tr>') + '</tbody></table></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('th[data-sort]'); if (!t) return;
+    var k = t.dataset.sort; if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } render();
+  });
+
+  /* ---------------- 4) o'qituvchilar ---------------- */
+  function teachersView() {
+    var T = U.filter(function (u) { return u.role === 'admin'; });
+    return '<div class="row sb" style="margin-bottom:14px"><h2 style="margin:0;font-size:1.2rem">O\'qituvchilar (administratorlar)</h2><button class="btn pri" data-a="addteacher">+ O\'qituvchi qo\'shish</button></div>' +
+      '<div class="tbl-wrap"><table class="tb"><thead><tr><th>Ism</th><th>Login</th><th>Holat</th><th></th></tr></thead><tbody>' + T.map(function (u) {
+        return '<tr><td class="nm">' + esc(u.name) + (u.uid === me.uid ? ' <span class="tag">siz</span>' : '') + '</td><td>' + esc(u.login) + '</td><td>' + (u.active === false ? '<span class="tag n">O\'chirilgan</span>' : '<span class="tag g">Faol</span>') + '</td><td>' + (u.uid === me.uid ? '' : '<button class="btn sm" data-a="toggle" data-id="' + esc(u.uid) + '">' + (u.active === false ? 'Faollashtirish' : 'O\'chirish') + '</button>') + '</td></tr>';
+      }).join('') + '</tbody></table></div><p class="muted" style="font-size:.86rem;margin-top:12px">Barcha o\'qituvchilar barcha guruhlarni ko\'radi va boshqara oladi. Yangi o\'qituvchiga login va parol bering.</p>';
+  }
+
+  /* ---------------- amallar ---------------- */
+  var PW = 'abcdefghjkmnpqrstuvwxyz23456789';
+  function rndPw(n) { var s = '', a = new Uint32Array(n || 6); crypto.getRandomValues(a); for (var i = 0; i < a.length; i++) s += PW[a[i] % PW.length]; return s; }
+  function translit(s) { return String(s).toLowerCase().replace(/[ʻʼ’‘`´']/g, '').replace(/sh/g, 'sh').replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, ''); }
+  function freeLogin(base, taken) { base = base || 'oquvchi'; if (base.length < 3) base += '.1'; var l = base, i = 1; while (taken[l]) { i++; l = base + i; } taken[l] = 1; return l; }
+  function takenMap() { var m = {}; U.forEach(function (u) { m[u.login] = 1; }); return m; }
+  function gOptions(sel) { return '<option value="">— Guruhsiz —</option>' + G.map(function (g) { return '<option value="' + esc(g.id) + '"' + (g.id === sel ? ' selected' : '') + '>' + esc(g.name) + '</option>'; }).join(''); }
+  async function guard(btn, fn) { var old = btn.textContent; btn.disabled = true; btn.textContent = 'Kuting…'; try { await fn(); } catch (e) { btn.disabled = false; btn.textContent = old; throw e; } }
+
+  var A = {
+    home: function () { go('groups'); },
+    opengroup: function (el) { go('g/' + encodeURIComponent(el.dataset.id)); },
+    addgroup: function () {
+      SH.modal('<h2>Yangi guruh</h2><label class="f">Guruh nomi</label><input class="t" id="gn" placeholder="Masalan: 11-A"><div id="ge" class="err" hidden></div><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="gx">Bekor</button><button class="btn pri" id="gs">Yaratish</button></div>', function (m, close) {
+        $('#gx', m).onclick = close; var inp = $('#gn', m);
+        function ok() { var b = $('#gs', m); guard(b, async function () { var g = await SINF.addGroup(inp.value); close(); await load(true); go('g/' + encodeURIComponent(g.id)); }).catch(function (e) { var er = $('#ge', m); er.textContent = e.message; er.hidden = false; }); }
+        $('#gs', m).onclick = ok; inp.onkeydown = function (e) { if (e.key === 'Enter') ok(); };
+      });
+    },
+    rengroup: function (el) {
+      var g = G.find(function (x) { return x.id === el.dataset.id; });
+      SH.modal('<h2>Guruh nomini o\'zgartirish</h2><input class="t" id="gn" value="' + esc(g.name) + '"><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="gx">Bekor</button><button class="btn pri" id="gs">Saqlash</button></div>', function (m, close) {
+        $('#gx', m).onclick = close; $('#gs', m).onclick = async function () { await SINF.renameGroup(g.id, $('#gn', m).value); close(); load(true); };
+      });
+    },
+    delgroup: async function (el) {
+      var g = G.find(function (x) { return x.id === el.dataset.id; });
+      if (!confirm('«' + g.name + '» guruhini o\'chirasizmi?')) return;
+      try { await SINF.removeGroup(g.id); go('groups'); load(true); } catch (e) { alert(e.message); }
+    },
+    addstudent: function (el) { studentForm(null, el.dataset.g); },
+    addteacher: function () {
+      SH.modal('<h2>Yangi o\'qituvchi</h2><label class="f">Ism</label><input class="t" id="tn"><label class="f">Login</label><input class="t" id="tl" autocapitalize="none"><label class="f">Parol</label><input class="t" id="tp" value="' + rndPw(8) + '"><div id="te" class="err" hidden></div><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="tx">Bekor</button><button class="btn pri" id="ts">Yaratish</button></div>', function (m, close) {
+        $('#tx', m).onclick = close;
+        $('#ts', m).onclick = function () { var b = this; guard(b, async function () { var l = $('#tl', m).value, p = $('#tp', m).value; await SINF.addUser({ role: 'admin', name: $('#tn', m).value.trim(), login: l, password: p }); close(); await load(true); showCreds([{ name: $('#tn', m).value.trim(), login: SINF.cleanLogin(l), password: p }], 'O\'qituvchi yaratildi'); }).catch(function (e) { var er = $('#te', m); er.textContent = e.message; er.hidden = false; }); };
+      });
+    },
+    toggle: async function (el) { var u = U.find(function (x) { return x.uid === el.dataset.id; }); await SINF.editUser(u.uid, { active: u.active === false }); load(true); },
+    bulk: function (el) { bulkForm(el.dataset.g); },
+    csv: function (el) { exportCsv(el.dataset.g); },
+    student: function (el) { studentModal(el.dataset.id); }
+  };
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-a]'); if (!el || el.closest('.modal-bg') && !el.closest('.modal [data-a]')) return;
+    var f = A[el.dataset.a]; if (f) { e.preventDefault(); Promise.resolve(f(el)).catch(function (x) { alert(x.message || x); }); }
+  });
+
+  function studentForm(u, gid) {
+    var edit = !!u;
+    SH.modal('<h2>' + (edit ? 'O\'quvchini tahrirlash' : 'Yangi o\'quvchi') + '</h2><label class="f">Ism va familiya</label><input class="t" id="sn" value="' + esc(edit ? u.name : '') + '">' +
+      (edit ? '' : '<div class="row" style="gap:12px;align-items:flex-start"><div style="flex:1;min-width:150px"><label class="f">Login</label><input class="t" id="sl" autocapitalize="none" spellcheck="false"></div><div style="flex:1;min-width:150px"><label class="f">Parol</label><input class="t" id="sp" value="' + rndPw() + '"></div></div>') +
+      '<label class="f">Guruh</label><select class="t" id="sg">' + gOptions(edit ? u.groupId : gid) + '</select><div id="se" class="err" hidden></div><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="sx">Bekor</button><button class="btn pri" id="ss">' + (edit ? 'Saqlash' : 'Yaratish') + '</button></div>', function (m, close) {
+        $('#sx', m).onclick = close;
+        if (!edit) $('#sn', m).oninput = function () { var l = $('#sl', m); if (!l.dataset.touched) l.value = translit(this.value); };
+        if (!edit) $('#sl', m).oninput = function () { this.dataset.touched = 1; };
+        $('#ss', m).onclick = function () {
+          guard(this, async function () {
+            var name = $('#sn', m).value.trim(), g = $('#sg', m).value || null;
+            if (!name) throw new Error('Ism va familiyani yozing.');
+            if (edit) { await SINF.editUser(u.uid, { name: name, groupId: g }); close(); await load(true); return; }
+            var l = $('#sl', m).value, p = $('#sp', m).value;
+            await SINF.addUser({ role: 'student', name: name, login: l, password: p, groupId: g }); close(); await load(true);
+            showCreds([{ name: name, login: SINF.cleanLogin(l), password: p }], 'O\'quvchi yaratildi');
+          }).catch(function (e) { var er = $('#se', m); er.textContent = e.message; er.hidden = false; });
+        };
+      });
+  }
+
+  function showCreds(list, title) {
+    var rows = list.map(function (r) { return '<tr><td class="nm">' + esc(r.name) + '</td><td style="font-family:var(--mono)">' + esc(r.login) + '</td><td style="font-family:var(--mono)">' + esc(r.password) + '</td><td>' + (r.err ? '<span class="tag r">' + esc(r.err) + '</span>' : '<span class="tag g">tayyor</span>') + '</td></tr>'; }).join('');
+    SH.modal('<h2>' + esc(title) + '</h2><div class="warnmsg" style="margin-top:10px">Parollar faqat hozir ko\'rinadi — keyin ko\'rib bo\'lmaydi. Yuklab oling yoki chop eting.</div><div class="tbl-wrap"><table class="tb"><thead><tr><th>Ism</th><th>Login</th><th>Parol</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn" id="cc">CSV yuklash</button><button class="btn" id="cp">Chop etish</button><button class="btn pri" id="cx">Yopish</button></div>', function (m, close) {
+      $('#cx', m).onclick = close;
+      $('#cc', m).onclick = function () { SH.download('loginlar.csv', 'Ism;Login;Parol\n' + list.filter(function (r) { return !r.err; }).map(function (r) { return [r.name, r.login, r.password].map(SH.csvEscape).join(';'); }).join('\n')); };
+      $('#cp', m).onclick = function () { var w = window.open('', '_blank'); if (!w) return alert('Brauzer oynani blokladi.'); w.document.write('<title>Loginlar</title><style>body{font-family:sans-serif}table{border-collapse:collapse}td,th{border:1px solid #999;padding:8px 14px;text-align:left}</style><h2>Kirish ma\'lumotlari</h2><table><tr><th>Ism</th><th>Login</th><th>Parol</th></tr>' + list.filter(function (r) { return !r.err; }).map(function (r) { return '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.login) + '</td><td>' + esc(r.password) + '</td></tr>'; }).join('') + '</table>'); w.document.close(); w.print(); };
+    });
+  }
+
+  function bulkForm(gid) {
+    SH.modal('<h2>Ro\'yxat bilan qo\'shish</h2><div class="muted" style="font-size:.9rem">Har qatorga bitta o\'quvchi. Faqat ismni yozsangiz — login va parol o\'zi tuziladi. Xohlasangiz: <code>Ism Familiya; login; parol</code></div><label class="f">Guruh</label><select class="t" id="bg">' + gOptions(gid) + '</select><label class="f">O\'quvchilar</label><textarea class="t" id="bt" placeholder="Ali Valiyev&#10;Hasan Karimov&#10;Dilnoza Rahimova; dilnoza; parol123"></textarea><div id="be" class="err" hidden></div><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="bx">Bekor</button><button class="btn pri" id="bs">Hammasini yaratish</button></div>', function (m, close) {
+      $('#bx', m).onclick = close;
+      $('#bs', m).onclick = function () {
+        var b = this, lines = $('#bt', m).value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean), g = $('#bg', m).value || null;
+        if (!lines.length) { var er = $('#be', m); er.textContent = 'Ro\'yxat bo\'sh.'; er.hidden = false; return; }
+        guard(b, async function () {
+          var taken = takenMap(), out = [], i;
+          for (i = 0; i < lines.length; i++) {
+            var parts = lines[i].split(/[;\t]/).map(function (s) { return s.trim(); }), name = parts[0];
+            var login = parts[1] ? SINF.cleanLogin(parts[1]) : freeLogin(translit(name), taken), pass = parts[2] || rndPw();
+            if (parts[1]) taken[login] = 1;
+            b.textContent = 'Yaratilmoqda… ' + (i + 1) + '/' + lines.length;
+            try { await SINF.addUser({ role: 'student', name: name, login: login, password: pass, groupId: g }); out.push({ name: name, login: login, password: pass }); }
+            catch (e) { out.push({ name: name, login: login, password: pass, err: e.message.slice(0, 60) }); }
+          }
+          close(); await load(true); showCreds(out, out.length + ' ta qatordan ' + out.filter(function (r) { return !r.err; }).length + ' tasi yaratildi');
+        });
+      };
+    });
+  }
+
+  function exportCsv(gid) {
+    var st = (gid === '*' ? students() : students(gid)).map(info);
+    var head = ['Ism', 'Login', 'Guruh', 'Bajarilgan', 'Foiz', 'Tugagan darslar', 'Hozir qayerda', 'Xato urinish', 'Oxirgi faollik'].concat(D.map(function (d) { return d.n + '-dars'; }));
+    var lines = [head.map(SH.csvEscape).join(';')].concat(st.map(function (x) {
+      return [x.name, x.u.login, gname(x.u.groupId), x.s.done + '/' + SH.TOTAL, x.pct + '%', x.s.lessons, x.pos.label, x.s.fails, x.la ? new Date(x.la).toLocaleString('uz-UZ') : ''].concat(D.map(function (d) { return x.s.per[d.n].done + '/' + x.s.per[d.n].total; })).map(SH.csvEscape).join(';');
+    }));
+    SH.download('natijalar-' + SH.dayKey(Date.now()) + '.csv', lines.join('\n'));
+  }
+
+  function studentModal(uid) {
+    var u = U.find(function (x) { return x.uid === uid; }); if (!u) return;
+    var x = info(u);
+    var fails = []; D.forEach(function (d) { var s = x.s.per[d.n]; Object.keys(s.failMap).forEach(function (t) { fails.push({ n: d.n, t: t, f: s.failMap[t], ok: !!s.doneMap[t] }); }); });
+    fails.sort(function (a, b) { return b.f - a.f; });
+    var h = '<div class="row sb"><div><h2 style="margin:0">' + esc(x.name) + '</h2><div class="muted" style="font-size:.88rem">' + esc(u.login) + ' · ' + esc(gname(u.groupId)) + '</div></div>' + status(x) + '</div>' +
+      '<div class="stats" style="margin:16px 0"><div class="stat"><b>' + x.pct + '%</b><span>' + x.s.done + ' / ' + SH.TOTAL + ' topshiriq</span></div><div class="stat"><b>' + x.s.lessons + '</b><span>dars tugatilgan</span></div><div class="stat"><b>' + x.s.fails + '</b><span>xato urinish</span></div></div>' +
+      '<div class="card" style="padding:12px 16px;margin-bottom:14px"><b>Hozir:</b> ' + esc(x.pos.label) + ' <span class="muted">· oxirgi faollik: ' + esc(SH.ago(x.la)) + '</span>' + (x.p.last ? ' <a class="btn sm" style="margin-left:8px" href="dars-' + SH.two(x.pos.lesson) + '.html?ochiq=1" target="_blank">Darsni ko\'rish</a>' : '') + '</div>' +
+      '<h2 style="font-size:1rem;margin-top:16px">Darslar bo\'yicha</h2><div style="max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px"><table class="tb"><tbody>' + D.map(function (d) {
+        var s = x.s.per[d.n], pc = Math.round(100 * s.done / s.total);
+        return '<tr><td class="nm">' + d.n + '. ' + esc(d.t.length > 38 ? d.t.slice(0, 38) + '…' : d.t) + '</td><td>' + bar(pc) + '</td><td class="muted">' + s.done + '/' + s.total + '</td><td>' + (s.fails ? '<span class="tag r">' + s.fails + ' xato</span>' : '') + (s.quiz ? ' <span class="tag">test ' + s.quiz.s + '/' + s.quiz.n + '</span>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    if (fails.length) h += '<h2 style="font-size:1rem;margin-top:16px">Eng ko\'p qiynalgan topshiriqlar</h2><div class="row">' + fails.slice(0, 8).map(function (f) { return '<span class="tag ' + (f.ok ? 'w' : 'r') + '">' + f.n + '-dars · ' + esc(SH.taskName(f.t)) + ': ' + f.f + (f.ok ? ' (keyin bajargan)' : '') + '</span>'; }).join('') + '</div>';
+    h += '<div class="row" style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px"><button class="btn sm" id="m-edit">Tahrirlash</button><button class="btn sm" id="m-reissue">Parol tiklash</button><button class="btn sm" id="m-toggle">' + (u.active === false ? 'Faollashtirish' : 'Akkauntni o\'chirish') + '</button><button class="btn sm bad" id="m-reset">Natijalarni nolga tushirish</button><span style="flex:1"></span><button class="btn" id="m-x">Yopish</button></div>';
+    SH.modal(h, function (m, close) {
+      $('#m-x', m).onclick = close;
+      $('#m-edit', m).onclick = function () { close(); studentForm(u, u.groupId); };
+      $('#m-toggle', m).onclick = async function () { await SINF.editUser(u.uid, { active: u.active === false }); close(); load(true); };
+      $('#m-reset', m).onclick = async function () { if (!confirm(x.name + ' ning BARCHA natijalari o\'chadi. Davom etasizmi?')) return; await SINF.resetProgress(u.uid); close(); load(true); };
+      $('#m-reissue', m).onclick = function () {
+        close();
+        var t = takenMap(), nl = freeLogin(u.login.replace(/\d+$/, ''), t), np = rndPw();
+        SH.modal('<h2>Parolni tiklash</h2><div class="muted" style="font-size:.9rem">Xavfsizlik uchun eski parolni ko\'rib yoki o\'zgartirib bo\'lmaydi (parollar hech qayerda saqlanmaydi). Shuning uchun o\'quvchiga <b>yangi login va parol</b> beriladi, barcha natijalari yangi akkauntga ko\'chiriladi, eskisi o\'chiriladi.</div><label class="f">Yangi login</label><input class="t" id="rl" value="' + esc(nl) + '"><label class="f">Yangi parol</label><input class="t" id="rp" value="' + np + '"><div id="re" class="err" hidden></div><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="rx">Bekor</button><button class="btn pri" id="rs">Davom etish</button></div>', function (m2, close2) {
+          $('#rx', m2).onclick = close2;
+          $('#rs', m2).onclick = function () {
+            guard(this, async function () {
+              var l = $('#rl', m2).value, p = $('#rp', m2).value;
+              var n = await SINF.addUser({ role: 'student', name: u.name, login: l, password: p, groupId: u.groupId });
+              await SINF.moveProgress(u.uid, n.uid); await SINF.editUser(u.uid, { active: false });
+              close2(); await load(true); showCreds([{ name: u.name, login: SINF.cleanLogin(l), password: p }], 'Yangi kirish ma\'lumotlari');
+            }).catch(function (e) { var er = $('#re', m2); er.textContent = e.message; er.hidden = false; });
+          };
+        });
+      };
+    });
+  }
+
+  await load(true);
+  $('#load').hidden = true; $('#app').hidden = false; render();
+})();
+</script>
+</body>
+</html>

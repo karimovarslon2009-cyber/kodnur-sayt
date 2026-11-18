@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>24-dars: Meros va polimorfizm — Python kursi</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kurs.css">
+</head>
+<body>
+<div class="shell">
+<aside class="side"><a class="back" href="index.html">← Barcha darslar</a><div class="brand"><span class="logo">🐍</span><div class="b-txt"><b>24-dars</b><span>Meros va polimorfizm</span></div></div><div class="s-prog"><b class="prog-text"></b><div class="prog-track"><span></span></div></div><input class="s-search" type="search" placeholder="🔍 Darsdan qidirish…" aria-label="Darsdan qidirish"><nav class="s-nav"></nav><div class="s-foot"><button class="s-btn theme-btn" type="button"></button><button class="s-btn reset-btn" type="button">↺ Jarayonni tozalash</button></div></aside>
+<main class="main"><div class="topbar"><button class="menu-btn" type="button" aria-label="Menyu">☰</button><b class="top-ttl"></b></div>
+<div class="wrap">
+<section class="sec off" data-key="kirish" data-group="Kirish" data-ico="👋" data-title="Kirish va maqsad">
+<header class="hero"><span class="kicker">24-DARS • OOP</span><h1 class="title">Meros va polimorfizm</h1><p class="desc">Tasavvur qiling: itning ham, mushukning ham ismi, yoshi va ovozi bor. Ikki marta bir xil kod yozish kerakmi? Yo'q. Bu darsda <b>meros</b> (inheritance) bilan umumiy qismni bitta sinfda yozib, boshqa sinflarga bepul berishni o'rganasiz. Keyin <b>polimorfizm</b> bilan har xil obyektni bir xil usulda boshqarasiz: <code>hayvon.ovoz()</code> desangiz, it hurildaydi, mushuk miyovlaydi.</p><div class="chips"><span class="chip">⏱ ~3 soat</span><span class="chip">🎯 meros, super(), metodni qayta yozish, isinstance, polimorfizm, abstrakt sinf, kompozitsiya</span><span class="chip">🧩 20 topshiriq + mini-loyiha</span></div><div class="timebar"><span><b>40 daq</b> nazariya</span><span><b>100 daq</b> 20 ta topshiriq</span><span><b>30 daq</b> mini-loyiha</span><span><b>10 daq</b> test</span></div></header><h2><span class="mark"></span>Darsning maqsadi</h2><div class="goal-list"><div class="g"><span class="dot">1</span><div><b>Meros</b> — ota sinfdagi atribut va metodlarni bola sinfga olish: <code>class It(Hayvon)</code>.</div></div><div class="g"><span class="dot">2</span><div><b>super()</b> — bola sinfda ota sinfning <code>__init__</code> va metodlarini chaqirish.</div></div><div class="g"><span class="dot">3</span><div><b>Metodni qayta yozish</b> — bola sinfda ota metodning o'z variantini yozish.</div></div><div class="g"><span class="dot">4</span><div><b>Polimorfizm</b> — turli obyektlarni bir xil metod nomi bilan boshqarish; <code>if</code> zanjirlaridan qutulish.</div></div><div class="g"><span class="dot">5</span><div><b>Abstrakt sinf</b> — <code>abc</code> bilan bola sinf yozishi shart bo'lgan metodlarni belgilash.</div></div><div class="g"><span class="dot">6</span><div><b>Kompozitsiya</b> — "... bor" munosabati (Mashinada Dvigatel bor) va "... dir" munosabati (It — Hayvon) farqini bilish.</div></div></div><h2><span class="mark"></span>Bugungi yangi sintaksis</h2><div class="newblocks"><span class="nb"><span class="sw" style="background:var(--js)"></span>class It(Hayvon):
+    pass</span><span class="nb"><span class="sw" style="background:var(--js)"></span>super().__init__(ism)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>def ovoz(self):
+    return &quot;Hav!&quot;</span><span class="nb"><span class="sw" style="background:var(--js)"></span>isinstance(h, It)</span><span class="nb"><span class="sw" style="background:var(--js)"></span>for h in hayvonlar:
+    print(h.ovoz())</span><span class="nb"><span class="sw" style="background:var(--js)"></span>from abc import ABC, abstractmethod</span><span class="nb"><span class="sw" style="background:var(--js)"></span>@abstractmethod
+def yuza(self): ...</span><span class="nb"><span class="sw" style="background:var(--js)"></span>self.dvigatel = Dvigatel()</span></div><h2><span class="mark"></span>Bu sahifa qanday ishlaydi</h2><div class="note"><b>Kod oynalari — jonli.</b> Python shu sahifaning ichida ishlaydi, hech narsa o'rnatish shart emas:<ul><li>Kodni yozing va <b>▶ Ishga tushir</b> (yoki <b>Ctrl + Enter</b>) bosing. Natija pastdagi <b>Terminal</b>da chiqadi.</li><li>Dastur <code>input()</code> so'rasa, terminalda yozish maydoni chiqadi: javobingizni yozib <b>Enter</b> bosing.</li><li>Xato bo'lsa, terminalda xato qatori va tushuntirish chiqadi. Xato topilgan qator oynada qizil bo'ladi.</li><li><b>✔ Tekshirish</b> tugmasi dasturingizni bir necha xil ma'lumot bilan sinab, har bir talabni alohida ✅ yoki ❌ bilan ko'rsatadi.</li><li>Topshiriqlar ketma-ket ochiladi. Yechim 10 ta muvaffaqiyatsiz urinishdan keyin ko'rinadi. <b>💡 Yordam</b> 3 bosqichli.</li><li>Birinchi marta Python yuklanadi (bir necha soniya). Yozgan kodingiz brauzerda saqlanadi.</li></ul></div>
+</section>
+<section class="sec off" data-key="n1" data-group="Nazariya" data-ico="🧬" data-title="Meros: ota sinf va bola sinf">
+<h2><span class="mark"></span>Meros: ota sinf va bola sinf</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Bola sinf ota sinfning hamma atribut va metodlarini <b>avtomatik</b> oladi. Umumiy kodni bir marta yozasiz.</div>
+<h3>🔹 Muammo: takrorlanuvchi kod</h3>
+<p>It va Mushuk sinflarida <code>ism</code> va <code>salomlash()</code> bir xil. Ikki marta yozish — xato qilish xavfi ikki baravar.</p>
+<h3>🔹 Yechim: umumiy sinf</h3>
+<div class="editor" data-ed="e1" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:                      # ota sinf
+    def __init__(self, ism):
+        self.ism = ism
+
+    def tanishtir(self):
+        return &quot;Men &quot; + self.ism
+
+
+class It(Hayvon):                  # bola sinf: qavs ichida ota sinf
+    pass
+
+
+class Mushuk(Hayvon):
+    pass
+
+
+d = It(&quot;Bobik&quot;)
+m = Mushuk(&quot;Momiq&quot;)
+print(d.tanishtir())
+print(m.tanishtir())</textarea></div><div class="out" hidden></div></div>
+<p><code>It</code> da bitta ham metod yozilmadi, lekin <code>It("Bobik")</code> ishladi. Chunki <code>It</code> hamma narsani <code>Hayvon</code> dan meros oldi.</p>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Ota sinf</th><th>Bola sinf</th></tr>
+<tr><td>Hayvon</td><td>It, Mushuk</td></tr>
+<tr><td>Transport</td><td>Avtobus, Taksi</td></tr>
+<tr><td>Xodim</td><td>Menejer, Dasturchi</td></tr></table></div>
+<div class="note">🌳 <b>Oila daraxti kabi:</b> bola otasining ko'zini oladi, lekin o'z qobiliyatlari ham bo'ladi. Sinflarda ham shunday: bola sinf yangi metod qo'shishi mumkin.</div>
+</div>
+</section>
+<section class="sec off" data-key="n2" data-group="Nazariya" data-ico="🔧" data-title="Metodni qayta yozish va super()">
+<h2><span class="mark"></span>Metodni qayta yozish va super()</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Bola sinf ota metodni <b>o'z nomi bilan qayta yozsa</b>, bola obyektda o'zining varianti ishlaydi. Ota variantini <code>super()</code> orqali chaqirish mumkin.</div>
+<h3>🔹 Metodni qayta yozish (override)</h3>
+<div class="editor" data-ed="e2" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+    def ovoz(self):
+        return &quot;...&quot;
+
+
+class It(Hayvon):
+    def ovoz(self):               # ota metodni almashtirdi
+        return &quot;Hav!&quot;
+
+
+class Baliq(Hayvon):
+    pass
+
+
+print(It(&quot;Bobik&quot;).ovoz())
+print(Baliq(&quot;Nemo&quot;).ovoz())</textarea></div><div class="out" hidden></div></div>
+<p>Python metodni avval <b>obyektning o'z sinfidan</b> qidiradi. Topmasa, ota sinfga chiqadi.</p>
+<h3>🔹 super(): ota sinfga murojaat</h3>
+<p>Bola sinfga yangi atribut kerak bo'lsa, o'z <code>__init__</code> ini yozasiz. Ota sinfning <code>__init__</code> i o'zi chaqirilmaydi: uni <code>super().__init__(...)</code> bilan chaqirasiz.</p>
+<div class="editor" data-ed="e3" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class It(Hayvon):
+    def __init__(self, ism, zot):
+        super().__init__(ism)      # ism ni ota sinf saqlaydi
+        self.zot = zot
+
+    def malumot(self):
+        return self.ism + &quot; (&quot; + self.zot + &quot;)&quot;
+
+
+print(It(&quot;Bobik&quot;, &quot;ovcharka&quot;).malumot())</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ super().__init__ ni unutmang</span>Bola sinf o'z <code>__init__</code> ini yozsa va <code>super().__init__()</code> ni chaqirmasa, ota sinfning atributlari yaratilmaydi: <code>AttributeError: ... has no attribute 'ism'</code>.</div>
+<h3>🔹 Ota metodni to'ldirish</h3>
+<div class="editor" data-ed="e4" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Xodim:
+    def __init__(self, ism, maosh):
+        self.ism = ism
+        self.maosh = maosh
+
+    def oylik(self):
+        return self.maosh
+
+
+class Menejer(Xodim):
+    def oylik(self):
+        return super().oylik() + 500000   # ota hisobiga bonus qo&#x27;shdik
+
+
+print(Menejer(&quot;Ali&quot;, 3000000).oylik())</textarea></div><div class="out" hidden></div></div>
+</div>
+</section>
+<section class="sec off" data-key="n3" data-group="Nazariya" data-ico="🎭" data-title="Polimorfizm va isinstance">
+<h2><span class="mark"></span>Polimorfizm va isinstance</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Polimorfizm — "ko'p shakl". Turli obyektlarga <b>bir xil nomli metodni</b> chaqirasiz, har biri o'zicha javob beradi.</div>
+<div class="editor" data-ed="e5" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class It(Hayvon):
+    def ovoz(self):
+        return &quot;Hav!&quot;
+
+
+class Mushuk(Hayvon):
+    def ovoz(self):
+        return &quot;Miyov!&quot;
+
+
+class Sigir(Hayvon):
+    def ovoz(self):
+        return &quot;Mo-o!&quot;
+
+
+ferma = [It(&quot;Bobik&quot;), Mushuk(&quot;Momiq&quot;), Sigir(&quot;Zebo&quot;)]
+for h in ferma:
+    print(h.ism + &quot;: &quot; + h.ovoz())</textarea></div><div class="out" hidden></div></div>
+<p>Siklda <code>h</code> ning turi nima ekanini bilish shart emas. Faqat <code>ovoz()</code> borligi muhim. Yangi hayvon qo'shsangiz, sikl o'zgarmaydi.</p>
+<h3>🔹 if zanjiri o'rniga polimorfizm</h3>
+<pre class="static"><code class="language-python"># Yomon: yangi tur qo&#x27;shilsa, bu yerni ham o&#x27;zgartirish kerak
+if tur == &quot;it&quot;:
+    print(&quot;Hav!&quot;)
+elif tur == &quot;mushuk&quot;:
+    print(&quot;Miyov!&quot;)
+
+# Yaxshi:
+print(hayvon.ovoz())</code></pre>
+<h3>🔹 isinstance: obyekt qaysi sinfdan?</h3>
+<div class="editor" data-ed="e6" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon: pass
+class It(Hayvon): pass
+class Mushuk(Hayvon): pass
+
+d = It()
+print(isinstance(d, It))       # True
+print(isinstance(d, Hayvon))   # True: It — Hayvonning bolasi
+print(isinstance(d, Mushuk))   # False</textarea></div><div class="out" hidden></div></div>
+<div class="real"><b>Maslahat:</b> <code>isinstance</code> ni faqat turga qarab ishni <b>ajratish</b> kerak bo'lganda ishlating (masalan, ro'yxatdan faqat itlarni sanash). Har bir tur uchun alohida "nima qilish" kerak bo'lsa, metod yozing.</div>
+</div>
+</section>
+<section class="sec off" data-key="n4" data-group="Nazariya" data-ico="📐" data-title="Abstrakt sinf">
+<h2><span class="mark"></span>Abstrakt sinf</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Abstrakt sinf — faqat <b>ota</b> bo'lib xizmat qiladi. U bola sinflardan ma'lum metodlarni yozishni <b>talab qiladi</b>.</div>
+<p>"Shakl" degan narsaning yuzasi bor, lekin umumiy shaklning yuzasini hisoblab bo'lmaydi. Shuning uchun <code>Shakl</code> da <code>yuza()</code> ni e'lon qilamiz, aniq formulani bolalar yozadi.</p>
+<div class="editor" data-ed="e7" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from abc import ABC, abstractmethod
+
+
+class Shakl(ABC):
+    @abstractmethod
+    def yuza(self):
+        pass
+
+
+class Kvadrat(Shakl):
+    def __init__(self, a):
+        self.a = a
+
+    def yuza(self):
+        return self.a ** 2
+
+
+print(Kvadrat(4).yuza())
+
+try:
+    s = Shakl()          # abstrakt sinfdan obyekt yaratib bo&#x27;lmaydi
+except TypeError as xato:
+    print(&quot;Xato:&quot;, xato)</textarea></div><div class="out" hidden></div></div>
+<div class="warn"><span class="lbl">⚠️ Metod yozilmasa</span>Bola sinf abstrakt metodni yozmasa, undan ham obyekt yaratib bo'lmaydi: <code>TypeError: Can't instantiate abstract class ...</code>.</div>
+</div>
+</section>
+<section class="sec off" data-key="n5" data-group="Nazariya" data-ico="🧩" data-title="Kompozitsiya: &quot;... bor&quot; munosabati">
+<h2><span class="mark"></span>Kompozitsiya: &quot;... bor&quot; munosabati</h2>
+
+<div class="theory">
+<div class="idea"><b>💡 Asosiy fikr:</b> Meros — "... dir" (It — Hayvon). Kompozitsiya — "... bor" (Mashinada Dvigatel bor). Ikkinchisida bir obyekt boshqasini <b>atribut sifatida</b> saqlaydi.</div>
+<div class="editor" data-ed="e8" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Dvigatel:
+    def __init__(self, quvvat):
+        self.quvvat = quvvat
+
+    def yoq(self):
+        return &quot;Dvigatel &quot; + str(self.quvvat) + &quot; ot kuchi bilan ishga tushdi&quot;
+
+
+class Mashina:
+    def __init__(self, nom, quvvat):
+        self.nom = nom
+        self.dvigatel = Dvigatel(quvvat)    # Mashinada Dvigatel bor
+
+    def yur(self):
+        return self.nom + &quot;: &quot; + self.dvigatel.yoq()
+
+
+print(Mashina(&quot;Nexia&quot;, 85).yur())</textarea></div><div class="out" hidden></div></div>
+<div class="tbl-wrap"><table class="cmp2"><tr><th>Savol</th><th>Javob "ha" bo'lsa</th></tr>
+<tr><td>Bola ota turining bir ko'rinishimi? (It — hayvonmi?)</td><td>Meros</td></tr>
+<tr><td>Bir narsa boshqasini o'z ichida saqlaydimi? (Mashinada dvigatel bormi?)</td><td>Kompozitsiya</td></tr></table></div>
+<div class="warn"><span class="lbl">⚠️ Mashina Dvigatelning bolasi emas</span><code>class Mashina(Dvigatel)</code> mantiqsiz: mashina dvigatel emas. Shubhada bo'lsangiz: "A — B ning bir turi" deb gapirib ko'ring. Gap g'alati chiqsa, kompozitsiya ishlating.</div>
+</div>
+</section>
+<section class="sec off" data-key="t01" data-group="Topshiriqlar" data-ico="1" data-title="Hayvon → It, Mushuk: ovoz()" data-task="t01">
+<div class="card step" data-task="t01" data-title="Hayvon → It, Mushuk: ovoz()" data-num="1">
+<div class="step-num">1</div><p class="proj-index">1-TOPSHIRIQ</p>
+<h3>Hayvon → It, Mushuk: ovoz() <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Namunada <code>Hayvon</code> va uning bolasi <code>It</code> bor. Siz <code>Mushuk</code> sinfini shunday yozasiz.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e9" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+    def ovoz(self):
+        return &quot;...&quot;
+
+
+class It(Hayvon):
+    def ovoz(self):
+        return &quot;Hav!&quot;
+
+
+d = It(&quot;Bobik&quot;)
+print(d.ism, d.ovoz())
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunani ▶ bilan ishga tushiring: <code>It</code> o'z <code>ovoz()</code> metodini qanday yozganiga e'tibor bering.</li><li><code>Mushuk</code> sinfi <code>Hayvon</code> dan meros olsin.</li><li><code>Mushuk</code> da <code>ovoz()</code> metodi <code>Miyov!</code> qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Mushuk("Momiq").ovoz()</code> → <code>Miyov!</code>, ismi esa <code>.ism</code> orqali olinadi.</div></div>
+<div class="editor task-ed" data-ed="t01" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+    def ovoz(self):
+        return &quot;...&quot;
+
+
+# Mushuk sinfini shu yerga yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    m = Mushuk(&quot;Momiq&quot;)
+    print(m.ism, m.ovoz())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t01"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t01"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t02" data-group="Topshiriqlar" data-ico="2" data-title="super().__init__" data-task="t02">
+<div class="card step" data-task="t02" data-title="super().__init__" data-num="2">
+<div class="step-num">2</div><p class="proj-index">2-TOPSHIRIQ</p>
+<h3>super().__init__ <span class="type-badge t-namuna">📘 Namuna + topshiriq</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Bola sinf yangi atribut qo'shsa, ota sinfning <code>__init__</code> ini <code>super()</code> orqali chaqirish kerak.</div>
+<div class="ex-label">📘 Namuna — ishga tushirib, o'zgartirib ko'ring</div>
+
+<div class="editor" data-ed="e10" data-kind="example"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Shaxs:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class Talaba(Shaxs):
+    def __init__(self, ism, kurs):
+        super().__init__(ism)
+        self.kurs = kurs
+
+    def tanishtir(self):
+        return self.ism + &quot; - &quot; + str(self.kurs) + &quot;-kurs talabasi&quot;
+
+
+print(Talaba(&quot;Dilnoza&quot;, 2).tanishtir())
+</textarea></div><div class="out" hidden></div></div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Namunada <code>Talaba</code> sinfi <code>Shaxs</code> dan ism oladi va <code>kurs</code> qo'shadi. Ishga tushirib ko'ring.</li><li><code>Oqituvchi(Shaxs)</code> sinfini yozing. Uning <code>__init__(self, ism, fan)</code> metodi <code>super().__init__(ism)</code> ni chaqirsin va <code>self.fan</code> ni saqlasin.</li><li><code>tanishtir()</code> metodi <code>Ali - Matematika o'qituvchisi</code> ko'rinishida matn qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Oqituvchi("Ali", "Matematika").tanishtir()</code> → <code>Ali - Matematika o'qituvchisi</code></div></div>
+<div class="editor task-ed" data-ed="t02" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Shaxs:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class Oqituvchi(Shaxs):
+    def __init__(self, ism, fan):
+        # ota sinfning __init__ ini chaqiring, so&#x27;ng fan ni saqlang
+        pass
+
+    def tanishtir(self):
+        pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Oqituvchi(&quot;Ali&quot;, &quot;Matematika&quot;).tanishtir())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t02"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t02"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t03" data-group="Topshiriqlar" data-ico="3" data-title="Qaysi sinfning metodi chaqiriladi" data-task="t03">
+<div class="card step" data-task="t03" data-title="Qaysi sinfning metodi chaqiriladi" data-num="3">
+<div class="step-num">3</div><p class="proj-index">3-TOPSHIRIQ</p>
+<h3>Qaysi sinfning metodi chaqiriladi <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Ota va bola sinfda bir xil nomli metod bor. Qaysi biri ishlaydi?</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing. Har bir obyektning sinfi qaysi ekanini aniqlang.</li><li>Python metodni avval obyektning <b>o'z sinfidan</b> qidirishini eslang.</li><li>Dastur chiqaradigan uch qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">class Xodim:
+    def salom(self):
+        return &quot;Xodim salom&quot;
+
+    def ish(self):
+        return &quot;ishlayapti&quot;
+
+
+class Menejer(Xodim):
+    def salom(self):
+        return &quot;Menejer salom&quot;
+
+
+a = Xodim()
+b = Menejer()
+print(a.salom())
+print(b.salom())
+print(b.ish())
+</code></pre>
+<div class="ans-wrap" data-ans="t03"><label class="ans-lbl" for="ans-t03">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t03" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t03"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t03"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t04" data-group="Topshiriqlar" data-ico="4" data-title="Shakl → Doira, Kvadrat: yuza()" data-task="t04">
+<div class="card step" data-task="t04" data-title="Shakl → Doira, Kvadrat: yuza()" data-num="4">
+<div class="step-num">4</div><p class="proj-index">4-TOPSHIRIQ</p>
+<h3>Shakl → Doira, Kvadrat: yuza() <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Umumiy <code>Shakl</code> sinfidan ikki bola sinf yasaymiz, har birida yuza o'zicha hisoblanadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Shakl</code> sinfini yozing: <code>__init__(self, nom)</code> nomni <code>self.nom</code> ga saqlaydi.</li><li><code>Doira(Shakl)</code>: <code>__init__(self, r)</code>, nomi <code>"Doira"</code>. <code>yuza()</code> → <code>3.14 * r * r</code>.</li><li><code>Kvadrat(Shakl)</code>: <code>__init__(self, a)</code>, nomi <code>"Kvadrat"</code>. <code>yuza()</code> → <code>a * a</code>.</li><li><code>super().__init__(...)</code> orqali nomni ota sinfga saqlating.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Doira(2).yuza()</code> → <code>12.56</code>, <code>Kvadrat(3).yuza()</code> → <code>9</code>, <code>Kvadrat(3).nom</code> → <code>Kvadrat</code></div></div>
+<div class="editor task-ed" data-ed="t04" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Shakl:
+    pass
+
+
+class Doira(Shakl):
+    pass
+
+
+class Kvadrat(Shakl):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Doira(2).yuza())
+    print(Kvadrat(3).yuza())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t04"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t04"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t05" data-group="Topshiriqlar" data-ico="5" data-title="Xodim → Menejer: bonusli maosh" data-task="t05">
+<div class="card step" data-task="t05" data-title="Xodim → Menejer: bonusli maosh" data-num="5">
+<div class="step-num">5</div><p class="proj-index">5-TOPSHIRIQ</p>
+<h3>Xodim → Menejer: bonusli maosh <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-oson">🟢 Oson</span></h3>
+<div class="t-desc">Menejerning oyligi oddiy xodimnikidan bonusga ko'p. Ota metodni <code>super()</code> bilan to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Xodim(ism, maosh)</code> sinfi tayyor: <code>oylik()</code> maoshni qaytaradi.</li><li><code>Menejer(Xodim)</code> sinfini yozing: <code>__init__(self, ism, maosh, bonus)</code>, <code>super().__init__</code> ni chaqiring va <code>self.bonus</code> ni saqlang.</li><li><code>oylik()</code> metodini qayta yozing: <code>super().oylik() + self.bonus</code> qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Menejer("Ali", 3000000, 500000).oylik()</code> → <code>3500000</code></div></div>
+<div class="editor task-ed" data-ed="t05" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Xodim:
+    def __init__(self, ism, maosh):
+        self.ism = ism
+        self.maosh = maosh
+
+    def oylik(self):
+        return self.maosh
+
+
+# Menejer sinfini yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Menejer(&quot;Ali&quot;, 3000000, 500000).oylik())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t05"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t05"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t06" data-group="Topshiriqlar" data-ico="6" data-title="Shakllar ro&#x27;yxatining umumiy yuzasi" data-task="t06">
+<div class="card step" data-task="t06" data-title="Shakllar ro&#x27;yxatining umumiy yuzasi" data-num="6">
+<div class="step-num">6</div><p class="proj-index">6-TOPSHIRIQ</p>
+<h3>Shakllar ro&#x27;yxatining umumiy yuzasi <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Polimorfizm amalda: ro'yxatdagi shakllar har xil, lekin hammasida <code>yuza()</code> bor.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Doira</code>, <code>Kvadrat</code>, <code>Tortburchak</code> sinflari tayyor, hammasida <code>yuza()</code> bor.</li><li><code>umumiy_yuza(shakllar)</code> funksiyasini yozing: ro'yxatdagi hamma shakllarning yuzasi yig'indisini qaytarsin.</li><li>Funksiyada <code>if</code> bilan turni tekshirmang: faqat <code>yuza()</code> ni chaqiring.</li><li>Ro'yxat bo'sh bo'lsa <code>0</code> qaytsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>umumiy_yuza([Kvadrat(2), Tortburchak(2, 3)])</code> → <code>10</code></div></div>
+<div class="editor task-ed" data-ed="t06" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Doira:
+    def __init__(self, r):
+        self.r = r
+
+    def yuza(self):
+        return 3 * self.r * self.r
+
+
+class Kvadrat:
+    def __init__(self, a):
+        self.a = a
+
+    def yuza(self):
+        return self.a * self.a
+
+
+class Tortburchak:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def yuza(self):
+        return self.a * self.b
+
+
+def umumiy_yuza(shakllar):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(umumiy_yuza([Kvadrat(2), Tortburchak(2, 3)]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t06"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t06"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t07" data-group="Topshiriqlar" data-ico="7" data-title="super().__init__ chaqirilmagan" data-task="t07">
+<div class="card step" data-task="t07" data-title="super().__init__ chaqirilmagan" data-num="7">
+<div class="step-num">7</div><p class="proj-index">7-TOPSHIRIQ</p>
+<h3>super().__init__ chaqirilmagan <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur xato beradi. Xabarni o'qing va tuzating.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xato xabarini o'qing.</li><li>Xatoni tuzating. Sinf va metod nomlarini o'zgartirmang.</li><li>Dastur <code>Bobik (ovcharka)</code> deb chiqarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Bobik (ovcharka)</code></div></div>
+<div class="editor task-ed" data-ed="t07" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class It(Hayvon):
+    def __init__(self, ism, zot):
+        self.zot = zot
+
+    def malumot(self):
+        return self.ism + &quot; (&quot; + self.zot + &quot;)&quot;
+
+
+d = It(&quot;Bobik&quot;, &quot;ovcharka&quot;)
+print(d.malumot())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t07"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t07"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t08" data-group="Topshiriqlar" data-ico="8" data-title="Transport → Avtobus, Taksi: narx hisoblash" data-task="t08">
+<div class="card step" data-task="t08" data-title="Transport → Avtobus, Taksi: narx hisoblash" data-num="8">
+<div class="step-num">8</div><p class="proj-index">8-TOPSHIRIQ</p>
+<h3>Transport → Avtobus, Taksi: narx hisoblash <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Har xil transportda yo'l narxi turlicha hisoblanadi. Metodlarni qayta yozing.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Transport</code> da <code>narx(km)</code> metodi <code>0</code> qaytaradi (tayyor).</li><li><code>Avtobus(Transport)</code>: narx yo'l uzunligiga qaramaydi, har doim <code>2000</code>.</li><li><code>Taksi(Transport)</code>: <code>__init__(self, km_narxi)</code>; <code>narx(km)</code> = <code>4000 + km * km_narxi</code> (4000 — o'tirish haqi).</li><li><code>Poezd(Transport)</code>: narx = <code>km * 150</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Avtobus().narx(10)</code> → <code>2000</code>, <code>Taksi(1500).narx(10)</code> → <code>19000</code>, <code>Poezd().narx(100)</code> → <code>15000</code></div></div>
+<div class="editor task-ed" data-ed="t08" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Transport:
+    def narx(self, km):
+        return 0
+
+
+# Avtobus, Taksi va Poezd sinflarini yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Avtobus().narx(10))
+    print(Taksi(1500).narx(10))
+    print(Poezd().narx(100))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t08"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t08"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t09" data-group="Topshiriqlar" data-ico="9" data-title="isinstance bilan obyektlarni turlarga ajratish" data-task="t09">
+<div class="card step" data-task="t09" data-title="isinstance bilan obyektlarni turlarga ajratish" data-num="9">
+<div class="step-num">9</div><p class="proj-index">9-TOPSHIRIQ</p>
+<h3>isinstance bilan obyektlarni turlarga ajratish <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ba'zan ro'yxatdan faqat bitta turdagi obyektlar kerak bo'ladi. <code>isinstance</code> shu uchun.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Hayvon</code>, <code>It</code>, <code>Mushuk</code> sinflari tayyor.</li><li><code>itlar_soni(ro'yxat)</code> — ro'yxatdagi <code>It</code> obyektlari sonini qaytarsin.</li><li><code>hayvon_ismlari(ro'yxat)</code> — faqat <code>Mushuk</code> larning ismlari ro'yxatini qaytarsin (tartibi saqlansin).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>[It("A"), Mushuk("B"), It("C")]</code> uchun <code>itlar_soni</code> → <code>2</code>, <code>mushuk_ismlari</code> → <code>['B']</code></div></div>
+<div class="editor task-ed" data-ed="t09" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+class It(Hayvon):
+    pass
+
+
+class Mushuk(Hayvon):
+    pass
+
+
+def itlar_soni(royxat):
+    pass
+
+
+def mushuk_ismlari(royxat):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    h = [It(&quot;A&quot;), Mushuk(&quot;B&quot;), It(&quot;C&quot;)]
+    print(itlar_soni(h))
+    print(mushuk_ismlari(h))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t09"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t09"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t10" data-group="Topshiriqlar" data-ico="10" data-title="Abstrakt Tolov → Naqd, Karta" data-task="t10">
+<div class="card step" data-task="t10" data-title="Abstrakt Tolov → Naqd, Karta" data-num="10">
+<div class="step-num">10</div><p class="proj-index">10-TOPSHIRIQ</p>
+<h3>Abstrakt Tolov → Naqd, Karta <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Abstrakt sinf bola sinflardan metod yozishni talab qiladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Tolov(ABC)</code> sinfida abstrakt metod <code>tolash(summa)</code> bor (tayyor).</li><li><code>Naqd(Tolov)</code>: <code>tolash(summa)</code> → <code>"Naqd: 50000 so'm"</code> (summa o'rniga berilgan son).</li><li><code>Karta(Tolov)</code>: <code>__init__(self, raqam)</code>; <code>tolash(summa)</code> → <code>"Karta *1234: 50000 so'm"</code> (kartaning oxirgi 4 raqami bilan).</li><li><code>Tolov()</code> dan obyekt yaratib bo'lmasligini tekshirish uchun hech narsa qo'shmang, <code>ABC</code> o'zi bajaradi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Karta("8600123456781234").tolash(50000)</code> → <code>Karta *1234: 50000 so'm</code></div></div>
+<div class="editor task-ed" data-ed="t10" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from abc import ABC, abstractmethod
+
+
+class Tolov(ABC):
+    @abstractmethod
+    def tolash(self, summa):
+        pass
+
+
+# Naqd va Karta sinflarini yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Naqd().tolash(50000))
+    print(Karta(&quot;8600123456781234&quot;).tolash(50000))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t10"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t10"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t11" data-group="Topshiriqlar" data-ico="11" data-title="Kompozitsiya: Mashina ichida Dvigatel" data-task="t11">
+<div class="card step" data-task="t11" data-title="Kompozitsiya: Mashina ichida Dvigatel" data-num="11">
+<div class="step-num">11</div><p class="proj-index">11-TOPSHIRIQ</p>
+<h3>Kompozitsiya: Mashina ichida Dvigatel <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Mashinada dvigatel bor. Mashina dvigatelning bolasi emas, shuning uchun meros emas, kompozitsiya ishlatamiz.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Dvigatel</code> sinfi tayyor: <code>quvvat</code> atributi va <code>yoq()</code> metodi.</li><li><code>Mashina(nom, quvvat)</code> sinfini yozing: <code>__init__</code> ichida <code>self.dvigatel = Dvigatel(quvvat)</code>.</li><li><code>yur()</code> metodi <code>Nexia: dvigatel ishga tushdi (85 ot kuchi)</code> ko'rinishida matn qaytarsin. Dvigatel qismini <code>self.dvigatel.yoq()</code> bersin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Mashina("Nexia", 85).yur()</code> → <code>Nexia: dvigatel ishga tushdi (85 ot kuchi)</code></div></div>
+<div class="editor task-ed" data-ed="t11" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Dvigatel:
+    def __init__(self, quvvat):
+        self.quvvat = quvvat
+
+    def yoq(self):
+        return &quot;dvigatel ishga tushdi (&quot; + str(self.quvvat) + &quot; ot kuchi)&quot;
+
+
+# Mashina sinfini yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Mashina(&quot;Nexia&quot;, 85).yur())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t11"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t11"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t12" data-group="Topshiriqlar" data-ico="12" data-title="Meros va super bo&#x27;sh joylari" data-task="t12">
+<div class="card step" data-task="t12" data-title="Meros va super bo&#x27;sh joylari" data-num="12">
+<div class="step-num">12</div><p class="proj-index">12-TOPSHIRIQ</p>
+<h3>Meros va super bo&#x27;sh joylari <span class="type-badge t-toldir">🧩 To'ldir</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Kodning bo'sh joylarini (<code>___</code>) to'ldiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Hamma <code>___</code> o'rniga to'g'ri kod yozing.</li><li><code>Kitob</code> — <code>Nashr</code> ning bolasi, <code>sahifa</code> atributi qo'shadi.</li><li><code>malumot()</code> ota metodning matniga sahifalar sonini qo'shadi.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Kitob("Alpomish", 320).malumot()</code> → <code>Alpomish, 320 bet</code></div></div>
+<div class="editor task-ed" data-ed="t12" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Nashr:
+    def __init__(self, nom):
+        self.nom = nom
+
+    def malumot(self):
+        return self.nom
+
+
+class Kitob(___):
+    def __init__(self, nom, sahifa):
+        ___.__init__(nom)
+        self.sahifa = sahifa
+
+    def malumot(self):
+        return ___.malumot() + &quot;, &quot; + str(self.sahifa) + &quot; bet&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    print(Kitob(&quot;Alpomish&quot;, 320).malumot())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t12"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t12"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t13" data-group="Topshiriqlar" data-ico="13" data-title="Metod nomi xato yozilgan: ota sinfniki ishlayapti" data-task="t13">
+<div class="card step" data-task="t13" data-title="Metod nomi xato yozilgan: ota sinfniki ishlayapti" data-num="13">
+<div class="step-num">13</div><p class="proj-index">13-TOPSHIRIQ</p>
+<h3>Metod nomi xato yozilgan: ota sinfniki ishlayapti <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Dastur xato bermaydi, lekin natija noto'g'ri. Sabab nimada?</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring. Natija kutilganidan farq qiladi.</li><li>Bola sinfda <code>ovoz</code> metodi yozilgan. Nega u ishlamayapti?</li><li>Tuzating: dastur <code>Hav!</code> va <code>Miyov!</code> chiqarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Hav!</code> va <code>Miyov!</code> (ikki qator)</div></div>
+<div class="editor task-ed" data-ed="t13" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    def ovoz(self):
+        return &quot;...&quot;
+
+
+class It(Hayvon):
+    def Ovoz(self):
+        return &quot;Hav!&quot;
+
+
+class Mushuk(Hayvon):
+    def ovoz(self, ):
+        return &quot;Miyov!&quot;
+
+
+print(It().ovoz())
+print(Mushuk().ovoz())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t13"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t13"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t14" data-group="Topshiriqlar" data-ico="14" data-title="Uch darajali merosda natija" data-task="t14">
+<div class="card step" data-task="t14" data-title="Uch darajali merosda natija" data-num="14">
+<div class="step-num">14</div><p class="proj-index">14-TOPSHIRIQ</p>
+<h3>Uch darajali merosda natija <span class="type-badge t-bashorat">🔮 Bashorat</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Sinflar zanjiri: Bobo → Ota → Bola. Har bir bo'g'in metodni o'zicha o'zgartiradi.</div>
+<div class="task-box"><span class="lbl">🔮 Topshiriq:</span> <ol><li>Kodni o'qing: <code>Ota.salom</code> <code>super()</code> orqali kimni chaqiradi?</li><li>Chaqiruvlar zanjirini pastdan yuqoriga kuzating: Bola → Ota → Bobo.</li><li>Dastur chiqaradigan ikki qatorni yozing.</li></ol></div>
+<pre class="static pred"><code class="language-python">class Bobo:
+    def salom(self):
+        return &quot;Bobo&quot;
+
+
+class Ota(Bobo):
+    def salom(self):
+        return super().salom() + &quot;&gt;Ota&quot;
+
+
+class Bola(Ota):
+    def salom(self):
+        return super().salom() + &quot;&gt;Bola&quot;
+
+
+print(Bobo().salom())
+print(Bola().salom())
+</code></pre>
+<div class="ans-wrap" data-ans="t14"><label class="ans-lbl" for="ans-t14">Dastur nima chiqaradi? Natijani aynan shunday (qatorma-qator) yozing:</label><textarea id="ans-t14" class="ans" rows="5" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Bu yerga yozing…"></textarea><div class="ed-btns"><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t14"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t14"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t15" data-group="Topshiriqlar" data-ico="15" data-title="Shaxs → Talaba → Magistrant" data-task="t15">
+<div class="card step" data-task="t15" data-title="Shaxs → Talaba → Magistrant" data-num="15">
+<div class="step-num">15</div><p class="proj-index">15-TOPSHIRIQ</p>
+<h3>Shaxs → Talaba → Magistrant <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-orta">🟡 O'rta</span></h3>
+<div class="t-desc">Ko'p darajali meros: Magistrant Talabadan, Talaba Shaxsdan oladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Shaxs(ism)</code> tayyor.</li><li><code>Talaba(Shaxs)</code>: <code>__init__(self, ism, universitet)</code>.</li><li><code>Magistrant(Talaba)</code>: <code>__init__(self, ism, universitet, mavzu)</code> — <code>super().__init__(ism, universitet)</code> chaqirilsin.</li><li><code>malumot()</code> metodi (Shaxsda emas, Magistrantda): <code>Ali, TATU, mavzu: Sun'iy intellekt</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Magistrant("Ali", "TATU", "Sun'iy intellekt").malumot()</code> → <code>Ali, TATU, mavzu: Sun'iy intellekt</code></div></div>
+<div class="editor task-ed" data-ed="t15" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Shaxs:
+    def __init__(self, ism):
+        self.ism = ism
+
+
+# Talaba va Magistrant sinflarini yozing
+
+
+if __name__ == &quot;__main__&quot;:
+    m = Magistrant(&quot;Ali&quot;, &quot;TATU&quot;, &quot;Sun&#x27;iy intellekt&quot;)
+    print(m.malumot())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t15"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t15"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t16" data-group="Topshiriqlar" data-ico="16" data-title="Bildirishnoma → SMS, Email, Telegram" data-task="t16">
+<div class="card step" data-task="t16" data-title="Bildirishnoma → SMS, Email, Telegram" data-num="16">
+<div class="step-num">16</div><p class="proj-index">16-TOPSHIRIQ</p>
+<h3>Bildirishnoma → SMS, Email, Telegram <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bitta funksiya hamma kanallarga xabar yuborsin. Kanal qo'shilsa funksiya o'zgarmasin.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Bildirishnoma</code> sinfi tayyor: <code>yubor(matn)</code> metodi <code>NotImplementedError</code> ko'taradi.</li><li><code>SMS(raqam)</code>: <code>yubor(matn)</code> → <code>SMS +998901112233: Salom</code>.</li><li><code>Email(manzil)</code>: → <code>Email ali@mail.uz: Salom</code>.</li><li><code>Telegram(nom)</code>: → <code>Telegram @ali: Salom</code>.</li><li><code>hammasiga(kanallar, matn)</code> funksiyasi: har bir kanalning <code>yubor</code> natijasini ro'yxatga yig'ib qaytarsin.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>hammasiga([SMS("+998901112233"), Telegram("ali")], "Salom")</code> → <code>['SMS +998901112233: Salom', 'Telegram @ali: Salom']</code></div></div>
+<div class="editor task-ed" data-ed="t16" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Bildirishnoma:
+    def yubor(self, matn):
+        raise NotImplementedError
+
+
+# SMS, Email, Telegram sinflarini yozing
+
+
+def hammasiga(kanallar, matn):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(hammasiga([SMS(&quot;+998901112233&quot;), Telegram(&quot;ali&quot;)], &quot;Salom&quot;))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t16"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t16"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t17" data-group="Topshiriqlar" data-ico="17" data-title="O&#x27;yin qahramonlari: hujum()" data-task="t17">
+<div class="card step" data-task="t17" data-title="O&#x27;yin qahramonlari: hujum()" data-num="17">
+<div class="step-num">17</div><p class="proj-index">17-TOPSHIRIQ</p>
+<h3>O&#x27;yin qahramonlari: hujum() <span class="type-badge t-yoz">✍️ O'zing yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">O'yin uchun uch qahramon. Hammasida <code>hujum()</code> bor, lekin zarar hisobi turlicha.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Qahramon(ism, kuch)</code> tayyor: <code>hujum()</code> <code>kuch</code> ni qaytaradi.</li><li><code>Jangchi(Qahramon)</code>: oddiy hujum, o'zgartirmang (faqat sinf bo'lsin).</li><li><code>Sehrgar(Qahramon)</code>: <code>hujum()</code> = <code>kuch * 2</code>.</li><li><code>Kamonchi(Qahramon)</code>: <code>__init__(self, ism, kuch, oq)</code>; <code>hujum()</code>: <code>oq</code> bo'lsa, <code>oq</code> bittaga kamayadi va <code>kuch + 5</code> qaytadi, <code>oq</code> tugagan bo'lsa <code>0</code>.</li><li><code>jamoa_hujumi(jamoa)</code>: hamma qahramon bir marta hujum qilgandagi umumiy zarar.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>jamoa_hujumi([Jangchi("A", 10), Sehrgar("B", 10), Kamonchi("C", 10, 1)])</code> → <code>45</code></div></div>
+<div class="editor task-ed" data-ed="t17" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Qahramon:
+    def __init__(self, ism, kuch):
+        self.ism = ism
+        self.kuch = kuch
+
+    def hujum(self):
+        return self.kuch
+
+
+# Jangchi, Sehrgar, Kamonchi sinflarini yozing
+
+
+def jamoa_hujumi(jamoa):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(jamoa_hujumi([Jangchi(&quot;A&quot;, 10), Sehrgar(&quot;B&quot;, 10), Kamonchi(&quot;C&quot;, 10, 1)]))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t17"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t17"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t18" data-group="Topshiriqlar" data-ico="18" data-title="Ikki xato: noto&#x27;g&#x27;ri ota sinf va abstrakt metod" data-task="t18">
+<div class="card step" data-task="t18" data-title="Ikki xato: noto&#x27;g&#x27;ri ota sinf va abstrakt metod" data-num="18">
+<div class="step-num">18</div><p class="proj-index">18-TOPSHIRIQ</p>
+<h3>Ikki xato: noto&#x27;g&#x27;ri ota sinf va abstrakt metod <span class="type-badge t-bug">🐞 Xatoni top</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kodda ikkita xato bor. Birinchisini tuzatsangiz, ikkinchisi ko'rinadi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>▶ bilan ishga tushiring va xato xabarini o'qing.</li><li>Birinchi xatoni tuzating, qayta ishga tushiring.</li><li>Ikkinchi xatoni ham tuzating. Sinf nomlarini o'zgartirmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Doira: 12.56</code> va <code>Kvadrat: 9</code> (ikki qator)</div></div>
+<div class="editor task-ed" data-ed="t18" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">from abc import ABC, abstractmethod
+
+
+class Shakl(ABC):
+    @abstractmethod
+    def yuza(self):
+        pass
+
+    def chop(self):
+        print(self.nom + &quot;: &quot; + str(self.yuza()))
+
+
+class Doira:
+    nom = &quot;Doira&quot;
+
+    def __init__(self, r):
+        self.r = r
+
+    def yuza(self):
+        return 3.14 * self.r ** 2
+
+
+class Kvadrat(Shakl):
+    nom = &quot;Kvadrat&quot;
+
+    def __init__(self, a):
+        self.a = a
+
+    def yuzasi(self):
+        return self.a ** 2
+
+
+Doira(2).chop()
+Kvadrat(3).chop()
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t18"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t18"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t19" data-group="Topshiriqlar" data-ico="19" data-title="if tur == ... zanjirini polimorfizmga" data-task="t19">
+<div class="card step" data-task="t19" data-title="if tur == ... zanjirini polimorfizmga" data-num="19">
+<div class="step-num">19</div><p class="proj-index">19-TOPSHIRIQ</p>
+<h3>if tur == ... zanjirini polimorfizmga <span class="type-badge t-qayta">♻️ Qayta yoz</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Bu kod ishlaydi, lekin har yangi hayvon uchun <code>if</code> zanjirini o'zgartirish kerak. Uni polimorfizmga aylantiring.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li>Kodni o'qing: <code>ovoz_ber(hayvon)</code> turini matn bilan tekshiryapti.</li><li><code>It</code>, <code>Mushuk</code>, <code>Sigir</code> sinflarini yozing: har birida <code>ovoz()</code> metodi (<code>Hav!</code>, <code>Miyov!</code>, <code>Mo-o!</code>).</li><li><code>ovoz_ber(hayvon)</code> faqat <code>hayvon.ovoz()</code> ni qaytarsin. <code>if</code> ishlatmang.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>ovoz_ber(Sigir())</code> → <code>Mo-o!</code></div></div>
+<div class="editor task-ed" data-ed="t19" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">def ovoz_ber(tur):
+    if tur == &quot;it&quot;:
+        return &quot;Hav!&quot;
+    elif tur == &quot;mushuk&quot;:
+        return &quot;Miyov!&quot;
+    elif tur == &quot;sigir&quot;:
+        return &quot;Mo-o!&quot;
+    else:
+        return &quot;...&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    for t in [&quot;it&quot;, &quot;mushuk&quot;, &quot;sigir&quot;]:
+        print(ovoz_ber(t))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t19"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t19"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="t20" data-group="Topshiriqlar" data-ico="20" data-title="Ish haqi tizimi: oylik, soatbay, foizli" data-task="t20">
+<div class="card step" data-task="t20" data-title="Ish haqi tizimi: oylik, soatbay, foizli" data-num="20">
+<div class="step-num">20</div><p class="proj-index">20-TOPSHIRIQ</p>
+<h3>Ish haqi tizimi: oylik, soatbay, foizli <span class="type-badge t-real">🌍 Real masala</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Kompaniyada uch xil xodim bor. Maosh hisoblash har birida alohida, umumiy fond esa hammasidan yig'iladi.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <ol><li><code>Xodim(ism)</code> ota sinfi: <code>maosh()</code> metodi <code>NotImplementedError</code> ko'taradi (tayyor).</li><li><code>Oylikchi(ism, oylik)</code>: <code>maosh()</code> = <code>oylik</code>.</li><li><code>Soatbay(ism, soat, stavka)</code>: <code>maosh()</code> = <code>soat * stavka</code>; 160 soatdan ortig'i 1.5 baravar to'lanadi.</li><li><code>Foizli(ism, sotuv, foiz)</code>: <code>maosh()</code> = <code>sotuv * foiz / 100</code>, lekin kamida <code>1000000</code>.</li><li><code>fond(xodimlar)</code> — hammaning maoshi yig'indisi; <code>eng_kop(xodimlar)</code> — eng ko'p maosh oluvchining ismi (bo'sh ro'yxatda <code>None</code>).</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b> <code>Soatbay("A", 170, 10000).maosh()</code> → <code>1750000.0</code> (160 soat 1600000 + 10 soat 150000)</div></div>
+<div class="editor task-ed" data-ed="t20" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Xodim:
+    def __init__(self, ism):
+        self.ism = ism
+
+    def maosh(self):
+        raise NotImplementedError
+
+
+# Oylikchi, Soatbay, Foizli sinflarini yozing
+
+
+def fond(xodimlar):
+    pass
+
+
+def eng_kop(xodimlar):
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    h = [Oylikchi(&quot;Ali&quot;, 3000000), Soatbay(&quot;Vali&quot;, 170, 10000), Foizli(&quot;Zebo&quot;, 5000000, 10)]
+    print(fond(h))
+    print(eng_kop(h))
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="t20"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="t20"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="mini" data-group="Mini-loyiha" data-ico="🏁" data-title="Zoopark boshqaruvi" data-task="mini">
+<div class="card step" data-task="mini" data-title="Zoopark boshqaruvi" data-num="🏁">
+<div class="step-num">🏁</div><p class="proj-index">MINI-LOYIHA</p>
+<h3>Zoopark boshqaruvi <span class="type-badge t-yoz">🏁 Mini-loyiha</span> <span class="diff-badge diff-qiyin">🔴 Qiyin</span></h3>
+<div class="t-desc">Zoopark uchun kichik dastur yozamiz: hayvon turlari, ovqatlantirish va kunlik hisobot.</div>
+<div class="task-box"><span class="lbl">✍️ Topshiriq:</span> <p>Umumiy rasm: <code>Hayvon</code> ota sinfidan <code>Sher</code> va <code>Quyon</code> kelib chiqadi. <code>Zoopark</code> sinfi hayvonlarni saqlaydi va hisobot beradi.</p><ol><li><b>Hayvon.</b> <code>Hayvon(ism, voliyer)</code>: atributlar <code>ism</code>, <code>voliyer</code> (vol'er raqami).</li><li><b>ovqat().</b> <code>Hayvon.ovqat()</code> <code>NotImplementedError</code> ko'tarsin.</li><li><b>Sher.</b> <code>ovqat()</code> → <code>("go'sht", 2)</code> (ovqat turi, kg).</li><li><b>Quyon.</b> <code>ovqat()</code> → <code>("sabzi", 1)</code>.</li><li><b>Zoopark.</b> <code>Zoopark()</code> bo'sh <code>hayvonlar</code> ro'yxati bilan boshlanadi; <code>qosh(hayvon)</code> qo'shadi.</li><li><b>jami_ovqat().</b> hamma hayvon ovqatining kg yig'indisi.</li><li><b>eng_kop().</b> eng ko'p ovqat yeydigan hayvon <b>turining nomi</b> (<code>"Sher"</code>), hayvon bo'lmasa <code>None</code>. Sinf nomi: <code>type(h).__name__</code>.</li><li><b>hisobot().</b> matn qaytaradi (ichidagi qatorlar quyida).</li><li><b>Sinab ko'ring.</b> Bitta sher va bitta quyon qo'shib <code>print(zoo.hisobot())</code>.</li></ol><div class="res"><b>✅ Natija shunday chiqishi kerak:</b><br><pre class="console">Zoopark hisoboti
+Sher: 2 kg go&#x27;sht, 1 vol&#x27;er
+Quyon: 1 kg sabzi, 1 vol&#x27;er
+Jami ovqat: 3 kg
+Eng ko&#x27;p ovqat: Sher</pre>Har hayvon qatori: <code>Tur: kg ovqat, vol'er raqami</code> (tur nomi <code>type(h).__name__</code>, qatorlar qo'shilish tartibida).</div></div>
+<div class="editor task-ed" data-ed="mini" data-kind="task"><div class="ed-head"><span class="ed-file">📄 main.py</span><div class="ed-btns"><button class="reset" type="button" title="Kodni boshlang'ich holatiga qaytarish">↺ Asl holi</button><button class="run" type="button" title="Ctrl + Enter">▶ Ishga tushir</button><button class="check" type="button" title="Dasturni sinab, talablarni tekshirish">✔ Tekshirish</button></div></div><div class="ed-body"><pre aria-hidden="true"><code class="language-python"></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kod muharriri — main.py" data-file="main.py">class Hayvon:
+    pass
+
+
+class Sher(Hayvon):
+    pass
+
+
+class Quyon(Hayvon):
+    pass
+
+
+class Zoopark:
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    zoo = Zoopark()
+    zoo.qosh(Sher(&quot;Simba&quot;, 1))
+    zoo.qosh(Quyon(&quot;Oqquloq&quot;, 1))
+    print(zoo.hisobot())
+</textarea></div><div class="out" hidden></div><div class="check-out" hidden></div></div>
+<details class="expect" data-expect="mini"><summary>🎯 Kutilgan natija</summary><div class="d-body"></div></details>
+<details class="hintbox" data-hint="mini"><summary>💡 Yordam kerakmi?</summary><div class="d-body"></div></details>
+<details class="solution" hidden><summary>✅ Yechim</summary><div class="d-body"><div class="sol-code"></div></div></details>
+</div></section>
+<section class="sec off" data-key="xato" data-group="Yakun" data-ico="⚠️" data-title="Tez-tez uchraydigan xatolar">
+<h2><span class="mark"></span>Tez-tez uchraydigan xatolar</h2><div class="idea"><b>💡 Asosiy fikr:</b> Merosdagi xatolarning ko'pi <code>super()</code> va metod nomlari bilan bog'liq. Xato xabaridagi sinf va atribut nomiga diqqat qiling.</div>
+<div class="warn"><span class="lbl">⚠️ super().__init__ unutilgan</span>Bola sinf o'z <code>__init__</code> ini yozsa-yu, ota sinfnikini chaqirmasa, ota atributlari yaratilmaydi: <code>AttributeError: 'It' object has no attribute 'ism'</code>. Yechim: <code>super().__init__(ism)</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Qavs ichida ota sinf yo'q</span><code>class It:</code> deb yozish merosni bermaydi. Kerak: <code>class It(Hayvon):</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Metod nomi boshqacha yozilgan</span><code>Ovoz</code> va <code>ovoz</code> — ikki xil nom. Qayta yozish ishlashi uchun nom <b>aynan</b> bir xil bo'lishi kerak. Dastur xato bermaydi, shunchaki ota metod ishlayveradi.</div>
+<div class="warn"><span class="lbl">⚠️ super() qavssiz</span><code>super.__init__(ism)</code> — xato. To'g'ri: <code>super().__init__(ism)</code>.</div>
+<div class="warn"><span class="lbl">⚠️ Abstrakt metod yozilmagan</span><code>TypeError: Can't instantiate abstract class Kvadrat with abstract method yuza</code>. Bola sinfda shu nomli metodni yozing.</div>
+<div class="warn"><span class="lbl">⚠️ Mantiqsiz meros</span><code>class Mashina(Dvigatel)</code> — mashina dvigatel emas. "... bor" bo'lsa, kompozitsiya ishlating.</div>
+<div class="warn"><span class="lbl">⚠️ Tur uchun if zanjiri</span><code>if tur == "it"</code> zanjiri har yangi tur bilan o'sib boradi. Metod yozing va <code>obyekt.metod()</code> ni chaqiring.</div>
+<div class="real"><b>Maslahat:</b> Metod qayerdan kelayotganini bilmasangiz, <code>print(type(obyekt))</code> va <code>print(isinstance(obyekt, OtaSinf))</code> bilan tekshiring.</div>
+</section>
+<section class="sec off" data-key="qosh" data-group="Yakun" data-ico="🚀" data-title="Qo&#x27;shimcha topshiriq">
+<h2><span class="mark"></span>Qo'shimcha topshiriq</h2><p><b>🎁 Bonus: kafe menyusi.</b> <code>Taom</code> ota sinfidan <code>Ichimlik</code>, <code>Desert</code>, <code>Ovqat</code> sinflarini yarating. Har birida <code>narx()</code> va <code>tavsif()</code> bo'lsin. <code>Buyurtma</code> sinfi taomlar ro'yxatini saqlasin, jami summani va eng qimmat taomni topsin. Yangi tur qo'shilganda <code>Buyurtma</code> o'zgarmasligini tekshiring.</p>
+</section>
+<section class="sec off" data-key="uy" data-group="Yakun" data-ico="🏠" data-title="Uyga vazifa">
+<h2><span class="mark"></span>Uyga vazifa</h2><ol>
+<li><b>Transport tizimi.</b> <code>Transport</code> ota sinfidan <code>Velosiped</code>, <code>Avtomobil</code>, <code>Samolyot</code> sinflarini yasang. Hammasida <code>tezlik()</code> va <code>yoqilgi_sarfi(km)</code> metodlari bo'lsin. Ro'yxatdagi hammasi uchun 100 km yo'l sarfini chiqaring.</li>
+<li><b>O'quv markazi.</b> <code>Shaxs</code> → <code>Oquvchi</code> va <code>Ustoz</code>. Har birida <code>tanishtir()</code> metodi bo'lsin (<code>super()</code> dan foydalaning). Besh odamlik ro'yxat tuzing va hammani tanishtiring.</li>
+<li><b>Abstrakt Hisobot.</b> <code>Hisobot(ABC)</code> da abstrakt <code>yarat()</code>. <code>MatnHisobot</code> va <code>JadvalHisobot</code> uni yozsin. <code>Hisobot()</code> dan obyekt yaratishga urinib, xatoni ko'ring.</li>
+<li><b>Kompozitsiya.</b> <code>Kompyuter</code> sinfi ichida <code>Protsessor</code>, <code>Xotira</code> obyektlari bo'lsin. <code>tavsif()</code> hammasini bitta matnda chiqarsin.</li>
+<li><b>Daftarga yozing.</b> Qaysi hayotiy misollar meros, qaysilari kompozitsiya? Kamida 4 tadan misol toping.</li>
+</ol>
+</section>
+<section class="sec off" data-key="test" data-group="Yakun" data-ico="📝" data-title="Mini-test">
+<h2><span class="mark"></span>Mini-test (8 ta savol)</h2><div class="quiz"><div class="q" data-ok="B"><b>1. class It(Hayvon): yozuvida Hayvon qaysi rolda?</b><ul><li><button class="opt" type="button" data-l="A">A) Bola sinf</button></li><li><button class="opt" type="button" data-l="B">B) Ota sinf</button></li><li><button class="opt" type="button" data-l="C">C) Metod</button></li><li><button class="opt" type="button" data-l="D">D) Atribut</button></li></ul><span class="q-ex" hidden>Qavs ichida ota sinf yoziladi: It o&#x27;z atribut va metodlarini Hayvon dan oladi.</span></div><div class="q" data-ok="C"><b>2. Bola sinfda o&#x27;z __init__ i yozilgan. Ota sinfning __init__ i qachon ishlaydi?</b><ul><li><button class="opt" type="button" data-l="A">A) Har doim avtomatik</button></li><li><button class="opt" type="button" data-l="B">B) Hech qachon ishlamaydi</button></li><li><button class="opt" type="button" data-l="C">C) Faqat bola sinfda super().__init__() chaqirilganda</button></li><li><button class="opt" type="button" data-l="D">D) Faqat abstrakt bo&#x27;lsa</button></li></ul><span class="q-ex" hidden>Bola o&#x27;z __init__ ini yozsa, ota sinfnikini super() orqali o&#x27;zingiz chaqirasiz.</span></div><div class="q" data-ok="B"><b>3. Bola sinfda ota sinfdagi bilan bir xil nomli metod yozilsa nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) Xato chiqadi</button></li><li><button class="opt" type="button" data-l="B">B) Bola obyektda bolaning metodi ishlaydi</button></li><li><button class="opt" type="button" data-l="C">C) Ota metod ishlaydi</button></li><li><button class="opt" type="button" data-l="D">D) Ikkalasi birga ishlaydi</button></li></ul><span class="q-ex" hidden>Python metodni avval obyektning o&#x27;z sinfidan qidiradi. Topsa, shuni ishlatadi.</span></div><div class="q" data-ok="B"><b>4. Polimorfizm nima?</b><ul><li><button class="opt" type="button" data-l="A">A) Sinfni o&#x27;chirish</button></li><li><button class="opt" type="button" data-l="B">B) Turli obyektlarga bir xil nomli metodni chaqirib, har biridan o&#x27;ziga xos natija olish</button></li><li><button class="opt" type="button" data-l="C">C) Bir sinfdan bitta obyekt yaratish</button></li><li><button class="opt" type="button" data-l="D">D) Atributni yashirish</button></li></ul><span class="q-ex" hidden>hayvon.ovoz() — turi qanday bo&#x27;lsa, shunday javob beradi.</span></div><div class="q" data-ok="D"><b>5. d = It(); isinstance(d, Hayvon) nima qaytaradi (It — Hayvonning bolasi)?</b><ul><li><button class="opt" type="button" data-l="A">A) False</button></li><li><button class="opt" type="button" data-l="B">B) None</button></li><li><button class="opt" type="button" data-l="C">C) Xato</button></li><li><button class="opt" type="button" data-l="D">D) True</button></li></ul><span class="q-ex" hidden>Bola obyekt ota sinfning ham namunasi hisoblanadi.</span></div><div class="q" data-ok="A"><b>6. Abstrakt sinfdan to&#x27;g&#x27;ridan-to&#x27;g&#x27;ri obyekt yaratsak nima bo&#x27;ladi?</b><ul><li><button class="opt" type="button" data-l="A">A) TypeError</button></li><li><button class="opt" type="button" data-l="B">B) Oddiy obyekt yaratiladi</button></li><li><button class="opt" type="button" data-l="C">C) None qaytadi</button></li><li><button class="opt" type="button" data-l="D">D) Dastur to&#x27;xtamaydi, lekin ogohlantirish chiqadi</button></li></ul><span class="q-ex" hidden>Abstrakt metodi bor sinfdan obyekt yaratib bo&#x27;lmaydi: Can&#x27;t instantiate abstract class.</span></div><div class="q" data-ok="C"><b>7. Qaysi biri kompozitsiyaga misol?</b><ul><li><button class="opt" type="button" data-l="A">A) class Mashina(Dvigatel)</button></li><li><button class="opt" type="button" data-l="B">B) class It(Hayvon)</button></li><li><button class="opt" type="button" data-l="C">C) Mashina ichida self.dvigatel = Dvigatel()</button></li><li><button class="opt" type="button" data-l="D">D) class Talaba(Shaxs)</button></li></ul><span class="q-ex" hidden>Kompozitsiyada bir obyekt boshqasini atribut sifatida saqlaydi (&quot;... bor&quot;).</span></div><div class="q" data-ok="D"><b>8. Bobo → Ota → Bola zanjirida Bola.salom() ichida super().salom() qaysi sinfning metodini chaqiradi?</b><ul><li><button class="opt" type="button" data-l="A">A) Bobo</button></li><li><button class="opt" type="button" data-l="B">B) Bola</button></li><li><button class="opt" type="button" data-l="C">C) Hamma sinflarni birdan</button></li><li><button class="opt" type="button" data-l="D">D) Ota</button></li></ul><span class="q-ex" hidden>super() bir pog&#x27;ona yuqoridagi, ya&#x27;ni bevosita ota sinfga murojaat qiladi.</span></div><div class="quiz-res"></div></div>
+</section>
+<section class="sec off" data-key="lugat" data-group="Yakun" data-ico="📖" data-title="Lug&#x27;at">
+<h2><span class="mark"></span>Ingliz ↔ o'zbek lug'at</h2><div class="tbl-wrap"><table class="dict"><tr><th>Inglizcha</th><th>O'zbekcha ma'nosi</th></tr><tr><td class="en">inheritance</td><td>meros — bola sinfning ota sinf imkoniyatlarini olishi</td></tr><tr><td class="en">parent class</td><td>ota sinf — umumiy qismlar yozilgan sinf</td></tr><tr><td class="en">child class</td><td>bola sinf — ota sinfdan meros olgan sinf</td></tr><tr><td class="en">super()</td><td>ota sinfga murojaat qilish vositasi</td></tr><tr><td class="en">override</td><td>metodni qayta yozish — bola sinfda ota metodning o&#x27;z varianti</td></tr><tr><td class="en">polymorphism</td><td>polimorfizm — bir xil nomli metodning turli obyektlarda turlicha ishlashi</td></tr><tr><td class="en">isinstance</td><td>obyekt shu sinfdan (yoki uning bolasidan) ekanini tekshirish</td></tr><tr><td class="en">abstract class</td><td>abstrakt sinf — faqat ota bo&#x27;lib xizmat qiladigan, obyekti yaratilmaydigan sinf</td></tr><tr><td class="en">abstract method</td><td>abstrakt metod — bola sinf yozishi shart bo&#x27;lgan metod</td></tr><tr><td class="en">composition</td><td>kompozitsiya — bir obyektning boshqasini ichida saqlashi</td></tr><tr><td class="en">ABC</td><td>Abstract Base Class — abstrakt sinf yaratish uchun abc moduli</td></tr><tr><td class="en">NotImplementedError</td><td>&quot;hali yozilmagan&quot; xatosi — bola sinf yozishi kerak degan belgi</td></tr></table></div>
+</section>
+<section class="sec off" data-key="yakun" data-group="Yakun" data-ico="🏁" data-title="Dars yakuni">
+<h2><span class="mark"></span>Dars yakuni</h2><div class="sum-card"></div><div class="lesson-nav"><a class="lnav prev" href="dars-23.html"><small>← Oldingi dars</small><span>Sinflar va obyektlar</span></a><a class="lnav next" href="dars-25.html"><small>Keyingi dars →</small><span>Maxsus metodlar, property va dataclass</span></a></div><footer class="course-foot"><div><b>Python — amaliy kurs</b><br>24-dars / 32 · <a href="index.html">Barcha darslar</a></div><div class="progress"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div></footer>
+</section>
+<div class="pager"></div></div></main></div><div class="shade"></div>
+<script id="dars-data" type="application/octet-stream">Gk5ZGRwZElhXEltZQEhDVlZaGwsRH09TW0MRFBQCTFpDUAkTAx1bFytbKBgNCwYcBxNNIRhUBhYPAkQWCFIQGxQaEA0dHBUDSREBG0EbAQQYXhgNCB5KGQFNQTcYGhFYGx0ATEUZAlIZDwkNEA0DERQCSRkWUhATAQAXSl5bTU4RGwAWBEQOBRheA1ksGV4QGhlJMgwQD0IeUFtQAhsAFgRETQ0cT1AADhZEFghcQUYOBh1ITiY+BUMRGy0+RkIKFkkVR0ECRFgeExgODEkAQgoQEgQNCwcTEw5NDBRMA1dDQA8xDBoIHQxTWRETFgUJExwKFEEVGwYDBQMcDQoEQk8ABA4YGxcNLFssBVQXGVM9WFFGGkIUHF9OcFRNEBQdT1NbD1xbDA1EFk1IQxcMABcDAABDQA8eBgoEHk9TAlBcWwIESBsEAUNANhJbWVJDQw9CHApQTVgBS0MPPQwSBFgTTwEIFAsAWWURABcDQ1gLEw9aAAwLQgNZDgBKGQFQTVgOBRheAxwSThcjTT8UCQUcEg8tVUMBWAsbUFshFksLSFJDQw9BGRwBPSYeQjRYAxEUB3EkHFg9JkU1JV5aMQAVWxcBLj0JRzUlBFJVQwFeH01IQxkBCApeUDQUH0UNBFopGxQfFkNZQ0EISBpPCw4ABAceDw0kHEBWWhtQW1gdEFsBUhoOCEhaVVASGwAMUWAFCgkZRlAzUCwVAAAIcVJQTwNbFxVaSFZNNVtgGQAOGgwkTV5BXSAcCkUFEkkwDzUAHwgLMUtQAx8PDhYFUUhbQ1ZPBVsXUhYXA1dQRlJGNwQQFltRXkEdTAEbExMbCQBbUFwCQxgPQk0CGFhBSxpCFBxDVg8VT09BNxgaEVgbUT1OYgkbHRISMUtQcR4KAAFIUAJcCAkARVlxUjYQGEILBy5DVk1ONFgDERQHBSRNPRAOAhoRcVJQTwVeFUhbPRQOARxOG1EIH0QWHAYAFA4MUUBcWSkNVA4AHEhWTTVbYAUKCRlGWAAQGB8GHRANOBgYGkIWTxwIFApJG0IcGBIFDRoAVQ0THgEQDRscEw1GJE1bQ1ZPBVsXUjASAQ0XGxNBCQQHH0kRF0EDQREBEwUTT0VbRRkdQ1ZZChoXHCdBSwpCHFtbFw8VDhsPVB0QWxdSGg0NXgtPOgADGwYXFywXQUwNWAsXB1oyNhBDGQ0+MwULCh4HVk0ACkBZQz0CDVhPUkFaTUkKSBwfTwVeFU9PQRMeBCVDLBdBTA1YCxcHWgIfFldYCgQAS1FVLg9aTUlZDVBZQR5IDBoAD1oxS1cDXiVDMEMkAS4PGQEICl5QNBQfRQ0EWikbFB8WQ1lDPQINWE9SBR8LSRZbHwNJH0gUCVtbJgNJWQ1QWUFMDQoKBhQIA0klDz0QGANbWTNQPRQxByVDGR9BM3IWDh8EJTJJRBBQJUMzchUOGw8lMjVbFywXQUwNWAJSXFogHApFBRJJMA81AB8ICzFLUHEeWUFMDQgdGw8ORQRXRAMUTUxAVgAEDgBFQFBxHlscEQFaG0JTWFcSW1kJCQROF1oBEwwPAwhbAVIRCAJZWlUpQzQMBAxDER0ATBEbABYERDkIFUwSGF1DThcLF19aBBoUDR4QQQMKAgZSEhscBRhUEQkVBUARTwsOEQRJFlkRWRIFQx4IEwwTUktVD0waDghIRhwHER8fQVADLyYIAkQMMC1JEx4EUBFfGg4ISEZPCw4ABAceAVASBBVEFk9OAhUJDEdeFRUHQksZAVJcWgsIFxFfGg4ISEZBUE1YUQoWSRVHEwlZDR0cQQkIBR8DGQoMTAZYM1BBV001Ww1bWRIJQR5BFAAUTUJZcVJZDktcERsHFxkFAApELFtdQ04XCxdfWDBFW08FHkNWD1pDUAwbBAdbF1IUAAVDVh8LQ1ZPDxBVFR1DVlYFQ1ACEggKEl5SQzoXDwxNSEMZAg0cD1xbDU4XWhwHER8fQVADLyYIAkQMMC1BEx4BFUwEEA0LTBZNXkMXGBoND0oiGk5fHU1IQwkYGRxfLCVJMHFRMy4SUDE1V3EsCkszchEBGxUlMjUlXlolPUQPVE0fEh1PU1teBQkEHgVRQS0+EwMADXIvUQgfQFFPHAhaDgEYXBkLCAJKWhIvHFYWSw0PSlsRFQ9UTREOHghLQw8fWVxMYgkGBhQMDgEQBSxbIABEJE1eQSZPJBhZFRQAGEQTDi5DUzEHCkwdHEkDAxEcH01aMUs4QRklQ0ANXyADCA4YHxpFGVE9TmwUBi5DVk01W2ARDQQBTAwGGQAmT0BXRAMURkVxFhwTDB9FBldLERdNTHFaIhMVHwAIDUQbGD1OAVhIPRATGRwPThgQSTAPOQMbPVhBSSUPPRgVCUAZGxsKGzFLUAMWGA9LBFpDUA1YV0sQXh1ZFw0NHg4cQRsZGxBPBQ0NDV8RTwEACwEIF0wUEEMRAQNNBkNATxkAD1xbAgNJHU1IQwkMBBwFPwgIGFgODBoIUjFLOEEZJUNADSRNPwAOCAQYWRkSADAPUUEGABQEGhFZGQtJRQFYM1AgFgRJVA09GBUJQBkbGwobTQZeXBkNFBpOEAYBCCZPRVlxUg0AAkQLBwYICEVAJQ9ZW01OQVpVUBUbAwAKRQQQE0QEWBsdRh1KGxANHRgVAg0JDgsVGx8IHURSBE0XDwxNSEMKFEtVDxMWBQkPQk0BABcIQTZcGQ0UGk4QBlo9WDsIFUQsW01McVopGxsTBgglD1lXFQ1DERwaFRMfQVABUCVDOkwUBlJMWisAA0QbGEEDCgkGBhQMDgEQXhklQ0ANJE0GABQEGhFZGQtJRXFaRlBNWAFLQw8yFhIEXBlPHwBdARwUQgRZAwVBGQFSCRsASRBeGBUAFUkRTV5DEgQNWxcECxQJUCVDUBIVAUtDVlIUAAVDVh8LQ0BPChVMAwpBP0UZFwFbJgNJWQ1QHQQKDScwGw8TGTYmBQMcDQoBWAYBDFNXNRcNUFlBTA1YTwEEFgtHEF4dWVxMRAsCLg8mAzUXThwYEh8NNx4bFQ8bChFEWCoJDVULRkg9FE1JWQ0UHAdMcicGHAgOMjZRXhUVB0ANERwfTVoLCBcESiUPTA1YT1JBWk0aDF0VC0lFAycwGw8TGTYmBRkKDEVxFk9SQVpNSVkNAxwNCgMeDhxBR00PGEMsFz0CDVhPUgUfC0kNTB4QEgRZER1aEh8BD1AXLBdBTA1YT1JBWh8MDVgCF0EfSBQJXAgJAElSDSxbQUENJE1SSloeDBVLXh8AAg1TTy5DWgJOCEQEDBcPRREcGz1YMQclQywXCAoNJzAcABcINiYNTURBMA8nMB8AEwM2JnFSQz0CDVhPUhEIBAcNBT8ICBhYDgwaCFIxSzhBGSVDQA0kTT8ADggEGFkZEgAwD1FBBgAUBBoRWRkLSUUEJAFQHAdBSw0dQ1tbFw8MFgIEWFdLG0wDEQ4eTAxNXkMSBAcND0oiQ1BOFwsXXxhRRhpCFBxfTFwZFgEIWh4AF0sUGA9MVBkdExUTAQ4YQ09bTU4RGwAWBEQgDBdIGhwTUAIbABYERE0NGA1MGg4ISEYcEw0VAFVWTh8dBFINGgAATVpRChZJFUcIH0VEQBEOHghXWVQfXhBCD1RNTgIVCQxHRAMRSUURVwwdBR9TSRtCHBhBH0QWCRYAWhkGCUQcFAAVSRFDUhISGAcQQxdZFA9FDQFSDg4MSQpEHh8FDUNYAB4IFAwNEANSJE1OTw0IUFtYUQoWSRVHA0JeGQMdDFJEVVZOHx0EUg2a7+ZBRg4GHUhONAQCSBIKAF1VDgYdSE5ZBQ0NRAwdBR9TGhhBHxRdQ04XCxdfWg8GCwFQCgkZQxEBFUEPDgEMQ1AMDwVDH08dRgBNHxhfGRgPGERYBgEJFgwQHUReWV0PQhwKTANUBBoRBVlFTg9CHApMQZjt/VkRExYFCRM1ChwEEAgbRQITFgUJE1gLE0EDAk4IAVApGBhFFwFSDg4MSQpEHh9BUE4XCxdfIgINEEBMVgIDSR1RUgYbTQoRRAEQA0xZFx8TBRNDS1UPERcSG0gKHFBbIU8xFkkZFEEfTBQAHz0UIAwXSBocE0xeGQMdDCYDAApFHBgYDV0MBlA8Vk8KEUgTEhJOFyMyXkMZAg0cD0pbAgBMCxxSORUJABQXLBdBTA1YCxcHWh4IFUIdURIJQR5GSD0UTUlZDVBZQUxfHRsHExRNNVt1Hx0IAQ0LDh4OFzFLJUMsF0FMDVgLFwdaBBoRBQMcDQoEQjMcQVpNSVkNUFkTCVkNHRxBJk8ACkUcGBgNXQwGLkMmAzUXcR4aDQ1eC08/BBQIAxxfWCEOCEQVRkg9FE1JWQ0UHAdMXhkDHQxSHgwVS1lDPQINWE9SQVpNSQtIBAwTAg0kTT8EFAgDHF9QCgAAQhUzUD0UMQclQxFZXEx1FwsbDFJENRdPUERBIUgWChgECEVAJUMACwgCWVAOXBIbAQYUBVlQPQJdCgYcFVIPRwpMHBYMRARRMxwRCAQHDQUSVwgfRVBGWz0UT0VbXh8VQ1ZWBUNQDBsEB1sXUhQABUNWHwtDB0FLDR1EW1sXDwwWAgRYV0sAQgpbTU5FEQEGQ0A2SzBGGxgNDQ0aAB4AHgxJEUwdWQ8FQBkBG0FGDgYdSE4KFBxICkdbXVUOBh1ITlkGDQ0MAAISEgQbGF4ZA15OAVpTEQ4eCFcKWAAcE0QEVjAtCBQEHSZyWCVDKEIRHRM9WERVVk4fHQRSDZrv5kEUAgRZQgQYQR9EFgkWAFoeCAhBERcACERUT04CFQkMR14VFQdCX1hSUhNGQgoWSRVHQQleGU82DhMfCFlJEVdDQA9EDB0FH1MNHEtQABQWTFAcFw0cRFNZXxUNFB5DWFxcUE5NQ1leFRUHQl9YRVISHwEPV19MVgIDSR1RUDxWTwsMSlJDQ04BWgITCBRPU1tAERAPQl0BTV5DHAQRHElSQxoRAVoMGgQZBhpbFysCQxgPQk0RDh4IS1UPHFtbTmkXBgAAWhsIWWYGGAUeTAxPIQkbBgVZSREXQQFICgABQRUBCB1EUlVDAVgLG1BbIU8KFUwDCj0wXlMrHQgIDDUlXlolPURxJBxYMhIMAhVxLApLMHFRTV5DGQEICl4sJRJHZg4OFhMbGTUlXlolPURxJBxYMhIMAhVxLApLMHFRTS8cVhZLDQ9KWxEVD1RNEQ4eCEtDDwMYDAkFPAAbExtFW1ADCQwbDQVRQ1JQSENcTwFQJUMoQhEdE0lIREcAWAoYSUVxWkZQTVgBS0MPNBYIHkxQXVtPAxgTGAVZWVxMHEpBR1dYEEUCDwRbW05dAU1eQxkCDRwPSlsSDUAdRzkXGwkbGFlYSkhCVA0VE0lTQUlAAVAlQydbGQsAAA5FWlADCQwbDQVRM1BIWEFLFQ9KWyoaTBwdExVSXkBXVAUDAEQEWFJSWFgQRQIPBFtbTl0BTV5DGQINHA9KWxINQB1HNg4THwhRHFlXDwNAVE8uQz4CAAtMLFtNTHFaKx0ICAxBSAReFw4BcVpGLg8JDAQcBTsPAAhfGRtaUFNDBxZAXFk9TmYODhYTGxk1WwFQJUMnWxkLAAAORVhQAx4WDDAPUU1eQxZPU1tDHxRBA1kZTwEIFAtJFl8BGA0FDQsOAw0bAwgdRFIETRcPDE1IQwoUS1UPExYFCQ9CTQEAFwhBPUIZCwBEHEhGXBgPFwhRBFxZUl0ZVl9eQSZPLRZEAhhJXR1RQQsUAAxBUHFSUD0CXhkCF0kxGwgdXxENSVwEVhYHGxtFQFUNQFVBMA8zGRMFCAwdUR1ZVxgZVxlHWz1YREtVDxxbW05vFxwaEBtNGBBUHRgVAEwKTxAIFgwHWUURFEEYQl8IVRMTT0VbRRkdQ1ZZChoXHCdBSwpCHFtbFw8VDhsPVB0QWxdSGg0NXgtPIQkbBgVDcR5ZQUwNHAoUQSUyABdEBCY+RF4dAxRNWgMGFARKJQ9MDVhPUkFaTRocQRZXDwNAWFJSDxUANRdxHiUPD0EZHAFBPgIAC0xYKgkNRhRGSD0UTUlZDRQcB0xyJwYcCA4yNlFeFRUHQA0KRkg9FE1JWQ1QWUFMXg0fFxNSREcmchkXCBhyJ0cuQz4CAAtMLFtIMENYT1JBWk1JWV4VFQdCX1hSUhMmAzUXDVBZQQhIHk8LFAAMQQpIHB9IVnEWT1JBWk1JWQ0CHBUZXxZPQU9LWUlTDQMcDQoDCk9YQQkIBR8DAiUPMEMkARENGx4aWWYGGAUeTAxHIQkbBgVQFywXQUwNWAsXB1oyNhBDGQ0+MwULCh4HVk0IUBcsF0FMDVhPUkFaHhwJSAJRSEJyJwYcCA4yNlFxUjIXDUkKDgY9WEQ1Fw1QWUFMDVhPAQQWC0cYDU1ZADBDJAFSQVpNDRxLUAAUFkxQHBcNHERTJUNQWUFMDVhPUhMfGRwLQ1AKBABLVg5SS1oeDBVLXhg9AnEWMxwIHE02JkMRFAQzclhST0EmTzYmQBEQDzNyJE1IPRRNSVkNAAsIAllQKx0ICAxBSwReABQWTFBGWz0UTUlZDQALCAJZUCQEAB4fCA0FQ1BPFVgCDlpIUzEHW1ANVUMYHU1NSBpYGRAJSFJDQxVCAk1eQxIEBw0PSiJDUE4XCxdfNwgHHEcVC11DThcLF19aAwAXSlBFAgNJHVEtPhMDAA1yL0VOD0IcCkxBEwkIWUQDFEEaTFgCEw4JBQcQDRsQDExeGR4eAAMJAEYPXFtdD0IcCkwSDx0MCwVZVz4zRBYGBj4lRQAKQFxZDA1CCwdbXVUOBh1ITlkXDQ1EDB0FH1MaHEEWVwMDQw0cUlxaDwYXWANFTg9CHApMT1hBS0VOHx0EUkkdCVIOAwEAEgUDHA0KBEJPAAQOGBsXDQMMEQlfUEZcDgMBABIFWVlKTF4dAxRPGAIHDF5MVgIDSR1RUDxWTwsMSlJDQ04BWgITCBRPU1tAERAPQl0BTV5DHAQRHElSQxoRAVoMGgQZBhpbFysCQxgPQk0RDh4IS1UPHFtbTmAdARcLHx9JCkQeHwhMdRcLGwxaCQgXDR0cEwNeWAAeAB4ESQ9MUAoUHEgKR1tBEx4BFUwEGAUFD1RNHxQJGUtDdlIaDQ1eCzMuElEgDBdIGhwTMHELRS49UjE1CgcoFgUFQCQzAUsmMUBbAVIKFBxICjMuSSYxQFtwDVUaTllaVVARA09FW04fHQROF1ocEwwfRSQcQxUTBB4FJE0zDRMxS1UNQ0lRXB1IX15BT11ZSR1AUE8DVBQGGUlTQUlKGEBJUVwdVE8uQzcIBxxHFQtJQgNWRlwOAwEAEgVZJUNFD1RNHkNATyQcQxUTBB4NFxYeCB0ESUQNHRgOH0VYRFIDFQMcCg8NVRpOWVpVUBEDT0VbTh8dBE4XWhwTDB9FMRZJGRRJMA8uDh4IJk9FWR9ASVFcHUhGXA4DAQASBVlVQV4dSF9CUUpBSSUPKBYFBUBWAAsNEwZBUHFSUENADxRNSEM1CQ0QVFABDghEFU8dGBYEDhANH14bC0wKAhMGGwNLBAELWxVOF1ofC0NWTwoWSRVbW05AWFJSLB8DDBNIAlE9Tn4ZHRYOCDFLVQ1BSVFcHUhfXkFKRDUXXhEUBERAVgYBDFZNNVt+EQsFA18kTV5BJk8ACkAsW0hXDQsOHwRSAEcbQh4MEkANSENSPVgPBhdYAyVDRRZYHBMMH0UEV0IJFQgHBVFDUlBKXVlJHUBVQTAPFxYeCBFFQCUPWVtNTkFaVVAjFQMcCg1AWQMDChQIEw8eDEkRTB1ZFQMKH0gACFhBSxFEFFtbGF8NCg88Vk8aFkFSQxpOQBkGHE8KFEtDDxMVAB9eWDcdBRMAUyVDUFlBTEkdCVI+JQQHEFkvJkkfSBQJXkETHgRVDR0YDh9FUVUuD1pNSVkNUFlBH0gUCVwICQBJRA0ZCgwwQ1hPUkFaTUlZXhUVB0JAGQABCVpQSRRMHwoJMEMkAVJBWk0NHEtQFhgARBNHAQQWC0BDcR5ZQUwNWE9SQQgIHQxfHlkSCUEeQR8AFR4BJUMsFz0CThQOARJaIAwXSBocE0R1FwsbDFNXNRcNUFlBCEgeTy0+EwMADXIvURIJQR5DUggJAEVZQBEWEgQBWA0dDw8eQENxHllBTA1YT1JBCRgZHF9YUE8zchEBGxUlMkEQXh1VQQFMFxwaSCYDSVkNUFlBTA0LCh4HVA8GF1gDWVxMTxcBBxImAzUXDVBZQQhIHk8dGBYEAlFeFRUHRRckAVJBWk1JWQ1QCwQYWAoBUhIPHQwLBVlXDhVBEQRaSFpGSQpIHB9PDkIWGgE9FDEHJUMZH0EzchYOHwQlMklEEFAlQzNyFQ4bDyUyNVsXLBdBTA1YHwAIFBlBNEgeHAsJX1AzUCAWBDVbAVBKUVwdSF9CTVpYWUkdQElIQkIBAxsKUkRAJUNSBBxADwxfRENAFksNVAAcQ1YPAQAIQ1ZPARBDBFtbNw8qAFUYAgwdHUwXEEEETApPEAgITRoRTBsVDwVDH08GFAgEBxANEhANBV4QTxkECAwCFERPW01OfhEEHkEYBAUYQ1ARAB4NGgYACFoYChFYHlldD0IcCkwSVBQcA0xYUF1DThcLF19aAwBZVBkeRgVDH0FQTVhRChZJFUcLDUART09BSlZJH0ICWRJMRBZPAQkbBgUVTAJDQQZMFQZSSkdNGldUBQMARARDTwAEDhgbFw0aGAwFEVcMHQUfU0skAVIbFAsPQk1QTVgACBBDUkNDAUwRAVwRA09FW0sZAQQID0IUD01YDgEcThsKQ1Z2A00GQ0BPGQAPXFsCA0kdTUhDCQwEHAUFFBQBRAEwCxQADEEiZgYYBR5MDEdASFZNPRZfBBsUHk4QDhlJSEFJSgQtUE1MHEhDUj1YGAQMQBkAPhVYAg5aOjEbCB1fEQ1JXgRUTyYOCBkLDF8TEQAHBUpDUlJTMEAlD1lbTU5BWlVQKgwMDQtMBFkXDQ0sAFUTDg8cC04YGApMVBEIVQgUCQAKRFBEQV0dWhJeGlgZS0MPAABDQA8bABYEWFdLCkwdHEkZQA0CGxglFBwDTFgiJQNECg5aUFNBST1CGQsARB9RQ1IqDAwNC0wEUVJFcFFDUlNOQUklDwUUFAFEATALFAAMQSJpHxATDQVJRl5BPgIAC0xYS0hADTMZEwUIDB1RHlkkSDAPUU1eQxZPU1tpHxATDQ0aBh4AFE0IC0wcGBIEDQoAVRgCDB1ZEFBLVU5QVBRQFVhXSxpCFBxDQA8UTUhDLhgbF0RQEBIFQwsbEw8ZCEkAQhsQQRhUCApSAxMBCBcNBBwKH0URHR8ACQEAEg9cWwINQRQcLQ8VGUtDdlIQEgVDCxsTDxkIS1UPBAARCQ8lEl4aWBlLQw8AAENADxsAFgRYV0sKTB0cSRlADQIbGCUUHANMWCI8RQFYX15BJk8cFFgdEBgzVA0VE0khMEAlD1lbTU5BWlVQIxVKGhENAhZGFVUZG1IUGQUcFw1AW01ORRELUFsOHxwcUFwCQxgPQk0CGFhBSxpCFBxDVg8bAxMSCU08GkUSDBMPRRkESD0UTUlZDRQcB0xUDRUTSQkIBR8ESiUPTA1YT1JBWk0bHFkFCw9MGiQBAQAXCEEMQAUUCBVyARoIAFI2PBpFEgwTD0UZBFpIVk0iD0wUCwAYBUlGL0hWTVFVDSxbGA1DHwZSFQ8fBRANAhZGFVUZGy5DU09FW0FSQ0M1TBYIG0EJBQgSQVAIDkteEAYeEhtNARhAUB8UAkYLBgsAWgJOA0oRCwwNVBwGUE1YBQAdD0oNExlIBTJeQwkCBVsXC1sMDUQWQQIYWFdLGkERChJMaRcGAABAMQdZDVBZBQlLWDAtCBQEHSZyWAoEAEtUTwBIQDEHWQ1QWUFMDVgcFw0cQxtZEFALPQJxFk9SQVoJDB8NCQwbDQULCh4HU1c1Fw1QWUFMDVhPAAQOGBsXDUNZS0xeHQMUTwhNQ1leFRUHQl8kAS4PJgMKFUwDCkEnWxkLAAAOVzUXDVBZQQhIHk8tPhMDAA1yL1ESCUEeQ1IAU1c1Fw1QWUFMDVhPAQQWC0cYDU1ZADBDJAFSQVpNDRxLUAAUFkxQHBcNHERTJUNQWUFMDVhPUhMfGRwLQ1AKBABLVg5SS1oeDBVLXhg9AnEWMxwCFgwaCg0kFhMYTw0dEQkbBlMlQ1BZQUxJHQlSPiUEBxBZLyZJH0gUCV5BG0FJGwRKJQ9MDVhPUkFaTRocQRZXAEwQWA4uD1pNSVkNUFlBH0gUCVwDWlBJG3EeJQ9MDVhPFgQcTRAMVxFREglBHkZIPRRNSVkNUFlBTF8dGwcTFE0aHEEWVwBMB1gcFw0cQwslQywXPQJJHQlSFBcYBBBULwAUFkxQHBoAEQEFGF9ZQz0CDVhPUgsbAABZEFBJPQINWE9SBxUfSQoNGRdBH0UZBB4NGx9TJUNQWUFMDVhPUgsbAABZBk1ZEkJUDRUTSVMxB1kNUFkTCVkNHRxBEAwEEHEeJQ8wQxEJUj4lAwgUSC8mQVEQWDNQPiUACBBDLyY9ThckAVJBWk0ZC0QeDUkZQA0CGxglFBwDTFgiKhpMHB0TFVJfQFUNJBYTGE8NHREJGwZBSwFQSkgxBFEzHEMHEEVbWUBOQ1ZWWhsLER9PU1tVEQ0OTgFaBxsPDk9TIg8oGAMNXxwOUl0ZAg0cEzENFR5EGhoGBD8fGxZfTFYCA0kdUVIXG00YGFQDEEENWQoGEBQOTRAWCgEVCAtEWBYdGxMBDhhDXlk0AkRYBBsMWhQIC0wEEBIERFgEFxMbBkkcSRlGQ0APRAwdBR9TIA0DLyYIAkQMMC1dVQ4GHUhOWQ5LV1hTEQ4eCFcmchkXCBhyJ1NdAhUJDEcNGRcITFQXFRYIVk0aEVgeEA8LDQ0MGhQUTVUaQhQcXyRMARkdD1QyNhBDGQ0+MxFXDB0FH1NJEF4YFQABTBwGXENWT1UaQhQcXyVZVjAtCBQEHSZyTFYCA0kdUVIPEwMOWU8ZCwgCThAGUhAbGQYLRBcYQVBOFwsXXwkYGRxfWFBPM3IRARsVJTJBEF4dUF1DThcLF19aHAZeXhgQDwsDWjJeQxgYDlsXUkUCA0kdUTsVRkIKFkkVR0EDCgJPTgIVCQxHci8QDwVZJzBOThkCDRwTUBAPBQ0BAAgGGwMAWVgTERQCDRcbE0EJBAcfQxkXBkwRGwAWBEQyNhBDGQ0+MxFXDB0FH1NJEA0ZCgkATBUOFghaGwhZERMWBQkTCwoeB1QEGhQRXxoOCEhGTwsACAwdEEEdGAUFDVBTEQ4eCFc4WQQLCA5YDAo3EwgCG0UCExYFCRNRQVJdGQINHBMDDBEJX1BGXD4lBAcQWS8mSQVeFUZOThkCDRwTUBcITE4QDgMICAQaEQ0bHBMNRlZNXkMXDAAXD0pbDA1EFkECGFhBSx9ECBwFThcDEl5DGQUMGkYDW1s3VlobUFtYBAZbAVIQD04XIzJeQxUYHVsXUjsODkQTT1oODA4BGF8bGEhOAVoDUFtYKQgKWQULQRRMDAABCABNAApFHBgYCERYGRNBRi8GG0QbWUkDWxsHExMRDEBHDRMRCB1MCg4WCFgQRQIPBFtbTl0BTV5DGQINHA9KWxlMEFgmBkkmTzscVSxbTUxxWhsTCgkMNVsELBcSDUAdRwpPFwwFDEAfDUlFAVgzUDMfFUlRWRESEg0EJE1eQV0kHVFxUisEFHFaQ1I9WBkIEl4RJUNFAxUOHhQXAh1RBFdQQ0APFE1IQzgCGhFcEVkMDQoUGh8ODk0LEEERF0EETBVPGxISAQgASRlbTU5FEQtQWw4fHBxQXAJDGA9CTREOHghLVQ8cW1tOYgwOUhITAw8XRB4eQTNyEQEbFSUySRANExEAHUQKBh4AHgRLVQ8dDBIYD0I0UBIPHQwLcSxRPTAEJDMBSyYxRyVxA1M+M0QWBgY+JREhGFQGFg8wcQtFLj1UMTUKBy8mCAJEDDAtQycQNFUPAxYNThcDTR8AEwNHCVRSQ0MPQRkcAUEyDBAPQh5DPQINWE9SBR8LSSZyGRcIGHInRwEEFgtFWUQDFEhWcRZPUkFaTUlZDQMcDQoDERwfQUdNAApALBc9AnEWDB4ACR5JMFlYMQAVWxcBW1smA0lZDVAdBAoNJzAbDxMZNiYFAxwNCgFYBgEMVk0TFllZQz0CDVhPUkFaTUkKWAAcE0QEVjAtCBQEHSZyWBASAQQkAVJBWk1JWQ1QCgQAS1YVHRVaUEkDQgQlDzBDWE9SQR4ID1lAERUUAUIMRwEEFgtAQ3EeWUFMDVhPUkEICB0MXx5ZEglBHkEbEhdNQllxUllJMA9YRFISHwEPV1cfDUFHDSRNWz1YMQclQywXBUwQWCYGSSZPKxZPGRI9TgFYM1AODA4BGF8bGD1OBCQBAhMTAx1RSV4UAABYFQAGSVNENRcPDQRNTllIV1BbAU8dAF0VW1tOVBcVUE1YBQAXWVJDOk5lGR1SAxMfSQpEHh8FDQ0JDgsSE00EHFkfHQ8FDQkOCxUbTRAWVxkKCUxGHR0TCkVPRVsRExYFCRMsDhkSE1FGGkIUHF9MShlPTgIVCQxHci8QDwVZJzBOThkCDRwTUBIEHkwTVVJdGQINHBMDHA0KAxMCLQ8bHxEQDU1ZCgFyFg4AGRNRRhpCFBxfQg9UTU4CFQkMR0kVH0ECTAoXWhIfAQ9VDRsUSFYNCgoGFAgDSU0dQElBRw0TAlJLWh4MFUteEgwzQxkdCghGQgoWSRVHQzEBWg0HBlhXS1sBUhQABUNaVVAMGwQHV10JW01OSxEXFwVYVxIEAVIaCQlOExxQWyEWSw0PSlsCA0kdTV5DFk9TW3gTEUEfRBYJUjUIDAcKXR8LFUxJGQFSDB8fBgoNHxUACERaQ1AMDx4dWxcrWwIATAscLj0JRigPWR8bFB9xJBxYPSZFNSVeWi0TDUMLHx0TDjE1CgcsJUhOAVoMHgAJHjUlXlstAAdeETMuElAxNVFxLApLOF8ZAQERFR8dJXEDUz0wBFpDUAIWDBoKcSwKSjxCHRUWPSYeQyVxWCU9HwcsHRMPCR0GC1ksJRJGcSRGUDwHQRJbWVJDQxxUWkNQAhUJDFsXUgoAAUhQLgQVFQ8cCgVZVw8NXwBHQ1FTQUlLHUBJTUxxWi4EFRUPHAoFWVcPDV8AR0NRUzFLUHEeCgABSFAuBBUVDxwKBVlXDw1fAEdHUUpERVkfQElRQA0kTTMXDgILDF5YUE8CTAoXWlRKXUAlD1lbTU5BWlVQIAwZBhtYA1kPDV8ABlIJGx9JHUIZFEFeHUhfUBxWFksND0pbERUPVE0RDh4IS0MPAxgMCQUsDhkSE0VYTB1AUE8CTAoXWlBKREVZHElJUVwBWDNQNRsGGhAFQUxRXARWARMTAkVYSQQsW0hOAVoDUFtYOQgSXhlDQVgdSF9SSloGBFkHUBIMM0MZHQoIWBBFAg8EW1tOXQFNXkMZAg0cD0pbEg1AHUciDh8XDVEEXhcAHlVQXkJRU0FJSBhASVFADSRNIg4fFw1RBF4XAB5VUF5CUVMxS1APXFsNThdaPx0EAAlTWUYdWUtMHE1fUBxWFksND0pbERUPVE0RDh4IS0MPAxgMCQUsDhkSE0VbSR1AUE8CTAoXWlFTQUlNHUBJTUxxWjsTCgkEQUsdQElIQkMZHQpJSkQ1WwQsFxINQB1HIg4fFw1RBF4XAB5VUF9bTVpdRVlxUikOCVccR1tPFAwbAQVAUD1OBFpDUA1YV0tJDRsUQRlOEBocQRIMBFlZH14GS18RTV5DEgQNWxcECxQJUCVDUBIVAUtDVlIUAAVDVh8LQ0BPChVMAwpBOF8ZAQERFR8dQ3EeWUFMDRwKFEEUDBsBBQMcDQoBWAQfSEAxB1kNUFlBTA1YHRcVDx8HWR0sFz0CcRYMHgAJHkk4WwQWAxleUDsAABQeGRZfBFBbMENYT1JBHggPWUMRCxlEXh0DFE1aBgRQFywXQUwNWE9SQVofDA1YAhdBXh1IXy4PJgM1F04cGBIfDSwOGRITRT0LTB4KEQNfDEZIPRRNSVkNFBwHTHInBhwIDjI2UV4VFQdADRMCLQ8bHxEQBEolD0wNWE9SQVpNGhxBFlcKAXIWDgAZE01UWUYdJg8NXwAGLg8mA0lZDVAdBAoNFg4AGVIeDBVLXFkKAQRCMxxBWk1JWQ1QWRMJWQ0dHEFOXVlJDVtZCgENUk8BBBYLRxJALxcAHlURMxw9FDEHGkERChJMfRcKCAVSORsYQwMJDh5ZUVUuD1pNSVlJFR9BAkwKF1oSHwEPVQ0bFEhWcRZPUkFaTUlZDQIcFRlfFk8ZDFpHSUgYQCUPMEMkARsHWjI2F0wdHD4zDUVSUj1YMjYUTBkXPjNxWlUuD1pNSVldAhAPGAU5GQYOGBgaUQReFwAeVVBeQkhTMQdZDVBZER5EFhtaNRsGGhAFQUxRXARWARMTAkVYSQRZJQ9MDVhPAhMTAx1RfR8cGwgFUUEcAAgVQUgdQFBIMENaEg9NWBlZQA9KAkMYVAgKUFtYFAYDD1xbCQVDDE1IOlgiCwBIGw1BHUwBHBtBCQQHH0kRF0EJRhkBGw8TTR0cRgMRCB5MHAYVABRNDwxDGwoIFUxYARsMG1JLVQ9MGg4ISEYGAQgUHh0YQxMcSQQBWCYGSEZCChZJFUdBjq3sTwAOCRlJAEIbEEEVQhQIVQ4UTRgYVAQYEw1JEUFQTVg+ABJBUBACBEQcDkhBRg4GHUhOEAdMRAsGHBIODAcaSFgRTUxkDEZIQQkCBxANW0RBXRFXDB0FH1NHW3BcWwMZSlpVUENWTwQYRB5bW05AGQYcTwoUS1UPFhAZCUlaVQkcVk8KEUgTEhJOFyMUUBVYV0sJVFJVQw9CHApQW1gFSUQNKzAVRHFaLi5DU0FJNFgDERQHBSRNMD1YREVZZARRPU5uJE1bPCYDGhhAFVEIGEEZHS0SFQMAUUVZVUFeAVgzUAgOAQgLcgMWDwVxWkYuDwkMBBwFHQwSBFgTMBsSFwEIC0RYEUhADSMzUCMmTzRVDSxbDBleEBoZPhMeBBVMAhA9TgRaQ1ANWFdLOF8RFQAfRVgdHUYDFQgNF1BLQRhMWAYGTVoAHApFBRINDV9YNFUjXTBLBAELWxVOF1oMHQUfT0VbQVJDQwVeEQEBFRsDChwNGQoJAEwMBh4GGwNLVQ8TGA0AXlpVKUMTHgAXXgQYDw9IWjIPTQFPHVsXUgkYTgFaDB0FH09TW0VQREE3YA0cGhQRRTVbdSxbSEANNRoBCQ8GQSUPKSVDRQFYJxMYDAIHUXFSIz1OBCUzHBIbAAxRRAQVAB5yCwAcCFIFQFUNQFVBMA8RGx4ACDIaFkMZJUNFcRYcEwwfRQQMXhgMCjNECwIeAAgEQREEXFk6MA8gM1BNWjFLIHFSJE1McVoCBxISGAImRAMUDQ1fETNQSFhBSxUPSlsuCEkRFlIpGxQfFkNQFBQfRQ0EUhIbAwgVQBEABQUPVE0aCB5PUw1fBRwcQFZaG1BbWB0QWwFSGg4ISFpVUBIbAAxRRAQVAB5yCwAcCFI2NFABUElNTHFaBgYNGx82CkIeEEk3cFEzUEgmAxoYQBVRDBleEBoZPhMeBBVMAhBJN3BRQ1I6J0FJJQ8dDBIEWBMwGxIXAQgLRFgiPEVxWkZQTVgBS0MPMhZGH0VYHR1GAxUIDQ9cWwkFSVpVBhMPCBQkAVIKDgAPQhRQDBsEB1ddCVtbTk4UDgESWiUIAFsfF1swQ1hPUkEeCA9Zci8QDwVZJzBaEh8BD1UNGQoMRRckAVJBWk1JWQ1QCgQAS1YGAQxaUEkQXh0lDzBDJAERDRseGllkBFEpDVQOABxIQDEHWQ1QWRENXgszHD0UMQcaQREKEkxgDRwaFBFFIRhUBhYPRRckAVJBWk0ZGF4DJQ8wQyQBFgQcTQANQRELPh9CFgZaExUUERhZWUM9Ag1YT1ISFQMAWRBQST0CDVhPUgcVH0kRDRkXQR5CARcTFUAxB1kNUFlBTA1YBhRBEx4AF14EGA8PSFAHXkEzGUBDcR5ZQUwNWE9SQVpNSVleHxcITAZFT0M9FE1JWQ0CHBUZXxZPAQ4UBDUXcR4lDwhIHk8fFAkFHBJyGQoMAEwKBloTFRQRGFlZQz0CDVhPUggJAAUYX1BEQTdwJAFSQVpNDxZfUBFBBUNYHR0YAgwdQ3EeWUFMDVhPUkETC0kQXhkXEhhMFgwXSRJBSTRYAxEUBwRCMxxBWk1JWQ1QWUFMDVgGAQwWDBtXTAAJBAJJUAdcCAkAQCVDUFlBTF8dGwcTFE0ACkAcGBMwQyQBLg8TC0kmch4YDAlyJ09PXFoxSyZyHRgIAnInM1BbJgNJWQ1QEUFRDSMmBkkmTyglD1lVQSFYCwcHClIxSztxUlBNTGQMRy5DOTFLUHAsF0FMDVgfAAgUGUEQWRwYEzNeFwEbSRJEQCVDUFlBTF0KBhwVUgAcCkUFEj4FXhUDExMTRQFQBCwXQxFQVE0GUEpPUwIPBAARCQ9CTQsOAE9FW0UZFxVOFyNNMA4WDEkKRB4fQQ1PCxsAABEZSRRIBBYFAkQWCFIOXRdJF0IdEA8FDQEACAgJBQBZXhgYExgDWD4TGAkESRRIBBYFUw9UTTkACBkIWV8RCAABRBYGHAZaAhEQXxcQQVgNDA5SAx8BDhBeGUNBUE4XCxdfCAwYGEArVFVWcERAEQ4eCFdXD1xbXQ9CHApMEx8ZHAtDUCVDJ0wKGxNBUDFLWQZQCgQAS1YdExAbADJUGUokQUcNJE1IQSZPSVINAw0TRF4NAh8AU01CWXFSWRIDChUzUF1VDgYdSE5bPEAPGhoVQ0BPS1UPHRgIAg9CTR8AEwNHCVRSVUMKRAAKFkNAFhRVDxMRBA9GC01IOgFPHVsXUhoOCEhaQ1ANWFdLN0wBHUEaTFgkExMODEktQhwWF0xJGQFSDB8fBgoNHxUACERaQ1AMDx4dWxcrWwIATAscLj0JRicYXBQlPR8HJDNaPSYeQy1CHBYXMHELRS49U09FW04cGBIfcSQcWSobHx0YcSwKSzBxUDMuElA5BhVCBiU9HwckM1tDJxBFAg8EW1tOXQFNXkMZAg0cD0pbEg1AHUc8AAsJQVADBBYNDV4QR0dRSl1ZUAFQJUMiTAkLSEFPXVlJHVAKDktAJE1eQSZPJxhcFFFIQlkXAxMSEkVcSR1ASUgwD1FNXkMWT1NbYxEIBUxZF0geDgxNBBhZHhBBGEJfCFUTE08UVVZSDUNWDwgWUE1YDgYdSFJDQx9MFQpaKhsfHRgFLFtZWh1IXkBSTlhfThVBS1JYcVpGXBUVAQgKRVhMUVwdSEZeQSZPIhhfBBhBRhxKXEZbWlhZSR1AWRIDChUzUE1aMUsyTAINAEQDVkFbTw4CBRheGFFUXB1IX1s9WERLVQ8cW1tOZhkdBgBaGQZeQR8PQQFMDAEbQRUVAAtKGVlVTF8ZHhMMWg8AFUweWxxAVlobUFtYHRBbAVIaDghIWlVQEhsADFFmEQsVDQUkTUtZTF1ZSR1ASFBdHEpdQFMmT0BXWR8VAB9FUF5AUUpERVlxUjIAHlkZT1hTSF9bQw1BS1FcDQsAVQwmT0VZcVIyAB5ZGUdcT1RERw1CHBgSBAVJXUJRUzFLUHEeCgABSFAhExAeRUBXWR8VAB9FUF9bTVoxSzdMAR1bTB1YHB1GFzFLVQ0sWy8NXBxHW08OAgUYXhhRUUVxWkZQTVgBS0MPMhYSBFwZTwMIAwAIDUERC0NADxAGFkNAGRsMSA1VGk5ZWlVQEQNPRVtOHx0EThdaGwAYQDEHWQ1QWTUDQRcZWkgmA0lZDVAaCQlOE0c0ABYeDFUNLFs1A0EXGVpIWgkIFw0fGxgJRgxPCwAIDB0QT1AbDktBFQ4BDRMKAFlGFQsABw1QDhASDh8IEllQFAQYQhxPAQALAQgXXhkXSDAPUTMcBAIODAlZUC0YHEg9HQAOCFc1Fw1QWUEcTAscUE1YAUtDDyQWDQNbWBwbDxwESRhPAw0TDUYMTxAOXQEAGw0BFg0NSRFNXkMSBA1bFwQLFAlQJUNQEhUBS0NWUhQABUNWHwtDQE8PC0IdWQAOTlgGHxEVHx1ZbDI6TUxMGhwGExsOHRRIBBEOCHEWMxw9FA4FGF4DWTUDQRcZWiA4LkBDcR5ZQUwNOA4QEg4fCBpZHRwVBEIcMxxBWk1JHUgWWRUDQRkcGkkJCAUfAVAKFAFAGUZIPRRNSVkNUFlBTF0ZHAE9FDEHJUMTFQAfXlghExAeRT0WQR8PSFZxFk9SQVoJDB8NBBYNDV4QRwEEFgtFWV4FFAwNBEIzHEFaTUlZDVBZEwlZDR0cQSZPJxhcFENBMA9YRFISDh9BClgdFABFDVNPLkNaHgZeQCxbPQJxFjMcAhYMGgoNOxgTGExQOx0NFRtAQ3EeWUFMDRwKFEElMgAXRAQmPkReHQMUTVofCAhMHVBbMENYT1JBWk1JWV4VFQdCXxkeEwxaUEkLTAEYDDBDJAFSQVpNDRxLUA0OAEwLB1oSHwEPVQ0DDAwBTFFVLg9aTUlZDVBZQR5IDBoAD1oxSzJMAg0ATAckTVJKWh4MFUteCwAdTBU0X1VAMElSDSxbW0xxWk9ZQQkZG1FeBRQMDQRYRFI9WE0aFgodJUMwQyQBLg8TC0kmch4YDAlyJ09PXFoxSyZyHRgIAnInM1BbJgNJWQ1QCRMFQwxHPAALCUFQAwQWDQ1eEEdHUUpdWVAELBdBTA1YHwAIFBlBMkwCDQBEcVpXRFFKXFtKGUVPVlQcSlxGPVhERw1CHBgSBAVNX0JRSkRAJUNSBBxADwxeQ0NAFksNVAAcQ1YPAQAIQ1ZPARBDBFtbNw81DgEJEwMIWUkGEAYNWR0DHAhaHAgASAIdAExeGR4eAAMJAEYPXFtdD0IcCkw+JQQHEFkvJl1DThcLF19aBAoRRBQYQVBOFwsXXwkIBR8DFA8IC0wMCh5BR00tD0QXGBUJQVAeBxcMDB1QEV8aDghIRkFQTVhRChZJFUcTCVkNHRxBCQgFHwMeFgxMBlgzUFtaMUtZBlAKBABLVgsECB0MHRxBXgAOHQVRU10CFQkMRw8tVUMOWB9NSENYQUsUTBkXQ1YPFQ4bD1QdEFsBUh8IFEgcTUgaB0FLGkUVGgofD0I0CUMOT1NbXQlbTU5OFwsXQ0BPBFkQUDQAH0URARNJJk8nHFUZGD1OAVhXR0gmAwoRSBMSSQVeEQEBFRsDChwFHVcFGkQfDgYEFkFJPVsZHgAYSBRGXkEmTwRXSQYQBg1ZHQNSJQwEDhhZFRVBA08BChkVE00LFgocEBIERFgEFxMbBjVbBCwXEg1AHUcfTx4bAB5MBBwNQlwNGQQADkFJQRhcWT1OQFYLBAgdDB0cQV4IFBpbGRsuQ1NPRVtBUkNDIUwLBxsPG00AGkUZHQBMaQ4GFQAOCAVZQhIABAdZEU8QDghPFFVWUg1DVg8IFlBNWA4GHUhSQ0MfTBUKWiwbHgEQQxFRPU5jHRcbACZPRVkVRVBPFVgKR1tNWjFLN0gIEABWDRwZGwYbGQwVDRkKCQtMWBsHEhIJAFkFSExBA1lYBAcCEgRAJQ9cWUYhTAsHGw8bRTVbYxUBCA1xWkNSWU9ERwBYAlFISwRaQ1ANWFdLAFgCUUhMWRdIFUYIBEkUTAQXQR1MARsTExsJAFtQXAJDGA9CTREOHghLVQ8cW1tOYBkcGggUDEkUSAIWEkxIFQ4BTVoGBhRdHwMIGF4RFhNBEx4BFUwEGAUFD1RNHxQJGQcWWVJDOk5OFA4BEiYxGlJgEQoJBUMZMy4SUDE1UXEsCksoWxEIExUfAUskUFwCQxgPQk0CGFhBSxpCFBxDVg8LDh8EUiAICkUZFwBEcVorEwwbHjVbAVBKWUUDARoASVNBSSUPNBgMDV5CTxYXEwoIDUgcWQgfRR8OUhUPHgEdRFBRUlQNFxtSCg8OARAELFtNTAo1DgEJEwMIUXFSPQABTAszUE1aXlFQAwkME0QEX0ZQTVgBS0MPMhYSBFwZTx8ACQUAF0xQGwgATBZPGgAXT0VbRRkdQ1ZZChoXHCdBSwpCHFtbFw8VDhsPVB0QWxdSGg0NXgtPNhcTCggNSBxDPQINWE9SBR8LSSZyGRcIGHInRwEEFgtFWVwFDxcNWVFVLg9aTUlZDVBZQR9IFAlcEA8bHxhZUERBHVgOGRMVJgM1Fw1QWUEISB5PCw4LRRocQRZQWzBDWE9SQVpNSVlfFQ0UHkNYM1AFDAQOGFkVFUEFXhAIE0EOGBoRSRlZSTAPWERSEg4fQQpIHB9PHVgOGRMVU01CWXFSWQ4YDRMaEQkTRDVbcR4lDzBDGwMTEglNJBheGBAPDRckAVJBWk0NHEtQJj4FQxEbLT5SHgwVS1xZDwNAVE8DFAwbCA0ESiUPTA1YT1JBWk0aHEEWVw8DQFhSUg8VADUXDVBZQUwNWE8BBBYLRx1bGR4AGEgUT09BPhsAHkwEHA1EXA0ZBAAORDUXcR5ZQUwNHAoUQQMYG1FeFRUHRRckAVJBWk1JWQ1QCwQYWAoBUhIfAQ9XQx8UQUcNJE1IQSZPSVINAxwNCgMcGRsGGxkMFQMJFhBEBCQBLg8mAwAfDS8mDw1AHTAtQUdQSSUPLyYMDUQWMC09WFc1Fw1QWUEcXxEBBkk3DBoRRB4YSTAPNgoKCBsxS1UNSExIQlQNHVpIUzEHW1ANVUMYHEpNSBpYGRAJSFJDQxhCFAsbE1hBSxFEHg1DVnZaLR0NG00aEEMWWRANWwtPGwISBA0YDRsQDAJEWBYdGxsJAEYPXFsuGExYHBsPHAoIWUAFCw4GTBkbUhQZBRwXDUwaDghIRhwHER8fQVARXxoOCEhGQVBNWFEKFkkVRwIATAscUioTGQYbBT4YEgRfUVNdAhUJDEcBUEUCA0kdUQEUCggbUQReJj4FQxEbLT5SAwYUBExWAgNJHVFeQUYOBh1ITgoUHEgKR1tPFwwFDEAfDUlFEVcMHQUfU0dbcFxbAxlKWlVQQ1ZPBBhEHltbTkAZBhxPChRLVQ8WEBkJSVpVCRxWTwoRSBMSEk4XIxRQFVhXSxpCFBxDQA8UTUhDMgwEFExQJj4zDRkDHwAJBR0QXxkVBg1DWkNQDA8eHRdCBFtbNw8nMC1DJxBFAg8EW1tOXQFNXkMZAg0cD0pbEg1AHUc5CA4CC1FxUjgNHEIVBgEJJk9FWR5CSUhCQBkDBwwVGUFQAVAlQy1BCAAfCAkFRVkeQklBDkgMM1BNWkoiEFkfG0kwDzkDAg4XBBoRcVJVQV8fSEZcDBsBHBRCBFFISwRaQ1ANWFdLFEwcDAwDWVBGUhUVSg5eXxlZDA1ZFk8DAAMZCAtMFBBDEQEDTQZDQE8ZAA9cWwIDSR1NSEMRTVRZZhkNDg4FJE09Rg4GCBcNGwwPAEwKM1BNWllZSQQsFwIESBsEWggJBAcKWREXAgkFE0NSLxseAQsEXFk9TmYRGx0DWiMICkUCWQUNQ1gCFxMVHkkWQRkKCQUNEwoAABExS1BxHgoAAUhQBFwPFQBFWXFSNkYYRhkBUgoPAwUYXyxbTUxxWgEdDCZPQFsBUhVDVg8zBgYOGE0nGF4YC0ECRBYIUgMVAQgKRFxZDwNAWAAGAFoeABdLFBhBH0wJAxMPGwkAWwFSEQgID0IbABQfEEUCDwRbW05OFwsXQ1ZPBVsXUgoUHEgKR1tBEx4BFUwEEA0LTBZNXkMXGBoND0oiQx9YCAoAPSZFNSUELCUSRnEkQS49CUc2JkQeEBUzclpDUBIPHQwLcSxRPTAEJDMBSyYxRyVxA1MMDUENAh0VWDAUJAFSCg4AD0IUUAwbBAdXXQlbW05OFA4BElojCApFAkM9Ag1YT1IFHwtJJnIZFwgYcidHAQQWC0VZQx8USFZxFk9SQVpNSVkNAxwNCgMWAB9BR00HFkAsFz0CDVhPUgUfC0kUTBwMDANZUBwXDRxEUyVDUFlBTA1YT1ITHxkcC0NQCgQAS1YBHQwmAzUXcR4aDQ1eC085CA4CC1FjEQoJHgRCMxxBWk1JHUgWWT4zRBYGBj4lRRocQRZVQQJCFUNSEhsFAB9MWUM9Ag1YT1JBWk1JClgAHBNEBFYwLQgUBB0mclgXDgEEJAFSQVpNSVkNUAoEAEtWHBMJEwsIWRBQCgAERB4OLg8mA0lZDVAdBAoNFQ4eFBcCHVFeFRUHRRckAVJBWk1JWQ1QCwQYWAoBUhIPHQwLBVlXDA1BDQIdFVJESVINLFtNTHFaT1lBCRkbUV4VFQdCXhkHGwcbRElSDSxbQQ5IDDNQPRQxByVDGR9BM3IWDh8EJTJJRBBQJUMzchUOGw8lMjVbFywXQUwNWB8ACBQZQTJEBBYDRHFaLh4RFQAACkUsW01MHkpfW08XDAUMQB8NSUUEJAFQHAdBSw0cQ1tbFw8MFgIEWFdLAUwEFkNADxAGHBVYVzJbfQkNCQNDWAcTExwBCAtDGRcGTEYZGwYAVwYAGkUZEg0FShEBG0EcDBsIQREABQUDWC0dDRtNGhBDFh0AC0RYAhcVFQlJF0IdEAYNDQkOAAAUCkdbAVJFAgNJHVE9FxUXVVZOHx0EUg0ODlJdGQINHBMfDw4WEVcMHQUfU0mbreRZCAdGEU8KCBZNBxZAXltNThEbABYERAkMHw0/Dw4WBQsKHgdTUUYaQhQcX0xDEU9OAhUJDEdJFR9BA1sXFVoSHwEPUBFfGg4ISEZPFQBaAk4DShELFQVfEQEVT1gwRVtPBR5DVg9EDB0FH1MgDRFfGg4ISEZPAQgUCwAdTFAUBBhCHE9OAhUJDEdiBhYbUAIbABYERE1BEkwEDQBMYlFPFgQYTRAWVxkVBg1DVk8wFFoPBgpFARhBAkIVQ1ISEhgHEEMXWRQPRQ0BUl0ZAg0cEx8PDhYFUVNdAhUJDEcNExEAHUQKBh4GGwMNGA0gABUEQhZPHRUbTRoQQxYdAAtEWFMRDh4IVxZbHwNdQ04XCxdfWgMAWVkfCQgOAVhTEQ4eCFdXA15FTg9CHApMQQsMEA1MAh4AAgNYPhMYDgxJAEIKEBIEDREcGg0bHgEQDQUaCRlDWAEdDFpRC0dMCRcAAg0aBgBBAgQFRQISR0EOQl8DGxISBEkSSAIYCkIPVE0fABMDS0MPHRgIAgMIFlBNWAsAAUgUW1sXUFRNEQkfDgIKD0oiGk5ZWlVQCBVPRVtEHltbN3BUTR0UDk9TW2URD0AwQzUGCw4MTEtVDxxbW05pGRwGFAhNIRhbUVkXDQ01BgsODExJGkUZCAAeTBwGUBxWFksND0pbERUPVE0RDh4IS0MPAxgMCQUxG1pIVAIfFldYUE1McVonExdbMUtVDSxbKBgFUUEdFxUXQVBxUlBDQA8UTUhDMxlBUAMfDw4WBVFPT0FdJQgPDFdbTU5FEQtQWw4fHBxQXAJDGA9CTREOHghLVQ8cW1tOZAxPAQgUCwAdTFAUBBhCHE8cDhcESRZbHwNBREYRDBoIEU0BGF8WUENADxUaARVYVzJbSRUfPTBeUwAEDgAxNQoHLCVJTnAFMl5DCQIFWxcLWwwNRBZBAhhYV0saQREKEkxlGRYEDhRXNRcNUFlBCEgeTx0XFRdBCkgcH0hWcRZPUkFaTUlZDQIcFRlfFk8uQ1RDRyUPLBc9AnEWDB4ACR5JMFlYMQAVWxcBW1smA0lZDVAdBAoNFxkdG1IeDBVLWUM9Ag1YT1JBWk1JC0gEDBMCDSRNOgAMTDVbcR4lDzBDGwMTEglNJAxeGAwKRGUZFgQOFERTJUNQWUFMSR0JUg4MAhNRXhUVB0ANUVUuD1pNSVkNUFlBHkgMGgAPWjFLNEQJFhdNcVozHD0UMQcJXxkXFURkDEdbTxUbBgMFWVA9Al0KBhwVUiAcCkUFEklFAxcZHRtSREAlQ1IEHEAPDF5GQ0AWSw1UABxDVg8aDgEJFR8IDQ9cWwkFQwxNSDpYUQoWSRVHIwNBGUdbTwkMBRZAWFBdQ04XCxdfWg8AC0QeGgkFDQkOCxITTQQcWR8dDwUNERwaBhtNHQxeGBATDUkRUFBNWFEKFkkVRxIZXR0dWkhGQgoWSRVHQQRMCk8BABwMG1lPGQtBHEIfSB0PG00QDFwfCwgLTFgMGggLDA0QA1JVQy5CFA5Sg/z/STZZEVmD6r9YLR0DFUNJNEwEF0EJXhlPAgAJGQ0YQ1AbDh9FFA4QQQsCTgpFGRUACERCTzAOGAJFWUYVAAgCDUYgBgBWTQIcVBkXQVJvFwMTT1gwRVtPBR5DVg9EDB0FH1MrFkERUUhCXhkDHQxSRFVWTh8dBFINmungQUYOBh1ITgoUHEgKR1tPCQwFFkBYUF1DThcLF19aAhsITBwQQVBOFwsXXzUZCFdeERUOAQVRU10CFQkMRw0eEE1MWFgKAQBaUQoWSRVHIwNPF0EBABYCBFEETFYCA0kdUVIPE00KEUwBEBMNSRFBUiQUCkkaRQUIFB5JGQgbQUYOBh1ITjsODkJEQBEOHghXWUwGDwAADSRNMA4YAjVbDQEYGBhMCg4WCFZNAhxUGRdBHUwBGxsSEk0QFgocEAUNDSRNTC4ODDVbDQYYQTAPRi0dDRsxS1lcH14SBEQUDhYIVE9FW0weChYJXwtNSDpYLwYbQiwXIwNPF1E9FRtTKxZBEVs8QA8bBxcCER5LQ3YtVUMPQhwKUFtYDgUYXgNZIwNPF1UuD1pNSVlJFR9BH0wUAB9JCQgFHwRKJQ9MDVhPUkFaTRscWQULD0xxWi0dAxUxSyVDLBc9Ak4UDgESWiIdGAUyFgMDBEIzHEFaTUkdSBZZEg1BFwJaEh8BD1AXLBdBTA1YT1JBWh8MDVgCF0EfWAgKAElTQxoYQR8USUUNU08uQ0QiHRhxUiUPMEMkARENGx4aWW8fFQBEYgwOW1smA0lZDVAdBAoNCw4eDhdFGhxBFlBbMENYT1JBWk1JWV8VDRQeQ1gcBxEfH0FQAwMYDQNAUEZSSloxS0dvHxUAMA8kAS4PJgMZC0QeDUkuQhoAWkhUHggVQh1RSEVxFh8ACBQZQTtCHBhJRQMLDh4OF0VAUHEeW01OXhcDUFsBEEVbQBEQD04XWgITCBRDGQAPDVVDGBxNTUgaWBkQCUhSQ0MVQgJNXkMSBAcND0oiQyRMCk8BCBQLSR9MARgVTEJfFRsPEwMOWVQRFwYFDRkbAAgYGB0QQxlZEg1cFA4LBRNBSQhCHB4AAkQWBlIKEwAOGA0EFhEfRREdEwUTUktVD0waDghIRiITBhMeHQtMHg1PM3IRARsVJTJVVk4fHQRSDZrp4EFGDgYdSE4KFBxICkdbTyUyABdEBCY+REQLAl5BDwMAD0gCCggYSAxGTk4ZAg0cE1xZEgMKFghSXRkCDRwTAxwNCgMVDgQbD1FGGkIUHF9CD1RNTgIVCQxHXxUNFB5DWBwXDRxDAApAUFJBMA9UTy5DWkZJCkgcH08ZQxEZFxMJBB0cWVBSQTAPVE8fAAwXHEMNLFtBRw0LCh4HVAAID1cFRU4PQhwKTEMnQUsbWBdbW04PVE0fABMDS0MPHRgIAgMIFlBNWAsAAUgUW1sXUFRNEQkfDgIKD0oiGk5ZWlVQAhUJDFsBUhVDVg8iDhwLEx9TWWARHggfWQoOHBVSOQgVTBIYSEANLA4eABgMQSpFEQESRQ9UTR8UCRlLQ3ZSGg0NXgszLhJROQgVTBIYPTBeUjMuSSYxGlN+GBgZH3EkHFg9JkRLVQ8TFQAfXiQzAUo3DA4QXgQLAAJZJDMBSyYxQSVxA1M1DUEZDRM9Jh5DJXFZWzwRAQNNBkNATxkAD1xbAgNJHU1IQxdNVFlgER4IH1kKDhwVUjFLOEEZJUNADSRNJiAuODVbAVAlQz9YFkgbGFoEBw1IHBUEB1kkTVs9FB4IFEhYFE8FXhVDUj1YLAUQcVJVQTAPERwfPVhEUlleERQEREBWGhwIDAgbCkQEHBVADSRNJiAuODVbAVAlQxlDERkXEwkEHRxZLFtIVw0LDh8EUgBHFEwGAxRADSRNIRQUSgAADRkXFQlBFAoZFSZPRVlxUhQAGlcNM1BIWEFLFQ9KWzQPRRkDE0EbGRsQTwUNQR9MCQMTDxsJAFtQXAJDGA9CTQIYWEFLGkIUHENWDwsOHwRSIAgeRAMNEw1DDEcuQzsBACUPXFk9Tnk5Oyc9WEFJJQ8jDA9LRAFPGw8OCAUVSBsNPU4EVgITDQ8ABg0FWVVBMA85AxtNWjkoLXhcWQwNWwIaSEEpGAdeRAlZCAJZHQMeBBEZNVsBUCVDAUwUGh8ODkVAJQ9ZW01OQVpVUAwbARwUQgRRSExZF0gVRggESRRMBBdBHUwBGxMTGwkAW1BcAkMYD0JNAhhYQUsaQhQcQ1YPDE9PQS4MBRhPEVE9TnsZAxs9WEFJJQ8jGAwoeCRNWz0UHggUSFgNTxlDERkXEwkEHRxZXFk9Tn4ZAjY0Jk9FWXFSLQAATBoOXBQUBB8cXwMQFQlZJE1bPRQOARxOG1EIH0QWHAYAFA4MUWARHggfWQoOHBVSMUs4cVJVQTAPOjNQTVoxSzpxUlBNTH4QDgoSU0FJJQ89GAYFXgwdEw8OTToRTAgKQQRMFU8QDl0BAApFGVkKCV8ZBC5DU09FW0FSQ0MjXxkDGxBaHgAXS1APAExAHR0dEloXCBdHGQsITgFaBxsFWFcdC1gVBDxADwsAHkNAFksUTBkXTxxUWlVQAhYMGgoNIxEAFF5CMxxBWk1JHUgWWT4zRBYGBj4lRRocQRZVQQVeFUZIPRRNSVkNUFlBTF4dAxRPEx4EWRBQEBIBcRYzHD0UDgUYXgNZNQ1BGQ0TSSkFCAFeWUM9Ag1YT1IFHwtJJnIZFwgYcidHAQQWC0VZRAMUTUxYFgYEBAgeAA1IBFBbMENYT1JBWk1JWV4FCQQeBVFBLT4TAwANci9RCB9AUTMcQVpNSVkNUFkSCUEeQQcPExsMC14ZDQQYDUVPBw8TGwwLXhkNBBhxFjMcPRQOBRheA1ksDUoRHAYTGwMdUXkRFQAOTFFVLg9aTUlZSRUfQTNyEQEbFSUyQQpIHB9NTEQLAl5BDwMAD0gCCggYSAxDUgwbGxMMBEolD0wNWE9SQVpNGgxdFQtJRQMnMBsPExk2JgUZCgxADQ0BGxcfHxoQWRUNSDBDWE9SQVpNSVleFRUHQkAZGQgUWlBJFEwGAxQwQyQBUkFaTQ0cS1AUAABYFQAGSQkIBR8ESiUPTA1YT1JBWk0bHFkFCw9MXh0DFE8THgRZBlAlQ0ANJE1SSloeDBVLXgwPBVsdHQEIDggdWQZQJUNADRUOBBsPV0klD1BSQR9IFAlcDBsbEwxxHiUPMEMRCVI+JQMIFEgvJkFREFgzUD4lAAgQQy8mPU4XJAFSQVpNBFkQUDQAC0QLGwAAFBlBJQ8xFQgwD1RPLkMuLD0scVJVQTAPKxocRhMUSRBDBBwNAEgTGy5DUzEHWQ1QWREeRBYbWgxUAAgVWB0WFUQEUTMcQwcQRVtZQU9DVlZaGwsRH09TW1QfA0NADxAGHBVYVzJbawUXCh9EAQ5SChsDCBUNBAwTBUMRTxAIFgQaEURQEgQeTBMCG15YQUsqRBsVW0xFGR1SAxMfSUVOHx0EUkZEQBEOHghXWVgTERQCDUQMHQUfUwJXVAUbDh4FFQ4GD1NRRhpCFBxfTEMRTwAOXRQRGFkXGEEdQl8cGggUCkdbAVIxAB4NGgYAQQkEBx9JEUNBUE4XCxdfHggPWVQFGw4eBQsKHgdWTQQYWR5QW0xfHRsHExRNNVt+PSpBMA9YRFISHwEPV18RCAABDVNPLkNATTVbDVtZDA1ZFlNdAhUJDEcPLVVDDlgfTUhDWEFLFEwZF0NWDxUOGw9UHRBbAVIfCBRIHE1IGgdBSxpFFRoKHw9CNAlDDk9TW04fHQROAVoDUFtYOAoRDQMQDwoNOgYeBRMfAApFHhYMDQ0cDhxBFwgbFl5QFg0NSRFNXkMXGBoND0oiQw9BGRwBPSYeQipgIyU9HwckM1o9Jh5DO0QcHQgeRAsHHA4XDDUlXlolPUUPVE0RDRseGiVxA1IkAUwRAy49CUc1JQUsJRJGbxEDFggIBBoRQx8UADBxC0UuPVNPRVtOHBgSH3EkHFk1HwEMHl8RFD0wXlIzLkkmMRpTbxkVBQVfERwaDxUACCVxA1M9MARaMg9NAU8dWxdSCRhOAVoMHQUfT1NbXhEUBER+NTxaPVhGUEAVSUlQXRxKXUFSJk9AV1QFGw4eBSRNIQAWAgQlD1lVQTAPKyIhQVFUUEEUQEhQXR9KXEFbWj4IFUIdJUNADSRNISwpQxAMTx8LPU4EJAEBABcIQTxAERANRHFaDh4IOgAIEEFeDBswD1FBCxQYAhtRcVIqAABCFTNQSFZNNVtoHRgIAA0ZAxshFwwAFQMFA1tMfhkDHQwmT0VZcVI8DA1EFEELFBgCGyUPWSUPH0wVClo1HwEMHl8RFEkwDxkDGz1YREcAWBIWE0RxWjwTDRUANVsEXFk9TnkdAxcGCAwEWW0RFQhWDSsOHg4XMUtVDSxbNQlBHQgAABdDEAxPHws9TgRaQ1ANWFdLMUwCWQoNQxkDUg5dF0kfQgIUABhEHA5SGA8PBgtMFBBDEQEDTQZDQE8ZAA9cWwIDSR1NSEMJDAQcBRgYDAFMCwYVAFI2OjR+WCVDRxRBV0tRS1xYSx9DSj1OBFRPJgQWCA4LTB1RPU5MFAYuQ1MwRVlxUioAAEIVM1BIVk0yJQ8jNDJMBkFWSlhKXFhIH0JKUlYNKw4eDhcxS1UNLFs1CUEdCAAAF00pGEEZQ0E/TBQAHz1YMEVZcVIRAAFAGRwbBhsxS1APXFsNThdaBxMMFwwaEEoRUUhMQxkbGwsbAQgLDQIWRhVVGRsbDxNNGBhUBBgTDUkRTQ9NAU8dWxdSGg4ISFpDUA1YV0sRTB0UAB9EHw5SCBkFAB1MUA0UHg0MChkSEgQbEEEdGBgIRFpDUAIbAQUKch4WFU4XI00bEhMDGg1MHhoETgFaGwsRH080BAELWxVOF1ofC0NWTwoWSRVbW05eGQIXSRIMBBRMAxAGDQUjMl5BJk8RJQ9ZVUE3cFRPLkMSDAQUTAMQBg0FIzJbPVhENRdOHBgSHw0oGgEJUi8AFUkZCwgfRRYAHwBTVzUXDVBZQQhIHk8LFBgCG1FeFRUHQA0VDgYPU1c1Fw1QWUFMDVhPAAQOGBsXDSxbMRleEFVSPVhNQllAEQ0PMEMLDh8EUgUIFEARCggLTFA0IhQJBUFQAVA8DA1EFEcuQxstC1dYCiVDRXBUTy5DMgQ1WwRcWTowDygaAQlATSEQcVJVQTAPPQITCBZNCDlPXgwbVg0wBi5DJ0FJJQ8JGA8LRFgEEw8bATVbBFJVQwAPQk0wDl0eAVlfH14YFEwMTwQAWhQIF0oZWQoNQxkDUhUPHwBbAVIRCAgPQhsAFB8QNFUPAxYNThcDTR8AEwNHCVRSQ0MPQRkcAUE4BAUdRAIQEgRDFwITWyYDSVkNUB0ECg0BGhAOCEUaHEEWVUEBTAwBW1smA0lZDVBZQUwNCg4bEh9NJxZZORQRAEgVChwVHwksC18fCz0CcRYzHAIWDBoKDSM0MkRvEQMWCAgEGhFDHxQARRckAVJBWk0NHEtQJj4FQxEbLT5SHgwVS1xZEw1cGQJbWyYDSVkNUFlBTA0LCh4HVB8ICEwdWVxMXxkeEwwmAzUXDVBZQQhIHk8LFBgCG1FeFRUHQA0VDgYPU1c1Fw1QWUFMDVhPAAQOGBsXDSxbMiF+WDNQQVFNGhxBFlcTDVwZAlJKWjFLQw0sW0FHDRUOBg8mAzUXcR4aDQ1eC083DBsEBVFvGRUFBV8RHBoPFQAIUBcsF0FMDVgLFwdaMjYQQxkNPjMFCwoeB1ZNBBhDChANRRckAVJBWk1JWQ1QCgQAS1YCEw8ABAVZEFAUAAJXEQMuDyYDSVkNUB0ECg0BGhAOCEUaHEEWVUEBTAwBW1smA0lZDVBZQUwNCgoGFAgDSSUPNRQABUFYM1BBUU0aHEEWVwwNQwIGHkFRTTVbF1AlQ0wGWAITFRQxByVDLBcCAEwLHFI1HwEMHl8RFEkuRBQLGxMTHgEXQh0YSFZxFk9SQVoJDB8NLyYIAkQMMC1JCQgFHwFQFw4BBEIzHEFaTUlZDVBZEglBHkEcDhdNVFlDHxQ9AnEWT1JBWgkMHw0JDAMDX1AcFw0cQUkUTAQXSFZxFk9SQVpNSVkNAhwVGV8WTy5DLggFHEoCGAxMbSRNUkpaHgwVS14XDgENU08uQ0BNNVsNW1kMDVkWMxw9FDEHHUgWWQkNQBUOAQgdDEESTB4YDQBMCkNSDBsZB1AXLBdBTA1YARMVEwcIWRBQIjwwQ1hPUkEcAhtZRlAQD0xGGQETDRYMG0NxHllBTA1YT1JBFAwdEEcRVwAcXR0BFkkRQxAMTx8LSQFMDAFbSCYDSVkNUAsEGFgKAVIPGxkAE0wsFz0CcRYGFEElMgcYQBUmPkwQRU8uQyUyBBhEHiY+MA9CMxxBWk1JCV8ZFxVERRkCHwAJBA4YBSsqLD8FJE1ZWENVUEkcQUhTXh5LM1BIVk09HEEVHhMNQFAzUAAWBDVbBC1VQTAPKw4eDhcxS1AELBdDEVBUTQZQTU9TAg8EABEJD0JNCw4AT0VbRRkXFU4XI005ABcCBxpFGR0ATFQZARUIWgMAFExQGw4eDQ4OUhQUBEkSRB1ZEg1cFA4LBRNSS1UPTBoOCEhGBhRBCQgFHwMfCEFSDUhVTk4ZAg0cE1AbDktBCw5SXRkCDRwTAxwNCgMXHlJMR01YRQITFgUJE1gZE0FGDgYdSE4LBBhYCgFSEh8BD1dGBRoJTAZYWk5OGQINHBNcWQAHXlgHHQ0eDElFTh8dBFJfHRsHExRNWUUCExYFCRNWTV5DRg4GHUhOEwABQhkwGhQQGAQQEV8aDghIRlVSEhMGBVlPGRUAAg1EDB0FH1MYV0UFExQBBVFTXQIVCQxHDRwYEwJEWBYbBl0EBx4DUiRNTk8NCFBbWE9FW0AREA9OF1oCEwgUQxkAD1xbBwVVHQtQWwEQRVtOGBwCB15aVSkaWBlLQw8TFgUJD1RNHkNATzoQQxYVAB4NKQ4aExsABhcNFBgPTEAdHR0SWgIFGEkZW01OQA0cBkNANksaQREKEjBxC0Q4ABQKChFELCUSRnEkRy49CUc4GEUCGAwDQyQzAUsmMUBbAVIaDQ1eCzMuElE+DBFfFxgTMHELRS49UjE1CgchGAkeTBUAHD0mHkMlcVlbTU5OFA4BEiYxGlJmERQOAk4QBi49CUc1JQUsJRJGfBkHAAAXAgclcQNTPTAEWjIPTQFPHVsXUgkYTgFaDB0FH09TW14RFAREZxkBFQISBEElDzElQ0ANSV9bTxIYAwxAWFBNTBxIQ1I9WCcIF0oTEQhCRQ0FBwxSRDVbBCwXEg1AHUchBBIfDhhfWCVDLnFaQ1JQSkRHEVgaDAxEBFRPQFFWTTVbfhUREwtMCkEaFBAYBFEELFtITgFaA1BbWCcIF0oTEQhMWxlPIQQSHw4YX1ADAB5MCgZQHFYWSw0PSlsRFQ9UTREOHghLQw8bWVxMZhkCHQ8ZBQBRcVI6PU4BWF5CTVpfQCVDAxgMCQUTQRoUEBgEUQRcWVBZAVgzUFBXBRwTWB0lQ0UWWBwTDB9FAldFBRMUAQVRQ1JQT0FJJQ9CVAkZRw0CLkNTVkkKTB0cSQcDEBoYFBdFQFUNQFVBMA9LQhoUEBgEWQUfXhBMWQ0IEwUTRDVbBCwXEg1AHUcZTxUcRVkdXFk9TkJfHlISFQMAJQ9ZW01OQVpVUCobAAYXThgQQQMKCQZSChsACABMFBBBGkxYGwcGGxQNEA8NVRpOWVpVUBEDT0VbTh8dBE4XWhwTDB9FAxhAHxg+BFgSGh8IUjYjGEMXGgkFBSRNMz1YQUlIHVlVQT9IEB0VAAhFNVtvLFtNTBxIRl5BMQwEFkMTEQhEcVosLkNWTVhJAVBISDEEVE9GVFZNNVtHERQODXIQGhgUFwQ1WwRSVUMAD0JNOAAXAghZRQUTFAFEWFJSVU9PFFVWUg1DVg8IFlBNWA4GHUhSQ0MfTBUKWgsbAAYYchgMCxlAEUcpPFNBSUkBUCVDBkwVABM+EhgDDEAZUToxBCRNWz0UBklEDTsYDANDGwcbSSZPIiUPXFlQQA1IRi4PCQwEHAUaGAwDTCcHBwsPAABRdhtVQT9IEB0VAAhFNVt+LFtNTB5RMltNWltFWXFSFkYdXhEVUgobAAYXThgQPU4EWkNQDVhXSztCVwoJTEcZAh0AWhsIWUJXCBIFV1gEEwwVAwoRRFJVQwREHE1IFQgYDARwXFsSA0FaVQlDFwwAFwMAAENWDxsDExIJTTgYRQIYDANDQjMcQVpNSR1IFlk+M0QWBgY+JUUaHEEWVUEFXhVDUgoPDgFQFywXQUwNWE9SQVoeDBVLXhASAQ1FTxsSFzEHWQ1QWUFMDVgcFw0cQwIMThhZXExGDQwaPRQxB1kNUFkFCUtYBwcLDwBBCkgcH0hWcRZPUkFaTUlZDQIcFRlfFk8BBBYLRxJYExE9AnEWMxwCFgwaCg06GA8LThAGWjAbBRsYQB8XSFZxFk9SQVodCApeLBc9AnEWDB4ACR5JKkgYCwYNX1A+EwkIDAQWQ1lDPQINWE9SBR8LSRFYGgwMRF4dAxRIQDEHWQ1QWUFMDVgdFxUPHwdZXhUVB0JGDQwaQVBNWyVDLBc9Ak4UDgESWiYIFEIeGgkFBSkOGhMbAAYXBEolD0wNWE8WBBxNNiZEHhAVM3JQHBcNHEFJEF4dVUEHWBsHXkEVHEBDcR5ZQUwNWE9SQQkYGRxfWFBPM3IRARsVJTJBEF4dVUEHWBsHWz0UTUlZDVBZQUxeHQMUTxUcSUQNHwg9AnEWT1JBWgkMHw0YDAsZQFAcFw0cRFMlQ1BZQUwNWE9SCBxNGhxBFlcOHQ1GT0JbJgNJWQ1QWUFMDVhPUkEJCAUfAx8IQUEQWF4uD1pNSVkNUFlBTA1YTwAEDhgbFw0DHA0KAxMaEQlaRklMcR5ZQUwNWE9SQQgIHQxfHllRMEMkAS4PHggPWUcRFA4NchAaGBQXBEETTB0WAEUXJAFSQVpNAxhAGVlcTB0kAVJBWk0PFl9QCEEFQ1gFEwwVDFMlQ1BZQUwNWE9SCxsAAFkGTVkQQkUNBQcMUkQ1Fw1QWUEeSAwaAA9aBwgURCwXPQJxFgYUQSUyBxhAFSY+TBBFTy5DJTIEGEQeJj4wD0IzHEFaTUkJXxkXFURHGQIdACUFHBNYHRBJN2cZARUCEgRBJQ8xJUNADUlfW01aPgwRXxcYE0RxWi0uQ1ZNWEkEXFkqDUAXAREJE0U1W24sW01MHEhDUlBTMEBQcR5bHBEBWhtDWVhXEltZCQkEThdaFxMVFU9FW0UZFxVOFyNNMAgIBAcaRRlZGQ1PGR0cCFoCTghEHh5bTBEbABYERCwdDV8ZGxQYSD0dAA4IUUYaQhQcX0zP+PtSXRkCDRwTNBYIHkxEQBEOHghXWUkRWV0PQhwKTAISAhlFAhMWBQkTWBYdRgtDSTdIFxheTgFaUxEOHghXPUIZCwBQAhsAFgRETRgYWwNZCA9FEQsTQRUZCFleGRcHTEYXSAASGxkAFUARHgACA1gkBAAeHwgNDRUKAExMGhwGExsGHVlAFQ0OCA0WAB8IFARJG0IDERANThAOUhgVFw4YQ15bTU4RGwAWBEQOBRheA1klA0QKDloyEgwCFQRKRU4PQhwKTEEMDElFTh8dBFJJHQlSGA8XCApETFYCA0kdUVKD/P9JRU4fHQRSSR0JUhgPFwhFAhMWBQkTVk0vTVgPHB4PSls5DVkXT0NbWlEKFkkVRyUDRAoOTk4ZAg0cE1BFAgNJHVEhCRsGBUUCExYFCRNYCxMPWgAMC0IDWQ4AQBkIEw9WTRoRWB4QDwsNDQwaFBRNVRpCFBxfD0UXH1pIRkIKFkkVR0EYQggGHgwbCggXA1AhABhCWF1IQUYOBh1ITjIXDUkKDgZdVQ4GHUhOWQAOXgwdEwoOTVUaQhQcXxVYAg5OThkCDRwTUBQEGEIcBhwIWhQGA0ARHgACDVBTEQ4eCFcAWAoYEgURVwwdBR9TSR1IElkDA14QHhNBFAIEWU8VCwYNQ1FDUhISGAcQQxdZFA9FDQFSDhgUDBJZUAAAHkwMBhBBGAJOFUARHgACDVBTEQ4eCFctVAAcJB5fFx1IQTkMB15ZUBAPH1kZAQYIGxkMWUwSChUeTBsbUgIWDBoKEV8aDghIRkZcQ1ZPBBhEHltbTkAZBhxPChRLVQ8WEBkJSVpVCRxWTwoRSBMSEk4XIxRQFVhXSxBCUlVDBUNaVSk8Vk8GDFlSQ0MoQhEdE1taXFtXGEYlDydbGQsAAA5XSUAPXFsNThdaKxMSDhgbWVURDQ4fRAJPGxISAQgASRlDQShCER0TW1pcW1cYRlkXDQ0zGRMFCAwdQw1JWxxAVlobUFtYHRBbAVIaDghIWlVQAhIIChIFGQoSGU8bAxMSCUUtFkQCGE1MfhAOGQ1TQUklDzQWCB5MWDwaABEBSR1MHlkMCV8XHFIOFgQaEURQEgQeTBMzUEgmAwoRSBMSSQVeCxoQAhYMGgoFOw8ACF8ZG15BKQUIEkFZVUEwDzMZEwUIDB1ZfhgYCgANHA4cQRcIGxZeUBYNBV4QBlIKHx8IEnFSUENADxRNSEMzBgIYQRFZEgVDHk8aABdNOhFMGxVBAkQWCFIDFQEICkRSBE0XDwxNSEMKFEtVDxMWBQkPQk0BABcIQTJbER0TDVlQWltPAxgTGAVZVUFeGFRPLkMxGwgdXxENSVkEVhYHGxtFQCUPWSUPH0wVCloRCAQHDUgUUSoaTBwdExVSX0BXThgWEUUDCxsACApFQFUNLFsqGkwcHRMVQE1dJQ9cWT1OZg4OFhMbGUFLBF4aCQNdUEYuQ1NPRVtBUkNDFVgCDlpIWgMGFERQDQ5LSl8dG01aDgEWXVhQQQVeEAMTGB4ES1UPGBAFThcMHQcEBzBFW14fFUNWVloCEwgUQxkAD0pbBx5CFU8TAxlNABRdHwsVTGw6LF5BGw8aDV8RGhUBSAwHHQUmAzUXcR4aDQ1eC08hCRsGBVFsMjpIVnEWT1JBWi0IG14ECwAPWRUKBgkVCTUXDVBZQQhIHk8LFAAMQQpIHB9IVnEWT1JBWk1JWQ0AGBIfcRYzHEFaTUkdSBZZAgRCCEcBBBYLQENxHllBTA1YT1JBCh8AF1lYCgQAS1YBHQxaRkklD0pZPU4NU08BFQhFGhxBFlcYGVcZR1tIUzEHJUMsFwIATAscUiUVBBsYBSMRAAdBUVUuD1pNSVlDHxRBUQ0kTTYOEx8IJQ8sFz0CDVhPUgUfC0kmchkXCBhyJ0cBBBYLRVlfWUM9Ag1YT1JBWk1JCkgcH08eDUVPAD0UMQdZDVBZBQlLWBYHGxtFGhxBFlBbMENYT1JBWk1JWV8VDRQeQ1hcXFBOTUNZXhUVB0JfWEVYQUgxByVDLBcCAEwLHFIqDAwNC0wEUTIETBMDW1smA0lZDVAXDgENRU8uQzEbCB1fEQ09TnEWMxxBWk1JHUgWWT4zRBYGBj4lRRocQRZVQQ0EQjMcQVpNSVkNUFkSCUEeQRNBR00IJUMsF0FMDVgLFwdaFBwDTFgKBABLUVUuD1pNSVkNUFlBHkgMGgAPWh4MFUteGEFGB1hdLg8mAzUXaR8QEw0FSkZcAhICGVEELBcqGkwcHRMVUl5AV04YFhFEBCQBUBwHQUsNHElbWxcPDBYCBFhXSwhMCQ0ATgFaBxsPDk9TIg84GBNMTxEdUgkbFB8WQ1AWRhZEFgYcBloCHxZXGRcITEYRAlIDEwEaEENPW01OeBsHUhITAw9ZVB8DCAJKVE8aAAhNCxBfGR0ATBEbABYERAIfFldYUF1DThcLF19UTS8MQxsKCBVMWBwaFBQOARhGGVldD0IcCkwJGxQfFkNeFhcDV1BGTk4ZAg0cE1AXCExOEA4DCAgMDRADUlVDUE4XCxdfHggPWUIGFhszTx0dWgkbFB8WQ1lDQR5IDBoAD1oFCABbHxdPA1sXFVpIRkIKFkkVR0MxAVoNBwZYV0tbAVIUAAVDWlVQDBsEB1ddCVtNTksRFxcFWFcSBAFSGgkJThMcUFshFksND0pbERUPVE0RDh4IS0MPAxgMCQUXGR0bJQ8MCwU5DUlFBFRPLkMyDB9YcVJVQTAPFxkdGyUPDAsFOQ1JRQQkTVs9FB4IFEhYFhcDVycNFxNSIBwKRQUSSUUEVE8uQzcEEBZbUSVDQA0kTR0XFRc2G0gCUSwZXhAaGUlTRDVbBCwXEg1AHUcdFxUXNhtIAlEyBUoRHVpIU0FJJQ89FkwDDCRNXkEmTwYPQgomAwlfUDwbBhMfQVAELFtITgFaA1BbWDgKEQ0YGBgaQhZPBwISGAdZWR9eBktfEU8dFxUXSwQBC1sVThdaDB0FH09FW0FSQ0MDWxcVLQMfH0kdTFAQB0xUF0gDQ1ZPBAxeBBcOGA9CNAlDCAhLQw8sJQMFSyQzAUpSUkgmch4YDAlyJ0ZQTVgAGh4PSlsICg0RHBoNGxkEGEMXWxwxAVoMEw0WHjYXQgRbWzcPERwbDwkZCBdOFVtNTlkBHxdDJ0FLGkERChIJXlpVKUMzGUtVDz0MEgRYE01eQykEDhBfUiQcQFZaG1BbWB0QWwFSGg4ISFpVUAIWDBoKDT8NWzBDWE9SQR4ID1lCBhYbRF4dAxRIQDEHWQ1QWUFMDVgdFxUPHwdZcVIwBktCWTNQPRQeCBRIWBYXA1cnDRcTUiIdUQRZVUEwDzEIVQ5bMUtVDSxbGA1DHwZSCRsUHxZDLFtITgFaA1BbWDQIF0oZWQkNVA4AHEEOGBsQDQEWRh9FEQMBAFoFCBQNHw8OFnIaCgBBFUoTHkwCFAAVSRFNXkMSBA1bFwQLFAlQJUNQEhUBS0NWUhQABUNWHwtDQE8KFUwDCkElWUIzHEFaTUkdSBZZDhpCAkcBBBYLQENxHllBTA1YT1JBCAgdDF8eWT1OZRkZUz1YMQclQywXAgBMCxxSLA8eAQxGSiUPTA1YTxYEHE0GD0IKURIJQR5GSD0UTUlZDVBZQUxfHRsHExRNNVtgGQAOGgwkTS4PJgM1F04cGBIfDSsGFQgIVzUXDVBZQQhIHk8dFxUXQQpIHB9IVnEWT1JBWk1JWQ0CHBUZXxZPLkM3AkQWDCxbPQJxFjMcBR8LSRZbHwM+DkgKRxoAAxsGFwRKJQ9MDVhPAAQOGBsXDRgYGBpCFkEdFxUXQVBxHiUPMEMRCVI+JQMIFEgvJkFREFgzUD4lAAgQQy8mPU4XJAFSQVpNDxZfUBFBBUNYNDsVUkRFWWAFCgkZRlBGXkEpBA4QX1hQPFZxFk9SQVpNSVkNAAsIAllQAAQOADILHF9YEUhFcRZNDxxWTx1LHVJDGk5ZAR8XQ0BPGxxMHFtNTkURAQZDQDZLKEwJCghMQB0bHQVaBQgUQBFZGQNJEQIWAFoPBgsBUBUEB0QWTxoICQILEA0YGBNMVREDTUNWT1UaQhQcXz9CGRsQAANRRhpCFBxfVg1EDB0FH1MEEENYCg4NWVRPQ1dKRFVWTh8dBFINGRwdEhMUSQpCEQ1NTBEbABYERAAIAQUDFgAYDVVPQ1dKQUlJBExWAgNJHVFSDggZAAhOGBhBH0IZG1xDVk9VGkIUHF8KQhYLTk4ZAg0cE1APAEwRGwAWBEQIBx5yGxYRUAIbABYERE0NGA0EDBNMWR0EAQkTHwQYQxdVQQpMCQ4GQUYOBh1ITgFPAUwXHBpJU1FGGkIUHF9MQxFPEQkbHAALRB4eT05wVE0QFB1PU1sPXFsMDUQWTUhDFwwAFwMAAENADx4GCgQeT1MCUFxbAgRIGwQBQ0A2EltZUkNDD0IcClBNWAFLQw8lGglMXhEBFEEiAg0QQFAdAAINFQoADglNBhVMFBBDQA8VGgEVWFcyW04cGBIfcSQcWS4DAQASThgQPTBeUjMuSSYxGlN1Hx0IAXEkHFg9JkRLVQ8TFQAfXiQzAUopAggNTxEAPTBeUjMuSSYxGlN1Hx0IAXEkHFg9JkRLVQ8TFQAfXiQzAUo8AgADQRklPR8HJDNaPSYeQyFCFBAMMHELRS49U080BAELWxVOF1ofC0NWTwoWSRVbW05eGQIXSTUUBRBGExEIRHFaLh4IJk9FWR5ASVFcHUhGXAwbAhoRBVlVQV8dSF9CUUpBSSUPPwANBUYbBxtPFwwGCkVYUD1OBCQBAQAXCEEqQhENAw1UUDNQICZPRVkcQElNTBxIX0JRU0MEGEIDEUlFAVheQlFKXVlJAVAlQz9CGRsQAANFWEkdUAoODVlRM1BIWEFLFQ9KWy4VQREEEQkTTR8YDR8dBQVUWBwdAA4PCAAPDVUaTllaVVARA09FW04fHQROF1ocEwwfRToWTAQbABUFJE0zPVhBSUgaQFVBXR1IX0JIVAAIFl4YUUhADUlYR1FKXVlVDSxbMgNMDA0TGFJcXkkNAxYAGAQkTVtDVk8FWxdSSFdcDQsAExUeDAdZQgINCAsKEU9DT09NCxhfEQ8AHg8FQwlDDk9TW10JW01OThcLF0NATxoYQBVRJwNEAgMbSSZPMyUPXFlUXB1IX0JRVk1YSQReFAADXhBHW01aXFlJHUBJUUANJE00DhMXBRANRVkMAENUT0NRXzFLUHEeCgABSFApHQgAAQBRcVIjPU4BWF1CUUpdWUkdXFlQXARWAhMOCQVBUAFQS1FcHUhfQk1aMUs/QhkDDQUNSl9SDBYDRVkcQFw9TgRaQ1ANWFdLP0IZAw0FDRUOHRISTUESTB0QBQ0NSU9CUUpNWUkdWVscQFZaG1BbWB0QWwFSGg4ISFpVUAlaUEkiYgkVCAdOEAZaPVgsBRBxUlVBXx1IX0JRSkRFWX4fGBUOTAFHLkMsDAUQcVJVQV0aSENSUEpdWUkEXFknA0QCAxtJJk8zHE8fJUNADU1fQlFKXVlVDUFJSDFxFhwTDB9FDxZDFFEJRQFYWkVUSl1ZSQFQJUMKQhYLWglTMUtQcR4KAAFIUAocBiUGBgkFGFBNTHFaLh4IJk9FWXFSHA8LchMAAkkSRDVbBFJVQwAPQk00DhQJSQ9MUBwPCw0TAFURWgAIFl4YWQ4AWA4MGghYEEUCDwRbW05dAU1eQxkCDRwPSlsSDUAdRxQOFAlBInBZVUFcAVgzUAcVAw1Rdi1QPU4EJAEBABcIQRxDFyYKA11QNC9IVk0nFkMVVUEwDx0BFT4RAhlRdi1QPU4EJAEBABcIQT9CGQMNBQUkTSg9WEFJSB1AVUFZBFYCEw4JBUFQAVBIUVwdSF9CTVoxSxJEExEIBw0LAAYUDDFLUHEeCgABSFA8HQAODwgABSxbMjAPVE9DV0pBSUwdQElIQkAZAAEJUkRFWRVASVFcHVRPLkMbFAcYQ1BIV1wNCwATFSZPQFsBUhVDVg86AFUSEk0bFgoJAQAYDQ4OUgISCA4YXxFZCQNBGRseAAhPRVtFGR1DVlkKGhccJ0FLCkIcW1sXDxUOGw9UHRBbF1IaDQ1eC08qDh4EBENxHllBTA0cChRBJTIAF0QEJj5EXh0DFE1aBBoUBEolD0wNWE9SQVpNGhxBFlcIH0BYUlIICQA1F3EeWUFMDRwKFEEXDAYKRVgKBABLUVUuD1pNSVkNUFlBHkwRHBdBNAIdMEAAFQQBSBYbFwU/HxsWXywXPQJxFgweAAkeSTZUHBAKD0URRyoOHgQEUBcsF0FMDVgLFwdaMjYQQxkNPjMFCwoeB1ZNAApAXFkOFUERBFtbJgNJWQ1QWUFMDQsaAgQIRUBXci8QDwVZJzBaCAkAQCVDUFlBTA1YT1ISHwEPV0IJFQgHDUVPHRgWBAIlQywXQUwNWAsXB1oACBZeGFESCUEeRkg9FE1JWQ1QWUFMXx0bBxMUTRocQRZXDhVBEQQuDyYDNRdOHBgSHw0rABMVGAwQUXUfHQgBBEIzHEFaTUkdSBZZPjNEFgYGPiVFGhxBFlVBBV4VQ1ISFQwdVQ0DDQAaRhlGSD0UTUlZDVBZQUxeDR8XE1JERyZyGRcIGHInRxsSF0Q1Fw1QWUFMDVhPAQQWC0cKQhENQVENCwATFSYDSVkNUFlBTA0LCh4HVB4dGFsbGEFRDQsbExcRDDUXcR5ZQUwNHAoUQRcMBgpFWAoEAEtRVS4PWk1JWQ1QWUENXhccGxhaUEkURB5REglBHkEBDhsZRVkcRklIMENYT1JBWk1JWUICDQgdThAOUlxaAAgBBQMcDQoDCwATFVpASUgbQFVBXAQkAVJBWk1JWQ1QCwQYWAoBUgAJAhoQVFBTQR9IFAlcEg4MHxJMUFJBA18MBgMCEgxJUw0DHA0KAwsbExcRDElTDUFXVDBDJAEuDxkBCApeUD8OBVcUBlo5FQkAFARKJQ9MDVhPFgQcTTYmRB4QFTNyUBwXDRxBSRBeHVVBH0IMGgRNWgsGEFdZQz0CDVhPUkFaTUkKWAAcE0QEVjAtCBQEHSZyWBASAQQkAVJBWk1JWQ1QCgQAS1YcHRUPG0lEDQMWFRlbJAFSQVpNSVkNUAoEAEtWCR0IAE1UWUsfEBswQyQBUkFaTQ0cS1AUAANeEEcBBBYLQENxHllBTA1YT1JBCAgdDF8eWQwNVVAcFw0cQxoWWQUPQUYNCwoeB1QLBhBXUFZBXR1IQ1JQSl1ZSR1AUD0CcRYzHAUfC0kfQh4dSRRCHAYfDRsfQENxHllBTA0SDh8IWlBJSXEeWUFMDR4AAEECTQAXDQgWBQVAFA4AWyYDSVkNUFlBTA0SDh8IWkZUWVVeFAADXhBHWz0UTUlZDQIcFRlfFk8YABcENRdxHiUPCEgeTxcPHTICFl1YAQ4IRBUDExNTVzUXDVBZQQVLWAEdFVoVBh1EHRUAHhckAVJBWk1JWQ1QCwQYWAoBUi8VAwwlQ1BZQUxfHRsHExRNBBhVWAEOCEQVAxMTVk0CHFRNFQABTxwOUhlATRFXQBEWEgQFUUZcCAkANRdxHiUPBUtYMC0PGwAMJnJQRFxMcVowLQwbBAcmcixbWzBDWE9SQRJNVFl2PwANBUYbBxtJJk8oFUQsW01MHkhfQlFKXUBVDSMWABhPGRZaPVg7CBVELFtNTBxPX15BS11ZSR1ZVUEqQhEVHghSMUsjSBIWPU4BWFpCUUpdWUkBUEhRRXAkAVJBWk0ZC0QeDUkKQhYLWglTRDUXDVBZQRxfEQEGSR8DDiZGHwlJBARRMxxDBxBFW0AZFwhOFwNNBhgKCEtDDwkWG04BWgcbDw5PUyIPMQ8XDUFYAAYAWh4AF0seEE1MXhdIHAZaBAISRFAbDgBMFgZSGBUXABdKXFkKCVQRAVJdGQINHBMqFg4cTAoETk4ZAg0cE1AeAExCXxsbDx1DS1UPOBASA08XG1IQGxkGC0RKWV0PQhwKTBUDHQxRRVlXPjNDGQIXPiVNQllxUkNBMA9YRFISDh9BEkpZWUpMcVpPGQZaMUtZBlANFB4NU08uQ1ZNNVsNW1kSGF9QB1wXFQEAAEgCUEFHDSRNUhcVAU4cXyxbXUNOFwsXX1RPRVsRExYFCRMJDgYOCAEICxFfGg4ISEZPAA5dFBEYWRkeAExFGQIfAFocCA1CAhcITFwXSAEJEw9FWRETFgUJEyRNLj0UMUtXRx8QD0RcGRsdExYMG1ARXxoOCEhGTwMAAxkIC0QeHk9OcFRNEBQdT1NbD1xbDA1EFk1IQxcMABcDAABDQA8eBgoEHk9TAlBcWwIESBsEAUNANhJbWVJDQw9CHApQTVgBS0MPQVBBP0UdHVIXG004DFQfF0EkTAEZHQ9aCQgXDR0cEwNeWAAeAB4ES1UPHQwSGA9CNFACFgwaCnEsCko/RR0dLj0JRzUlBSwlEkZlGRYEDhQxNQoHLCVITgFaDB4ACR41JV5bKBQVQhYzLhJQMTVRcSwKSyRMARkdDyYxGlNxLFBDMVBUFFAVWFdLCVRSVUMPQhwKUFtYBUlEDTgYGBpCFkcuQyIxS1UNQ1A9Al4ZAhdJEkMACkBcWT1OdSRNXkEmTwAKQCxbSFcNCw4fBFIFRw9CHBAYCV9UT0FNWjFLD0IcEBgJXyRNWz0UGRsAFywXQUwNWAdcDgwcCA0FWSUPTA1YTxEJHw4CUWsRFRIJAVgzUCkbFB8WQ14WFx1MDEdbQTQCHTBAABUEAUgWGxcFPx8bFl9QEg5LWRkdGxISBEkSSAIYCjAPUTMcBAIODAlZUDcOGGQVHx4EFwgHDUgUPBMeQgpVLg9aTUlZXREKEk4BWgNQW1hfQFllEQAXA0NYDgYTEw8cDUERCwhMWxlPHRcLDB1RBFA3DhhkFR8eBBcIBw1IFDwTHkIKTxkOXRkIC0wUEEMRAQNNBkNATxkAD1xbAgNJHU1IQwkMBBwFIxEEHgUkTSE9WEFJSAReFhcdTAxHW01aRTVbSh9eEgRZJE1eQUhERVlxUioJCV9WAAQQGxlBUHFSUENADxRNSENJREkqRRULTwNbCQ4GSVNNVFkFLFsGAwoLBwY9WEFJSwRSBE0XDwxNSEMKFEtVDxMWBQkPQk0BABcIQShYCRYPRHFaPi5DVk1YUAMfDxANWVBGXkFSMUsKTBIDCDAPVE9DSFZNNVt8BQAOAgMXGQMADkVAJQ9ZW01OQVpVUFVTTTgMVB8XTwNbCQ4GSVNNVFkFLFsSDU8CBi5DVk1YUA8NVRpOWVpVUBEDT0VbTh8dBE4XWhVSXFo3BhZdEQsKRAQkAQEAFwhBAwMYGBgaQhYDExNWTTIkAVAlQw5CCwcbBRtNARhUBhYPAEwKM1BIJgMIWRBQKgkJX1AzUCAmT0VZHFlCQRYDCQABCVIMQCVDAxgMCQUUChxJAEMBGFQGFg8ATApGXkFLQUklDwEWEgQFUU8WABRNAhxUGRc9TgRaQ1ANWFdLTARQIw4DXRkdGUESDBAPQh4VAB4NCgBVGAIMHRANBhhBHUILB1pIWBBFAg8EW1tOXQFNXkMZAg0cD0pbG0wQWDUdDgoMGxIFWSUPH0wVClobVAcIFEQvFhcdTAxHW01aXUVZcVIbDkteEE8IDhUdCAtGLFtIMEMCQQMOCQVBKkUVC0kwDzkzUE1aXEBQFlADTx1CCwdaMhIIG1FxUjs9TgFYXVtIQU0TV1wfCglEfA0WHQ9SMUs6cVJVQV4EUTMcEhsADFFXXhMAAUQnAAQQGxlBUAFQTE1McVoFEwwTMgYPXBENSUVxWkZQTVgBS0MPRlBBBkwVBi0ODBwIDQVZWQoLDQEGFUYTAw0QXhlbHEBWWhtQW1gdEFsBUhoOCEhaVVAbWlBJI0IfCQAeRlBGLg8JDAQcBQpXBAJKJwQdEVJERVljHxcEQA0kTRAOXR4BWVcfFhENXxNPFw8dMgIWXVhQPU4EJAEITwsCGhEFIQwYA0NQM1AiJk9FWRxZUFpMV1YeHRISRToRSAJRPU5sJE1eQUtEQCVDAxgMCQUCQRcPHTICFl1YUE1McVo8GgQIMUtVDSxbBAJKJwQdEVJENVsEUlVDAA9CTUVIWggHHnIbFhFEBFgbBxNaAwYURB4QQR1MARsTExsJAFsBUhEICA9CGwAUHxBFAg8EW1tORBdNXkMTA0tDdi1VQwNYDE1IQyACBglMAhJBBEQLABAODgQ1F34YHBNWDUpPGQZaCgZeXhgNTUwcWBkdDV0IGyVDIQwYA0NCT0NBEQpJCkwSAwhADUlPBA4WSgwLcR4zAAFEWAAEEBsZU1keUBIGMEM9ARVBEQJOCQ0fDxANWUJPIQkfH0tVDxxbW04VVVZbQRIEGhZPHw1JRQ0MAFUGXR8AWU4YEBANSRFND00BTx1bF1IJGE4BWgwdBR9PU1tXUERBNkIXHxMTEUVAJUMKVxADXhBHIxQDAgdRcVIoPU4BWF1bSEFNE1dcHwoJRHwNFh0PUjFLLnFSVUFdBFFUUhtUHAYKRVgqCQlfUDNQMiZPRVkeWVA9Al4ZAhdJAEMBEF4fGw4YBVFDUj1YNwYWXRELCkxFERwdAxUZACVxHigUFUIWVVJQWgYOWV4RGxsFAVhdUhcVAU4cXywlDz1YAQAcW1pcSRJKUAoADlcRQ1JQWhsGFQoVCz0wQysHFxNATVtZRhdZBgMKCwcGTVpeSQ9CHF4EHnEkATgAFwRJFlsBGBVWDUxPGQYmMQc8QxdZCgMKCE8dFwsMHUMNIxEEHnFaQ1I9WA8GCkUBGEEWQhcfExMRTQEQXh8bDhhEJE1bQ1ZPBVsXUkBITG8XHBoQG00BGFQGFg8ATApPEAgWDAdZRREUQQRECwAQDg5NHRYKF14TBQ9UTRoIHk9TDV8FHBwxAVocHQ1YVxJbQBEQD0JdAU1IQxkBCApeUDEAFVsXAUg9FE1JWQ0UHAdMcicGHAgOMjZRXhUVB0ANERwfTVobBhVECRwTRRckAVJBWk1JWQ1QCgQAS1YGAQxaUEkQXh0lD0wNWE9SQVpNGhxBFlcXA0ERFhcTWlBJD0IcEBgJXyQBLg9aTUlZSRUfQQNbCQ4GSQkIBR8ESiUPTA1YT1JBWk0bGEQDHEEiQgwmHxEWCAQcQwQcBSlfCgAAPRQxByVDExUAH15YPBoECEUhGFQGFg9FFyQBUkFaTQ0cS1AWFx1MDEcBBBYLQENxHllBTA1YT1JBCAgdDF8eWUkwDx8AVRISGTVbAVBLSDBDJAEuDxkBCApeUCgUFUIWRzoAAxsGFwRKJQ9MDVhPFgQcTQYPXBENSR9IFAlbWyYDSVkNUFlBTA0KCgYUCANJUXFSCgAOVxEzUE1aXEAlQywXPQJOFA4BElo3BhZdEQsKVnEWT1JBWgkMHw0vJggCRAwwLUkJCAUfBEolD0wNWE9SQVpNGhxBFlcJDVQOABwNGx9JRA0rJD0CcRZPUkFaCQwfDQEWEgQFCwoeB1ZNARhUBhYPRRckAVJBWk1JWQ1QCgQAS1YHExgMAgcVTAJXABxdHQEWSRIMEA9CHlA9AnEWT1JBWgkMHw0aGAwFchcZAwAORRocQRZQWzBDWE9SQVpNSVlHERQITBBYXy4PWk1JWQ1QWUEKQgpPGkETA0kKSBwfTwRMARkdDxYMG0NxHllBTA1YT1JBWk1JWUcRFAhMBkVPGk8VGxgYWVhQOl1wJAFSQVpNSVkNUAsEGFgKAVILGwAAJUMsF0FMDVgLFwdaCAcechsWEUReHQMUSEAxB1kNUFlBTA1YBhRBFAIdWV4VFQdCRRkWBA4UAQgLFywXQUwNWE9SQVpNSVkNAhwVGV8WTzwOFAg1Fw1QWUFMDVhPFw8dTVRZQBEBSR9IFAlcCRsUHxZDHBgTQA0TCgtcFgwEG0kRWQlWDRBBHRcLDB1RBCtIPEVxFk9SQVpNSVkNAhwVGV8WTwYYCghBHEMXUE8zchYOHwQlMjUXcR5ZQUwNHAoUQRIEGhZPHw1JH0gUCVtbJgNJWQ1QWUFMDQkOBg4IAQgLDU1ZOjAPIgAdERsfAllFGQoODkIMBi5DJzEHWQ1QWUFMDVgJHRNaBUkQQ1AKBABLVgcTGAwCBxVMAkM9Ag1YT1JBWk1JWQ1QWRUZX1RPGQZaUEkRAx8PEA1ZUEYuD1pNSVkNUFlBTA1YTwMADgIbFUwCVwAcXR0BFkkOFBkcBRhQTzNyFg4fBCUySVINLFtbTHFaT1lBCRkbUUYXUEFHDSRNUgodTTVbDVtZFRlfWERSPVhBSSUPUFJBH1kKRxpPDAIFEFQVC0hMBlgzUEEMAgVeSAIlQ0VxFk9SQVpNSVkNARgVA18UDgBPGx0ZHEMUUT1OZxkCG0EVGxgYWUpZPU4NU08BFQhFGhxBFlcLDUARMB0XCwwdUQRZWUpMcVpPGQYmT0AlQ1BZQUwNWE9SEBsZBgtBEQtPDV0IChwFUjFLPEMXWQoDCghPHRcLDB1DDSxbQUcNCxsASQkIBR8DFRcGM0YXH1pIU0Q1Fw1QWUFMDVhPAAQOGBsXDSxbPTBDJE1cCxUEB1FcEQ0OHkEZHVs9FDEHJUMZH0EzchYOHwQlMklEEFAlQzNyFQ4bDyUyNVsXLBdBTA1YFR0OWlBJI0IfCQAeRlBGLg9aTUlZVx8WTx1CCwdaMhIIG1FxUioIAU8ZM1BNWlxAUHEeWUFMDQIAHU8LAhoRBSEMGANDUDNQLgscHBVCASVDQA1JRls9FE1JWQ0ACwgCWVAVHQ5UBQAKQhIWFUQEUTMcQwcQFFUPFQEAAV0UCgFDQBZLHBxSQxpOQBkGHENATwQYRB5XERUPVE0UCAIIDVsXCwQcQA8dXVBbAU8EGEQeW1tOQBkGHE8KFEtVDxYQGQlJWlUJHAdBSxweUkMaTkAZBhxDQE8EGEQeVxEVD1RNFAgCCA1bFwsEHEAPHVtQWwFPBBhEHltbTkAZBhxPChRLVQ8WEBkJSVpVCRwHQUscGFJDGk5AGQYcQ0BPBBhEHlcRFQ9UTRQIAggNWxcLBBxADx1ZUFsBTwQYRB5bW05AGQYcTwoUS1UPFhAZCUlaVQkcB0FLHBpSQxpOQBkGHENATwQYRB5XERUPVE0UCAIIDVsXCwQcQA8dV1BbAU8EGEQeW1tOQBkGHE8KFEtVDxYQGQlJWlUJHAdBSxwUUkMaTkAZBhxDQE8EGEQeVxEVD1RNFAgCCA1bFwsEHEAPHV5CQ0AWSxRMGRdDVg8VDhsPVB0QWwFSHwgUSBxNSBoHEBRVDxUBEU4XA00GUUtPUwIPGRZDVnYlQ1ACGwEFCg9KIjwRAVobQlNYVxJbRB9bWzdwVE0RABYBGlsXKyQcQA8MX0FDQBZLEEJSQzoxAVoMEw0WHktDdi0ETU5ZSFtQWwFPABYPSiI8QA8bDh4NCU9TInANVUMYHU1NSBpYBAZbFyskTU5OGQMeElhXMiRQXFsVXBtaVQlDEwJLQ3YtVUMPTBQDAUNANjQEAVINUVsPQhRQCBVPUyJWUhAPThcjMl5DFRgdWxdSOw4ORBNPWg4MDgEYXxsYSE5QJUNQAhsBBQoPSiI8EQFaG0JZWFcSW0QfW1s3cFRNEQAWARpbFyskHEAPDF9LQ0AWSxBCUkM6MQFaDBMNFh5LQ3YtBE1OWUlfUFsBTwAWD0oiPEAPGw4eDQlPUyJwDVVDGBxJTUgaWAQGWxcrJE1OThkDHhJYVzIkUFxbFV0fWlUJQxMCS0N2LVVDD0wUAwFDQDY0BAFSDVBfD0IUUAgVT1MiVlIQD04XIzJeQxUYHVsXUjEAGgwkAT8IAwIfWA8NJE1OThkDHhJYVzIkUFxbFV0ZWlUJQxMCS0N2LVVDD0wUAwFDQDY0BAFSDVBZD0IUUAgVT1MicFxbAg1BFBxQWyEwFFUPBEhXThcDTRsOWFcyJAFSGgAAQQtNSDonEEVbWUFOQ1ZWWgYdQ0A2NFUPExgNAF5aVSk8B0FLDRxIW1sXDxEAUFshFksQQ1JDOjEBWgAHFVhXSz1CGQsAVg1JXVxUTDEHMlsRHRMNWUJPS0MHMEVbThEVDR8PQjQvHFZPHUgUUkMaTkQXTUg6J0FLGkwcFRJOFyMyD01YGVtJD0oCQwVCWlUpPFZPChhBHApDVnYlEl5DFwQHEA9KAkMFQlpVKRpYBAdbFyskTU5CDRtQW1g3BhZdEQsKTEURHB0DFRkAJUMjEQQeF1hdUgodTQ4WCgMRFUANSU8EDhZKDAtxHigUFUIWVVJQWgYOWV4RGxsFAVheUhcVAU4cXywXKw1AEU8dFwsMHUMNQ1kKC3EWKhwGWgYGXl1QFhcdTAxVUjISCBtbUC1VQw9MFAMBQ0A2NARQXFsSHUERGxdDQAsIFV4VBA==</script>
+<script>window.DARS_META = {"num": 24, "total": 32, "title": "Meros va polimorfizm"};</script>
+<script src="sinf/gate.js" data-next="assets/kurs.js"></script>
+</body>
+</html>

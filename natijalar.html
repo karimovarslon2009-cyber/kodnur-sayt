@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Natijalarim — Al Xorazmiy</title>
+<script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+<script src="sinf/brend.js?v=5"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<script src="sinf/pwa.js?v=6"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sinf/sinf.css">
+<link rel="stylesheet" href="assets/yangi.css">
+</head>
+<body>
+<script src="sinf/yangi.js"></script>
+<script>YN.header('natijalar');</script>
+
+<main class="wrap" id="app" hidden>
+  <div id="pend" class="warnmsg" hidden></div>
+  <h1 class="ptitle">Mening natijalarim</h1>
+  <div class="strip" id="stats"></div>
+
+  <section class="part" id="bolimlar">
+    <h2 class="ph">Bo'limlar bo'yicha</h2>
+    <div class="bars" id="bars" style="margin-top:18px"></div>
+  </section>
+
+  <section class="part" id="darslar">
+    <h2 class="ph">Barcha darslar<small>32</small></h2>
+    <div class="tbl" id="tbl" style="margin-top:18px"></div>
+  </section>
+
+  <section class="part" id="xatolar">
+    <h2 class="ph">Noto'g'ri urinishlar</h2>
+    <p class="muted-p" id="xmsg"></p>
+  </section>
+  <div id="foot"></div>
+</main>
+<div class="load" id="load">Yuklanmoqda…</div>
+
+<script src="sinf/config.js"></script>
+<script src="sinf/kurslar.js"></script>
+<script src="sinf/kurs-map.js"></script>
+<script src="sinf/backend.js"></script>
+<script src="sinf/common.js"></script>
+<script>
+(async function(){
+  var $=SH.$, esc=SH.esc;
+  var u=await SINF.ready;
+  if(!u){ location.replace('login.html'); return; }
+  YN.wire(u);
+  $('#foot').innerHTML = YN.foot();
+
+  var p={lessons:{}}, offline=false;
+  try{ p=await SINF.getMyProgress(); }catch(e){ offline=true; }
+  if(offline){
+    var w=$('#pend'); w.hidden=false;
+    w.textContent="Internet yo'q yoki server bilan aloqa uzildi — natijalar ko'rsatilmayapti.";
+  }
+  var s=SH.sum(p);
+
+  $('#stats').innerHTML =
+    '<div><span class="ic">'+IK.svg('chart',20)+'</span><div><b>'+s.pct+'%</b><span class="l">kurs bajarildi</span></div></div>'+
+    '<div><span class="ic">'+IK.svg('target',20)+'</span><div><b>'+s.done+' / '+SH.TOTAL+'</b><span class="l">topshiriq bajarildi</span></div></div>'+
+    '<div><span class="ic">'+IK.svg('book',20)+'</span><div><b>'+s.lessons+' / '+SH.lesson(32).n+'</b><span class="l">dars tugatildi</span></div></div>';
+
+  /* Bo'limlar */
+  $('#bars').innerHTML = YN.PARTS.map(function(pt){
+    var done=0,tot=0;
+    for(var n=pt.a;n<=pt.b;n++){ var x=s.per[n]; if(x){done+=x.done;tot+=x.total;} }
+    var pc = tot?Math.round(100*done/tot):0;
+    return '<div class="bar-row"><b>'+esc(pt.t)+'</b><div class="tr"><i class="'+(pc===100?'f':'')+'" style="width:'+pc+'%"></i></div><span>'+done+' / '+tot+'</span></div>';
+  }).join('');
+
+  /* Darslar jadvali */
+  var rows = '<div class="tr-h"><span>№</span><span>Dars</span><span>Topshiriqlar</span><span class="qz">Test</span><span>Holat</span></div>';
+  window.SINF_KURS.darslar.forEach(function(d){
+    var x=s.per[d.n]; if(!x) return;
+    var pc=x.total?Math.round(100*x.done/x.total):0, fin=x.done===x.total;
+    var st = fin ? '<span class="st ok">'+IK.svg('checkc',15)+' Tugatildi</span>'
+           : x.done ? '<span class="st run">'+IK.svg('clock',15)+' Jarayonda</span>'
+           : '<span class="st no">Boshlanmagan</span>';
+    rows += '<a class="tr-r" href="dars-'+SH.two(d.n)+'.html"><span class="n">'+d.n+'</span><span class="t">'+esc(d.t)+'</span>'+
+      '<span><span class="mini"><i class="'+(fin?'f':'')+'" style="width:'+pc+'%"></i></span><span class="l" style="font-size:12px;color:var(--muted)">'+x.done+' / '+x.total+'</span></span>'+
+      '<span class="qz" style="font-weight:700;font-size:13px">'+(x.quiz?x.quiz.s+' / '+x.quiz.n:'—')+'</span>'+st+'</a>';
+  });
+  $('#tbl').innerHTML = rows;
+
+  $('#xmsg').textContent = s.fails
+    ? 'Jami '+s.fails+' ta noto\'g\'ri urinish. Bu normal: har bir xato nimani o\'zgartirish kerakligini ko\'rsatadi. Qiyin topshiriqda «Yordam» ni o\'qing, yechim 10 ta muvaffaqiyatsiz urinishdan keyin ochiladi.'
+    : 'Hozircha noto\'g\'ri urinishlar yo\'q.';
+
+  $('#load').hidden=true; $('#app').hidden=false;
+  if(location.hash){ var t=document.querySelector(location.hash); if(t) t.scrollIntoView(); }
+})();
+</script>
+</body>
+</html>
