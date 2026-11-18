@@ -5,16 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Al Xorazmiy — dasturlash kurslari</title>
 <script>try{var m=localStorage.getItem('js-kurs-mavzu');if(m==='tungi'||(m===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
-<script src="sinf/brend.js?v=5"></script>
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f766e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Al Xorazmiy">
-<link rel="apple-touch-icon" href="assets/icon-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
-<script src="sinf/pwa.js?v=6"></script>
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="sinf/sinf.css">
@@ -109,7 +101,7 @@
       '<span class="k-ico">'+YN.kicon(c,26)+'</span>'+
       '<div><h3>'+SH.esc(c.nom)+'</h3><p>'+SH.esc(c.tavsif||'')+'</p></div>'+
       '<span class="k-tags"><span class="tag">'+SH.esc(c.daraja||'')+'</span>'+
-      '<span class="tag">'+(c.darslar||0)+' dars</span>'+
+      (c.darslar?'<span class="tag">'+c.darslar+' dars</span>':'')+
       (tayyor ? '<span class="tag ok">'+IK.svg('check',12)+' Tayyor</span>'
               : '<span class="tag soon">'+IK.svg('hourglass',12)+' Tez kunda</span>')+
       '</span></a>';
